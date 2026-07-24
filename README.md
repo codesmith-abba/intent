@@ -183,8 +183,98 @@ Intent should be separated from implementation.
 - Modular
 - Open Source
 - Local-first
+- Secure by default
 
 ---
+
+# Security
+
+Security is a core design principle of Intent Language (ITL), not an afterthought.
+
+The language is designed to encourage secure application development by separating **intent** from **sensitive implementation details**.
+
+## Secrets
+
+ITL source files should never contain secrets.
+
+Instead of embedding passwords, API keys, or tokens directly into `.itl` files, developers reference secrets that are resolved securely at runtime.
+
+Example:
+
+```itl
+database $main {
+
+    provider $postgres
+
+    password env $DATABASE_PASSWORD
+}
+```
+
+This allows the compiler to generate framework-specific implementations while keeping sensitive information outside the source code.
+
+## Public Source Files
+
+A `.itl` file should always be safe to:
+
+- Commit to Git
+- Share publicly
+- Open source
+- Review
+
+Sensitive values belong in secure secret stores such as:
+
+- Environment variables (`.env`)
+- Cloud Secret Managers
+- Vault providers
+- Operating system credential stores
+
+## Principle of Least Privilege
+
+Applications should explicitly declare the capabilities they require.
+
+Future versions of ITL may support capability declarations such as:
+
+```itl
+capabilities {
+
+    internet
+
+    storage
+
+    notifications
+
+    location
+}
+```
+
+This allows generated applications to request only the permissions they actually need.
+
+## Framework Independence
+
+Security should be expressed once in ITL and implemented appropriately by each backend.
+
+For example:
+
+- React → Environment Variables
+- Django → `os.environ`
+- Flutter → Platform Secure Storage
+- Future Browser Runtime → Secure Runtime APIs
+
+The application intent remains the same regardless of the deployment target.
+
+## Secure by Default
+
+ITL aims to generate applications that follow secure defaults whenever possible, including:
+
+- Separation of secrets from source code
+- Safe project structures
+- Minimal default permissions
+- Deterministic project generation
+- Validation during compilation
+
+As the language evolves, security features such as secret providers, capability-based permissions, package verification, and secure runtime execution will become first-class parts of the ecosystem.
+
+> **Intent should be public. Secrets should never be.**
 
 # Language Goals
 
