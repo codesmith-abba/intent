@@ -4,6 +4,7 @@ from .token_type import TokenType
 tex = "Campus$"
 
 KEYWORDS = {
+    "use": TokenType.USE,
     "app": TokenType.APP,
     "page": TokenType.PAGE,
     "hero": TokenType.HERO,
