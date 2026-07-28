@@ -87,6 +87,7 @@ The following declarations are currently valid inside a hero.
 
 | Keyword | Required | Description |
 |---------|----------|-------------|
+| `intent` | No | Describes the purpose of the hero. |
 | `image` | No | Defines the hero image or visual asset. |
 | `headline` | No | Primary heading. |
 | `subtitle` | No | Supporting text. |

@@ -60,6 +60,7 @@ The following declarations are currently valid inside an `app` block.
 
 | Keyword | Required | Description |
 |---------|----------|-------------|
+| `intent` | No | Describes the application's purpose. |
 | `import` | No | Imports declarations from other ITL files. |
 | `page` | No | Declares a page within the application. |
 | `target` | Yes | Defines the compilation target. |

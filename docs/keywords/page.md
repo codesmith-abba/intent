@@ -73,6 +73,7 @@ The following declarations are currently valid inside a page.
 
 | Keyword | Required | Description |
 |---------|----------|-------------|
+| `intent` | No | Describes the purpose of the page. |
 | `theme` | No | Defines the page's theme. |
 | `hero` | No | Defines the primary introductory content. |
 | `section` | No | Defines a logical section of the page. |

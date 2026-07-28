@@ -80,7 +80,7 @@ The following declarations are currently supported inside a section.
 
 | Keyword | Required | Description |
 |---------|----------|-------------|
-| *(none)* | — | Sections are currently empty containers. |
+| `intent` | No | Describes the purpose of the section. |
 
 Future versions of ITL will allow sections to contain additional declarations such as components, layouts, media, and interactive elements.
 

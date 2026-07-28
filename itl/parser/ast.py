@@ -5,6 +5,7 @@ from typing import Optional
 @dataclass(slots=True)
 class Node:
     pass
+    # intent: str | None = None
 
 
 @dataclass(slots=True)
