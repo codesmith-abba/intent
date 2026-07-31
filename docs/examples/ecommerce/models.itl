@@ -52,7 +52,7 @@ models {
 
             required
 
-            maxLength 100
+            maxLen 100
 
         }
 
@@ -64,7 +64,7 @@ models {
 
             required
 
-            maxLength 50
+            maxLen 50
 
         }
 
@@ -142,7 +142,7 @@ models {
 
             required
 
-            maxLength 150
+            maxLen 150
 
         }
 
@@ -248,7 +248,7 @@ models {
 
             required
 
-            maxLength 200
+            maxLen 200
 
         }
 

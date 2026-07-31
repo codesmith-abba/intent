@@ -1,24 +1,105 @@
 from .token import Token
 from .token_type import TokenType
 
-tex = "Campus$"
-
 KEYWORDS = {
-    "use": TokenType.USE,
-    "app": TokenType.APP,
-    "page": TokenType.PAGE,
-    "hero": TokenType.HERO,
-    "section": TokenType.SECTION,
 
-    "theme": TokenType.THEME,
+    # ==================================================
+    # Application
+    # ==================================================
+
+    "app": TokenType.APP,
+    "import": TokenType.IMPORT,
 
     "target": TokenType.TARGET,
     "framework": TokenType.FRAMEWORK,
+    "database": TokenType.DATABASE,
+
+    "theme": TokenType.THEME,
+    "intent": TokenType.INTENT,
+
+    # ==================================================
+    # UI
+    # ==================================================
+
+    "page": TokenType.PAGE,
+    "hero": TokenType.HERO,
+    "section": TokenType.SECTION,
 
     "image": TokenType.IMAGE,
     "headline": TokenType.HEADLINE,
     "subtitle": TokenType.SUBTITLE,
     "action": TokenType.ACTION,
+
+    # ==================================================
+    # Routing
+    # ==================================================
+
+    "route": TokenType.ROUTE,
+    "path": TokenType.PATH,
+
+    # ==================================================
+    # Authentication & Authorization
+    # ==================================================
+
+    "auth": TokenType.AUTH,
+    "role": TokenType.ROLE,
+    "allow": TokenType.ALLOW,
+    "inherits": TokenType.INHERITS,
+
+    # ==================================================
+    # Permissions
+    # ==================================================
+
+    "view": TokenType.VIEW,
+    "get": TokenType.GET,
+    "update": TokenType.UPDATE,
+    "delete": TokenType.DELETE,
+    "manage": TokenType.MANAGE,
+
+    # ==================================================
+    # Models
+    # ==================================================
+
+    "model": TokenType.MODEL,
+    "type": TokenType.TYPE,
+
+    # ==================================================
+    # Relationships
+    # ==================================================
+
+    "belongsTo": TokenType.BELONGSTO,
+    "hasOne": TokenType.HASONE,
+    "hasMany": TokenType.HASMANY,
+    "belongsToMany": TokenType.BELONGSTOMANY,
+    "hasManyThrough": TokenType.HASMANYTHROUGH,
+
+    # ==================================================
+    # Field Constraints
+    # ==================================================
+
+    "primary": TokenType.PRIMARY,
+    "required": TokenType.REQUIRED,
+    "unique": TokenType.UNIQUE,
+    "readonly": TokenType.READONLY,
+    "nullable": TokenType.NULLABLE,
+
+    "default": TokenType.DEFAULT,
+
+    "min": TokenType.MIN,
+    "max": TokenType.MAX,
+    "minLength": TokenType.MINLEN,
+    "maxLength": TokenType.MAXLEN,
+
+    # ==================================================
+    # Infrastructure
+    # ==================================================
+
+    "provider": TokenType.PROVIDER,
+    "engine": TokenType.ENGINE,
+    "api": TokenType.API,
+    "storage": TokenType.STORAGE,
+    "cache": TokenType.CACHE,
+
 }
 
 class Lexer:
@@ -56,10 +137,12 @@ class Lexer:
 
             case "{":
                 self.add_token(TokenType.LEFT_BRACE)
-
             case "}":
                 self.add_token(TokenType.RIGHT_BRACE)
-
+            case "(":
+                self.add_token(TokenType.LEFT_PAREN)
+            case ")":
+                self.add_token(TokenType.RIGHT_PAREN)
             case " " | "\r" | "\t":
                 pass
 
@@ -67,7 +150,12 @@ class Lexer:
                 self.line += 1
 
             case "$":
-                self.string()
+                if self.peek() == "(":
+                    self.advance()
+                    self.multiline_string()
+
+                else:
+                    self.literal()
             case "#":
                 self.comment()
             case _:
@@ -101,7 +189,7 @@ class Lexer:
         self.add_token(token_type)
 
     
-    def string(self):
+    def literal(self):
         # Skip the '$'
         self.start = self.current
 
@@ -122,6 +210,12 @@ class Lexer:
             )
         )
 
+    def multiline_literal(self):
+
+        raise NotImplementedError(
+            "Multiline literals are not implemented yet."
+        )
+    
     def comment(self):
         while (
             not self.is_at_end()

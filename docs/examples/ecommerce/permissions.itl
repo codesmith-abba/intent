@@ -127,7 +127,7 @@ permissions {
 
             manage $store
 
-            withdraw $earnings
+            manage $earnings
 
         }
 
