@@ -1,0 +1,11 @@
+page $checkout {
+
+    intent $(
+        Guide customers through a secure checkout.
+        Collect shipping information,
+        select delivery methods,
+        choose payment options,
+        and confirm the order.
+    )
+
+}

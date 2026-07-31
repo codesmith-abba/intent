@@ -1,0 +1,9 @@
+page $cart {
+
+    intent $(
+        Allow customers to review selected products,
+        modify quantities, remove items, and continue
+        to checkout with minimal friction.
+    )
+
+}

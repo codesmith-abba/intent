@@ -1,0 +1,12 @@
+section $navigation {
+
+    intent $(
+        Display the application's primary navigation.
+        Include branding, search,
+        product categories,
+        account access,
+        wishlist,
+        and shopping cart.
+    )
+
+}

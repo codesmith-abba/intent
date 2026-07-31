@@ -1,0 +1,11 @@
+section $footer {
+
+    intent $(
+        Display company information,
+        useful links,
+        social media,
+        policies,
+        and contact details.
+    )
+
+}

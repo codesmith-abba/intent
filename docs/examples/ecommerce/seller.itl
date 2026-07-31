@@ -1,0 +1,9 @@
+page $seller {
+
+    intent $(
+        Allow sellers to manage their storefront,
+        products, orders, analytics, and customers
+        from a unified dashboard.
+    )
+
+}

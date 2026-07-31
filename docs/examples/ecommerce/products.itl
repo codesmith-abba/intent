@@ -1,0 +1,9 @@
+section $products {
+
+    intent $(
+        Display products in a responsive grid.
+        Prioritize featured and trending items.
+        Support filtering, searching, and sorting.
+    )
+
+}

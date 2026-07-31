@@ -1,0 +1,31 @@
+page $home {
+
+    theme $light
+
+    intent $(
+        Create a welcoming homepage for first-time visitors.
+        Highlight featured products, trusted sellers,
+        promotions, and an easy path to shopping.
+    )
+
+    import $navigation
+
+    hero $landing {
+
+        image $assets/hero.jpg
+
+        headline $Discover Fashion Made for You
+
+        subtitle $Find trusted tailors and unique fashion products.
+
+        action $Start Shopping
+
+    }
+
+    import $categories
+
+    import $products
+
+    import $footer
+
+}
