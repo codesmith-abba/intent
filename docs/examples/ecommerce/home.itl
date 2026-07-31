@@ -1,30 +1,395 @@
+// ======================================================
+// SMarket
+// Home Page
+//
+// The homepage is the primary entry point into the
+// marketplace.
+//
+// Its purpose is to immediately establish trust,
+// showcase the marketplace, highlight products,
+// and guide visitors toward discovering and
+// purchasing fashion products.
+//
+// ======================================================
+
 page $home {
+
+    // --------------------------------------------------
+    // Page Theme
+    // --------------------------------------------------
 
     theme $light
 
+    // --------------------------------------------------
+    // Page Intent
+    // --------------------------------------------------
+
     intent $(
-        Create a welcoming homepage for first-time visitors.
-        Highlight featured products, trusted sellers,
-        promotions, and an easy path to shopping.
+
+        Design a premium, modern fashion marketplace homepage.
+
+        The homepage should immediately communicate
+        trust, quality, and professionalism.
+
+        The experience should feel fast, welcoming,
+        and visually engaging.
+
+        Encourage visitors to explore products,
+        discover trusted sellers,
+        and begin shopping within seconds.
+
+        The layout should be responsive,
+        mobile-first,
+        and optimized for accessibility.
+
     )
 
+    // --------------------------------------------------
+    // Global Navigation
+    // --------------------------------------------------
+
     import $navigation
+
+    // --------------------------------------------------
+    // Hero Section
+    // --------------------------------------------------
 
     hero $landing {
 
         image $assets/hero.jpg
 
-        headline $Discover Fashion Made for You
+        headline $Discover Fashion That Fits Your Style
 
-        subtitle $Find trusted tailors and unique fashion products.
+        subtitle $Shop thousands of fashion products from trusted sellers and talented tailors.
 
         action $Start Shopping
 
+        intent $(
+
+            Create an eye-catching hero section
+            with a beautiful fashion-themed background.
+
+            The primary call-to-action should
+            encourage users to begin shopping.
+
+            A secondary action may encourage users
+            to become sellers.
+
+            Display trust indicators such as:
+
+            Thousands of Products
+
+            Verified Sellers
+
+            Secure Payments
+
+            Fast Delivery
+
+        )
+
     }
 
-    import $categories
+    // --------------------------------------------------
+    // Featured Categories
+    // --------------------------------------------------
 
-    import $products
+    section $categories {
+
+        intent $(
+
+            Showcase the marketplace's most
+            popular shopping categories.
+
+            Display categories as beautiful cards.
+
+            Examples include:
+
+            Men's Fashion
+
+            Women's Fashion
+
+            Shoes
+
+            Bags
+
+            Accessories
+
+            Traditional Wear
+
+            Kids Fashion
+
+            Beauty
+
+            Selecting a category should navigate
+            to its product listing.
+
+        )
+
+    }
+
+    // --------------------------------------------------
+    // Flash Deals
+    // --------------------------------------------------
+
+    section $flashDeals {
+
+        intent $(
+
+            Display limited-time promotional products.
+
+            Highlight discounts clearly.
+
+            Encourage urgency by displaying
+            remaining time where appropriate.
+
+        )
+
+    }
+
+    // --------------------------------------------------
+    // Featured Products
+    // --------------------------------------------------
+
+    section $featuredProducts {
+
+        intent $(
+
+            Display a curated collection of
+            featured marketplace products.
+
+            Prioritize products with:
+
+            High ratings
+
+            Popularity
+
+            Recent sales
+
+            Attractive imagery
+
+            Allow customers to quickly add
+            products to their cart or wishlist.
+
+        )
+
+    }
+
+    // --------------------------------------------------
+    // Trending Products
+    // --------------------------------------------------
+
+    section $trendingProducts {
+
+        intent $(
+
+            Showcase products currently trending
+            across the marketplace.
+
+            Use attractive product cards
+            with smooth scrolling where appropriate.
+
+        )
+
+    }
+
+    // --------------------------------------------------
+    // New Arrivals
+    // --------------------------------------------------
+
+    section $newArrivals {
+
+        intent $(
+
+            Display newly listed marketplace products.
+
+            Encourage customers to discover
+            the latest fashion collections.
+
+        )
+
+    }
+
+    // --------------------------------------------------
+    // Popular Sellers
+    // --------------------------------------------------
+
+    section $topSellers {
+
+        intent $(
+
+            Highlight trusted marketplace sellers.
+
+            Display:
+
+            Store logo
+
+            Store name
+
+            Seller rating
+
+            Product count
+
+            Short description
+
+            Allow customers to visit
+            individual storefronts.
+
+        )
+
+    }
+
+    // --------------------------------------------------
+    // Marketplace Benefits
+    // --------------------------------------------------
+
+    section $whyChooseUs {
+
+        intent $(
+
+            Explain why customers should choose SMarket.
+
+            Highlight benefits such as:
+
+            Verified Sellers
+
+            Secure Payments
+
+            Nationwide Delivery
+
+            Buyer Protection
+
+            Affordable Prices
+
+            Easy Returns
+
+        )
+
+    }
+
+    // --------------------------------------------------
+    // Customer Testimonials
+    // --------------------------------------------------
+
+    section $testimonials {
+
+        intent $(
+
+            Display authentic customer testimonials.
+
+            Include customer names,
+            profile images,
+            ratings,
+            and purchase experiences.
+
+            Present testimonials
+            in a visually appealing layout.
+
+        )
+
+    }
+
+    // --------------------------------------------------
+    // Fashion Inspiration
+    // --------------------------------------------------
+
+    section $inspiration {
+
+        intent $(
+
+            Inspire customers by showcasing
+            curated fashion collections,
+            trending outfits,
+            and seasonal styles.
+
+            Encourage users to explore
+            complete fashion looks.
+
+        )
+
+    }
+
+    // --------------------------------------------------
+    // Newsletter
+    // --------------------------------------------------
+
+    section $newsletter {
+
+        intent $(
+
+            Encourage visitors to subscribe
+            to receive:
+
+            New arrivals
+
+            Promotions
+
+            Exclusive discounts
+
+            Fashion updates
+
+            Keep the subscription experience
+            quick and simple.
+
+        )
+
+    }
+
+    // --------------------------------------------------
+    // Mobile Application Promotion
+    // --------------------------------------------------
+
+    section $mobileApp {
+
+        intent $(
+
+            Promote the SMarket mobile application.
+
+            Highlight benefits including:
+
+            Faster shopping
+
+            Personalized recommendations
+
+            Order tracking
+
+            Instant notifications
+
+            Provide download links
+            for supported platforms.
+
+        )
+
+    }
+
+    // --------------------------------------------------
+    // Frequently Asked Questions
+    // --------------------------------------------------
+
+    section $faq {
+
+        intent $(
+
+            Answer the most common customer questions.
+
+            Include topics such as:
+
+            Shipping
+
+            Payments
+
+            Returns
+
+            Seller Verification
+
+            Account Management
+
+        )
+
+    }
+
+    // --------------------------------------------------
+    // Footer
+    // --------------------------------------------------
 
     import $footer
 

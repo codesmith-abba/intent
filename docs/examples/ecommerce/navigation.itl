@@ -1,12 +1,172 @@
+// ======================================================
+// SMarket
+// Navigation
+//
+// Global application navigation.
+//
+// This section provides the primary navigation used
+// throughout the entire application.
+//
+// It helps users discover products, navigate categories,
+// search the marketplace, manage their account,
+// and access their shopping cart.
+//
+// ======================================================
+
 section $navigation {
 
     intent $(
-        Display the application's primary navigation.
-        Include branding, search,
-        product categories,
-        account access,
-        wishlist,
-        and shopping cart.
+
+        Design a premium marketplace navigation suitable
+        for both desktop and mobile devices.
+
+        Display the SMarket logo on the left.
+
+        Include a prominent search bar that allows
+        customers to search products, categories,
+        brands, and sellers.
+
+        Display navigation links for the main areas
+        of the application.
+
+        Include quick access to:
+
+        - Wishlist
+        - Shopping Cart
+        - Notifications
+        - Customer Account
+
+        On mobile devices, collapse navigation into
+        a responsive menu while keeping search easily
+        accessible.
+
+        The navigation should remain visible while
+        scrolling and should feel modern, lightweight,
+        and trustworthy.
+
     )
+
+    // --------------------------------------------------
+    // Marketplace Branding
+    // --------------------------------------------------
+
+    section $branding {
+
+        intent $(
+
+            Display the SMarket logo together with
+            the marketplace name.
+
+            Selecting the logo should always navigate
+            to the homepage.
+
+        )
+
+    }
+
+    // --------------------------------------------------
+    // Global Search
+    // --------------------------------------------------
+
+    section $search {
+
+        intent $(
+
+            Allow customers to search for:
+
+            • Products
+
+            • Categories
+
+            • Sellers
+
+            • Brands
+
+            • Fashion styles
+
+            Search suggestions should appear while
+            the customer is typing.
+
+        )
+
+    }
+
+    // --------------------------------------------------
+    // Primary Navigation
+    // --------------------------------------------------
+
+    section $menu {
+
+        intent $(
+
+            Display the application's primary
+            navigation links.
+
+            Include:
+
+            Home
+
+            Categories
+
+            Products
+
+            Sellers
+
+            Orders
+
+            The active page should always be
+            visually highlighted.
+
+        )
+
+    }
+
+    // --------------------------------------------------
+    // Customer Shortcuts
+    // --------------------------------------------------
+
+    section $actions {
+
+        intent $(
+
+            Display quick-access actions.
+
+            Include:
+
+            Wishlist
+
+            Shopping Cart
+
+            Notifications
+
+            Customer Account
+
+            Show notification badges whenever
+            new activity exists.
+
+        )
+
+    }
+
+    // --------------------------------------------------
+    // Mobile Navigation
+    // --------------------------------------------------
+
+    section $mobile {
+
+        intent $(
+
+            On smaller screens,
+            replace the desktop navigation
+            with a responsive navigation drawer.
+
+            Keep the search bar accessible.
+
+            Navigation should remain simple,
+            fast, and touch friendly.
+
+        )
+
+    }
 
 }

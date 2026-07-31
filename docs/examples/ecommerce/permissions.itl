@@ -1,0 +1,206 @@
+// ======================================================
+// SMarket
+// Permissions
+//
+// This file defines authorization rules for the
+// marketplace.
+//
+// Permissions determine what authenticated and
+// unauthenticated users are allowed to access or
+// perform throughout the application.
+//
+// The compiler should use these rules to generate
+// authorization logic for the selected backend.
+//
+// ======================================================
+
+permissions {
+
+    intent $(
+
+        Define a clear authorization model
+        for the marketplace.
+
+        Every user should only be able to
+        access resources and perform actions
+        appropriate for their role.
+
+        Authorization rules should remain
+        centralized, readable, and independent
+        of any specific framework.
+
+    )
+
+    // --------------------------------------------------
+    // Guest
+    // --------------------------------------------------
+
+    role $guest {
+
+        allow {
+
+            view $home
+
+            view $categories
+
+            view $products
+
+            view $product
+
+            view $search
+
+            view $login
+
+            view $register
+
+        }
+
+    }
+
+    // --------------------------------------------------
+    // Customer
+    // --------------------------------------------------
+
+    role $customer {
+
+        inherits $guest
+
+        allow {
+
+            view $cart
+
+            view $checkout
+
+            view $orders
+
+            view $wishlist
+
+            view $account
+
+            view $settings
+
+            create $order
+
+            update $profile
+
+            update $cart
+
+            create $review
+
+            create $wishlist
+
+            remove $wishlist
+
+            checkout $order
+
+        }
+
+    }
+
+    // --------------------------------------------------
+    // Seller
+    // --------------------------------------------------
+
+    role $seller {
+
+        inherits $customer
+
+        allow {
+
+            view $seller
+
+            create $product
+
+            update $product
+
+            delete $product
+
+            view $inventory
+
+            update $inventory
+
+            view $customers
+
+            view $analytics
+
+            manage $orders
+
+            manage $store
+
+            withdraw $earnings
+
+        }
+
+    }
+
+    // --------------------------------------------------
+    // Administrator
+    // --------------------------------------------------
+
+    role $admin {
+
+        inherits $seller
+
+        allow {
+
+            manage $users
+
+            manage $roles
+
+            manage $permissions
+
+            manage $categories
+
+            manage $products
+
+            manage $orders
+
+            manage $payments
+
+            manage $reports
+
+            manage $reviews
+
+            manage $marketplace
+
+            manage $settings
+
+            manage $content
+
+        }
+
+    }
+
+    // --------------------------------------------------
+    // Super Administrator
+    // --------------------------------------------------
+
+    role $superAdmin {
+
+        inherits $admin
+
+        allow {
+
+            manage $system
+
+            manage $database
+
+            manage $plugins
+
+            manage $compiler
+
+            manage $backends
+
+            manage $deployments
+
+            manage $security
+
+            manage $logs
+
+            manage $backups
+
+        }
+
+    }
+
+}

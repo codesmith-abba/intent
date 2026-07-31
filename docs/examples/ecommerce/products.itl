@@ -1,9 +1,376 @@
-section $products {
+// ======================================================
+// SMarket
+// Products Page
+//
+// The Products page is where customers browse products
+// available across the marketplace.
+//
+// It provides powerful discovery tools including
+// search, filtering, sorting, recommendations,
+// and pagination.
+//
+// The goal is to help customers quickly find the
+// products they are looking for while making product
+// discovery enjoyable.
+//
+// ======================================================
+
+page $products {
+
+    // --------------------------------------------------
+    // Theme
+    // --------------------------------------------------
+
+    theme $light
+
+    // --------------------------------------------------
+    // Page Intent
+    // --------------------------------------------------
 
     intent $(
-        Display products in a responsive grid.
-        Prioritize featured and trending items.
-        Support filtering, searching, and sorting.
+
+        Design a premium marketplace product browsing experience.
+
+        Display products in a clean, responsive layout.
+
+        Make searching, filtering, sorting,
+        and comparing products effortless.
+
+        Prioritize product imagery while providing
+        enough information for confident purchasing decisions.
+
+        The experience should remain fast even when
+        displaying thousands of products.
+
     )
+
+    // --------------------------------------------------
+    // Global Navigation
+    // --------------------------------------------------
+
+    import $navigation
+
+    // --------------------------------------------------
+    // Hero
+    // --------------------------------------------------
+
+    hero $productsHero {
+
+        image $assets/products.jpg
+
+        headline $Discover Products You'll Love
+
+        subtitle $Browse thousands of products from trusted sellers across every category.
+
+        action $Start Shopping
+
+        intent $(
+
+            Welcome customers to the marketplace.
+
+            Reinforce that SMarket offers a wide
+            selection of products from verified sellers.
+
+            Encourage exploration while highlighting
+            trust and product variety.
+
+        )
+
+    }
+
+    // --------------------------------------------------
+    // Search & Filters
+    // --------------------------------------------------
+
+    section $searchFilters {
+
+        intent $(
+
+            Provide powerful product discovery tools.
+
+            Include:
+
+            Product Search
+
+            Category Filter
+
+            Brand Filter
+
+            Seller Filter
+
+            Price Range
+
+            Product Rating
+
+            Product Availability
+
+            Color
+
+            Size
+
+            Material
+
+            Delivery Location
+
+            Customers should be able to combine
+            multiple filters simultaneously.
+
+        )
+
+    }
+
+    // --------------------------------------------------
+    // Sort Products
+    // --------------------------------------------------
+
+    section $sorting {
+
+        intent $(
+
+            Allow customers to sort products by:
+
+            Relevance
+
+            Newest
+
+            Popularity
+
+            Best Rating
+
+            Price (Low to High)
+
+            Price (High to Low)
+
+            Best Selling
+
+            Recommended
+
+        )
+
+    }
+
+    // --------------------------------------------------
+    // Product Grid
+    // --------------------------------------------------
+
+    section $productGrid {
+
+        intent $(
+
+            Display products using responsive cards.
+
+            Every product card should include:
+
+            Product Image
+
+            Product Name
+
+            Price
+
+            Discount
+
+            Seller Name
+
+            Product Rating
+
+            Review Count
+
+            Availability
+
+            Customers should be able to:
+
+            View Product
+
+            Add to Cart
+
+            Add to Wishlist
+
+            Compare Product
+
+            Share Product
+
+        )
+
+    }
+
+    // --------------------------------------------------
+    // Featured Products
+    // --------------------------------------------------
+
+    section $featuredProducts {
+
+        intent $(
+
+            Highlight products selected by
+            marketplace administrators.
+
+            Featured products should receive
+            greater visual emphasis.
+
+        )
+
+    }
+
+    // --------------------------------------------------
+    // Recommended Products
+    // --------------------------------------------------
+
+    section $recommendedProducts {
+
+        intent $(
+
+            Recommend products based on:
+
+            Customer interests
+
+            Previous purchases
+
+            Recently viewed products
+
+            Similar customer behavior
+
+            Trending marketplace activity
+
+        )
+
+    }
+
+    // --------------------------------------------------
+    // Recently Viewed
+    // --------------------------------------------------
+
+    section $recentlyViewed {
+
+        intent $(
+
+            Allow customers to quickly revisit
+            products they recently explored.
+
+            Preserve browsing continuity.
+
+        )
+
+    }
+
+    // --------------------------------------------------
+    // Product Comparison
+    // --------------------------------------------------
+
+    section $comparison {
+
+        intent $(
+
+            Allow customers to compare
+            multiple products side by side.
+
+            Compare:
+
+            Price
+
+            Features
+
+            Ratings
+
+            Specifications
+
+            Seller
+
+            Delivery Options
+
+        )
+
+    }
+
+    // --------------------------------------------------
+    // Pagination
+    // --------------------------------------------------
+
+    section $pagination {
+
+        intent $(
+
+            Efficiently navigate large
+            product collections.
+
+            Support both traditional pagination
+            and infinite scrolling where appropriate.
+
+        )
+
+    }
+
+    // --------------------------------------------------
+    // Marketplace Statistics
+    // --------------------------------------------------
+
+    section $statistics {
+
+        intent $(
+
+            Display useful marketplace information.
+
+            Examples include:
+
+            Total Products
+
+            Active Sellers
+
+            Categories
+
+            Daily Purchases
+
+            Customer Satisfaction
+
+        )
+
+    }
+
+    // --------------------------------------------------
+    // Shopping Tips
+    // --------------------------------------------------
+
+    section $shoppingTips {
+
+        intent $(
+
+            Help customers make better
+            purchasing decisions.
+
+            Offer recommendations for:
+
+            Choosing quality products
+
+            Understanding ratings
+
+            Comparing products
+
+            Safe online shopping
+
+        )
+
+    }
+
+    // --------------------------------------------------
+    // Newsletter
+    // --------------------------------------------------
+
+    section $newsletter {
+
+        intent $(
+
+            Encourage customers to subscribe
+            for product updates,
+            exclusive promotions,
+            and new arrivals.
+
+        )
+
+    }
+
+    // --------------------------------------------------
+    // Footer
+    // --------------------------------------------------
+
+    import $footer
 
 }

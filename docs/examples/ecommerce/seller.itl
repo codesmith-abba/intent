@@ -1,9 +1,427 @@
+// ======================================================
+// SMarket
+// Seller Dashboard
+//
+// The Seller Dashboard is the central workspace for
+// marketplace sellers.
+//
+// It enables sellers to manage products, orders,
+// customers, inventory, earnings, and business
+// performance from a single location.
+//
+// ======================================================
+
 page $seller {
 
+    // --------------------------------------------------
+    // Theme
+    // --------------------------------------------------
+
+    theme $light
+
+    // --------------------------------------------------
+    // Page Intent
+    // --------------------------------------------------
+
     intent $(
-        Allow sellers to manage their storefront,
-        products, orders, analytics, and customers
-        from a unified dashboard.
+
+        Design a professional seller dashboard suitable
+        for both individual entrepreneurs and businesses.
+
+        Help sellers efficiently manage their storefront,
+        products, inventory, orders, customers,
+        and business performance.
+
+        Prioritize productivity while presenting
+        important business insights through
+        a clean and intuitive interface.
+
     )
+
+    // --------------------------------------------------
+    // Global Navigation
+    // --------------------------------------------------
+
+    import $navigation
+
+    // --------------------------------------------------
+    // Dashboard Overview
+    // --------------------------------------------------
+
+    hero $dashboard {
+
+        headline $Seller Dashboard
+
+        subtitle $Manage your store, products, customers, and business from one place.
+
+        action $Add New Product
+
+        intent $(
+
+            Welcome sellers back to their store.
+
+            Display an overview of business activity
+            together with shortcuts to the most
+            common seller tasks.
+
+        )
+
+    }
+
+    // --------------------------------------------------
+    // Business Overview
+    // --------------------------------------------------
+
+    section $overview {
+
+        intent $(
+
+            Present a summary of the seller's business.
+
+            Include:
+
+            Store Name
+
+            Verification Status
+
+            Store Rating
+
+            Active Products
+
+            Active Orders
+
+            Total Customers
+
+            Monthly Revenue
+
+            Wallet Balance
+
+        )
+
+    }
+
+    // --------------------------------------------------
+    // Sales Analytics
+    // --------------------------------------------------
+
+    section $analytics {
+
+        intent $(
+
+            Visualize business performance.
+
+            Include charts and summaries for:
+
+            Revenue
+
+            Orders
+
+            Product Views
+
+            Conversion Rate
+
+            Returning Customers
+
+            Best Selling Products
+
+            Daily
+
+            Weekly
+
+            Monthly
+
+            Yearly performance.
+
+        )
+
+    }
+
+    // --------------------------------------------------
+    // Product Management
+    // --------------------------------------------------
+
+    section $products {
+
+        intent $(
+
+            Allow sellers to manage
+            their product catalog.
+
+            Support:
+
+            Add Product
+
+            Edit Product
+
+            Delete Product
+
+            Duplicate Product
+
+            Archive Product
+
+            Update Pricing
+
+            Manage Inventory
+
+            Organize Products by Category
+
+        )
+
+    }
+
+    // --------------------------------------------------
+    // Inventory
+    // --------------------------------------------------
+
+    section $inventory {
+
+        intent $(
+
+            Help sellers monitor inventory.
+
+            Display:
+
+            Available Stock
+
+            Low Stock Alerts
+
+            Out of Stock Products
+
+            Incoming Inventory
+
+            Inventory History
+
+        )
+
+    }
+
+    // --------------------------------------------------
+    // Orders
+    // --------------------------------------------------
+
+    section $orders {
+
+        intent $(
+
+            Display incoming customer orders.
+
+            Include:
+
+            Pending Orders
+
+            Processing Orders
+
+            Ready for Shipment
+
+            Completed Orders
+
+            Cancelled Orders
+
+            Returned Orders
+
+            Allow sellers to manage
+            the order lifecycle.
+
+        )
+
+    }
+
+    // --------------------------------------------------
+    // Customer Management
+    // --------------------------------------------------
+
+    section $customers {
+
+        intent $(
+
+            Help sellers understand
+            and manage their customers.
+
+            Display:
+
+            Customer Profiles
+
+            Purchase History
+
+            Repeat Customers
+
+            Customer Reviews
+
+            Customer Messages
+
+        )
+
+    }
+
+    // --------------------------------------------------
+    // Earnings
+    // --------------------------------------------------
+
+    section $earnings {
+
+        intent $(
+
+            Display detailed earnings information.
+
+            Include:
+
+            Available Balance
+
+            Pending Payments
+
+            Withdrawable Balance
+
+            Transaction History
+
+            Withdraw Funds
+
+            Revenue Breakdown
+
+        )
+
+    }
+
+    // --------------------------------------------------
+    // Promotions
+    // --------------------------------------------------
+
+    section $promotions {
+
+        intent $(
+
+            Allow sellers to create
+            promotional campaigns.
+
+            Examples include:
+
+            Product Discounts
+
+            Flash Sales
+
+            Coupons
+
+            Featured Listings
+
+            Seasonal Campaigns
+
+        )
+
+    }
+
+    // --------------------------------------------------
+    // Reviews & Ratings
+    // --------------------------------------------------
+
+    section $reviews {
+
+        intent $(
+
+            Display customer feedback.
+
+            Include:
+
+            Product Ratings
+
+            Customer Reviews
+
+            Seller Rating
+
+            Customer Replies
+
+            Review Analytics
+
+        )
+
+    }
+
+    // --------------------------------------------------
+    // Store Settings
+    // --------------------------------------------------
+
+    section $storeSettings {
+
+        intent $(
+
+            Allow sellers to customize
+            their storefront.
+
+            Support:
+
+            Store Logo
+
+            Cover Image
+
+            Store Description
+
+            Contact Information
+
+            Business Hours
+
+            Delivery Options
+
+            Return Policy
+
+        )
+
+    }
+
+    // --------------------------------------------------
+    // Notifications
+    // --------------------------------------------------
+
+    section $notifications {
+
+        intent $(
+
+            Display important seller notifications.
+
+            Examples include:
+
+            New Orders
+
+            Customer Messages
+
+            Inventory Alerts
+
+            Payment Updates
+
+            Marketplace Announcements
+
+        )
+
+    }
+
+    // --------------------------------------------------
+    // Support Center
+    // --------------------------------------------------
+
+    section $support {
+
+        intent $(
+
+            Provide sellers with
+            access to marketplace support.
+
+            Include:
+
+            Seller Documentation
+
+            Help Center
+
+            Live Chat
+
+            Contact Support
+
+            Community Forum
+
+        )
+
+    }
+
+    // --------------------------------------------------
+    // Footer
+    // --------------------------------------------------
+
+    import $footer
 
 }

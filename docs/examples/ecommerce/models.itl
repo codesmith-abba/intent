@@ -1,0 +1,569 @@
+// ======================================================
+// SMarket
+// Database Models
+//
+// This file defines the application's business models.
+//
+// The compiler should use these definitions to generate:
+//
+// • Database Schema
+// • ORM Models
+// • API Serializers
+// • Validation
+// • Migrations
+// • Documentation
+//
+// ======================================================
+
+models {
+
+    intent $(
+
+        Define every business entity
+        used by the marketplace.
+
+        Models describe application data,
+        relationships,
+        constraints,
+        and validation rules.
+
+        They remain completely
+        backend independent.
+
+    )
+
+    // ==================================================
+    // User
+    // ==================================================
+
+    model $User {
+
+        field $id {
+
+            type $id
+
+            primary
+
+        }
+
+        field $name {
+
+            type $string
+
+            required
+
+            maxLength 100
+
+        }
+
+        field $username {
+
+            type $string
+
+            unique
+
+            required
+
+            maxLength 50
+
+        }
+
+        field $email {
+
+            type $email
+
+            unique
+
+            required
+
+        }
+
+        field $phone {
+
+            type $phone
+
+        }
+
+        field $password {
+
+            type $password
+
+            required
+
+        }
+
+        field $avatar {
+
+            type $image
+
+        }
+
+        field $role {
+
+            type $string
+
+            default $customer
+
+        }
+
+        field $verified {
+
+            type $boolean
+
+            default false
+
+        }
+
+        field $createdAt {
+
+            type $datetime
+
+        }
+
+    }
+
+    // ==================================================
+    // Seller
+    // ==================================================
+
+    model $Seller {
+
+        field $id {
+
+            type $id
+
+            primary
+
+        }
+
+        field $storeName {
+
+            type $string
+
+            required
+
+            maxLength 150
+
+        }
+
+        field $slug {
+
+            type $slug
+
+            unique
+
+        }
+
+        field $description {
+
+            type $text
+
+        }
+
+        field $logo {
+
+            type $image
+
+        }
+
+        field $banner {
+
+            type $image
+
+        }
+
+        field $rating {
+
+            type $decimal
+
+            default 0
+
+        }
+
+        belongsTo $User
+
+    }
+
+    // ==================================================
+    // Category
+    // ==================================================
+
+    model $Category {
+
+        field $id {
+
+            type $id
+
+            primary
+
+        }
+
+        field $name {
+
+            type $string
+
+            required
+
+        }
+
+        field $slug {
+
+            type $slug
+
+            unique
+
+        }
+
+        field $description {
+
+            type $text
+
+        }
+
+        field $image {
+
+            type $image
+
+        }
+
+    }
+
+    // ==================================================
+    // Product
+    // ==================================================
+
+    model $Product {
+
+        field $id {
+
+            type $id
+
+            primary
+
+        }
+
+        field $name {
+
+            type $string
+
+            required
+
+            maxLength 200
+
+        }
+
+        field $slug {
+
+            type $slug
+
+            unique
+
+        }
+
+        field $description {
+
+            type $text
+
+        }
+
+        field $price {
+
+            type $decimal
+
+            required
+
+            min 0
+
+        }
+
+        field $discount {
+
+            type $decimal
+
+            default 0
+
+        }
+
+        field $quantity {
+
+            type $integer
+
+            default 0
+
+        }
+
+        field $status {
+
+            type $string
+
+            default $draft
+
+        }
+
+        field $rating {
+
+            type $decimal
+
+            default 0
+
+        }
+
+        field $views {
+
+            type $integer
+
+            default 0
+
+        }
+
+        belongsTo $Seller
+
+        belongsTo $Category
+
+        hasMany $ProductImage
+
+        hasMany $Review
+
+    }
+
+    // ==================================================
+    // Product Image
+    // ==================================================
+
+    model $ProductImage {
+
+        field $id {
+
+            type $id
+
+            primary
+
+        }
+
+        field $image {
+
+            type $image
+
+            required
+
+        }
+
+        field $position {
+
+            type $integer
+
+            default 1
+
+        }
+
+        belongsTo $Product
+
+    }
+
+    // ==================================================
+    // Cart
+    // ==================================================
+
+    model $Cart {
+
+        field $id {
+
+            type $id
+
+            primary
+
+        }
+
+        belongsTo $User
+
+        hasMany $CartItem
+
+    }
+
+    // ==================================================
+    // Cart Item
+    // ==================================================
+
+    model $CartItem {
+
+        field $id {
+
+            type $id
+
+            primary
+
+        }
+
+        field $quantity {
+
+            type $integer
+
+            default 1
+
+            min 1
+
+        }
+
+        belongsTo $Cart
+
+        belongsTo $Product
+
+    }
+
+    // ==================================================
+    // Wishlist
+    // ==================================================
+
+    model $Wishlist {
+
+        field $id {
+
+            type $id
+
+            primary
+
+        }
+
+        belongsTo $User
+
+        hasMany $Product
+
+    }
+
+    // ==================================================
+    // Order
+    // ==================================================
+
+    model $Order {
+
+        field $id {
+
+            type $id
+
+            primary
+
+        }
+
+        field $orderNumber {
+
+            type $string
+
+            unique
+
+        }
+
+        field $status {
+
+            type $string
+
+            default $pending
+
+        }
+
+        field $subtotal {
+
+            type $decimal
+
+        }
+
+        field $shipping {
+
+            type $decimal
+
+        }
+
+        field $tax {
+
+            type $decimal
+
+        }
+
+        field $discount {
+
+            type $decimal
+
+        }
+
+        field $total {
+
+            type $decimal
+
+        }
+
+        belongsTo $User
+
+        hasMany $OrderItem
+
+    }
+
+    // ==================================================
+    // Order Item
+    // ==================================================
+
+    model $OrderItem {
+
+        field $id {
+
+            type $id
+
+            primary
+
+        }
+
+        field $quantity {
+
+            type $integer
+
+            default 1
+
+        }
+
+        field $price {
+
+            type $decimal
+
+        }
+
+        belongsTo $Order
+
+        belongsTo $Product
+
+    }
+
+    // ==================================================
+    // Review
+    // ==================================================
+
+    model $Review {
+
+        field $id {
+
+            type $id
+
+            primary
+
+        }
+
+        field $rating {
+
+            type $integer
+
+            min 1
+
+            max 5
+
+        }
+
+        field $comment {
+
+            type $text
+
+        }
+
+        belongsTo $User
+
+        belongsTo $Product
+
+    }
+
+}

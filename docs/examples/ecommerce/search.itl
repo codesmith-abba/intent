@@ -1,0 +1,378 @@
+// ======================================================
+// SMarket
+// Search Page
+//
+// The Search page helps customers quickly discover
+// products, sellers, and categories across the
+// marketplace.
+//
+// It should provide a fast, intelligent, and enjoyable
+// search experience with powerful filtering and
+// personalized recommendations.
+//
+// ======================================================
+
+page $search {
+
+    // --------------------------------------------------
+    // Theme
+    // --------------------------------------------------
+
+    theme $light
+
+    // --------------------------------------------------
+    // Page Intent
+    // --------------------------------------------------
+
+    intent $(
+
+        Design a fast, intelligent marketplace search experience.
+
+        Help customers find exactly what they are
+        looking for with as little effort as possible.
+
+        Search should feel instantaneous while supporting
+        advanced filtering, sorting, autocomplete,
+        and personalized recommendations.
+
+        The page should adapt gracefully to desktop,
+        tablet, and mobile devices.
+
+    )
+
+    // --------------------------------------------------
+    // Global Navigation
+    // --------------------------------------------------
+
+    import $navigation
+
+    // --------------------------------------------------
+    // Search Hero
+    // --------------------------------------------------
+
+    hero $searchHero {
+
+        headline $Find Exactly What You're Looking For
+
+        subtitle $Search thousands of products, brands, categories, and trusted sellers.
+
+        action $Start Searching
+
+        intent $(
+
+            Welcome users to the marketplace search.
+
+            Encourage them to search naturally.
+
+            The search experience should feel
+            intelligent, responsive,
+            and confidence inspiring.
+
+        )
+
+    }
+
+    // --------------------------------------------------
+    // Smart Search
+    // --------------------------------------------------
+
+    section $searchBar {
+
+        intent $(
+
+            Display a prominent search input.
+
+            Support searching by:
+
+            Product Name
+
+            Brand
+
+            Category
+
+            Seller
+
+            Fashion Style
+
+            Keywords
+
+            Product Description
+
+            Display intelligent autocomplete suggestions
+            while the customer types.
+
+            Highlight recent searches
+            and popular searches.
+
+        )
+
+    }
+
+    // --------------------------------------------------
+    // Search Filters
+    // --------------------------------------------------
+
+    section $filters {
+
+        intent $(
+
+            Allow customers to narrow
+            search results using filters.
+
+            Include:
+
+            Category
+
+            Brand
+
+            Seller
+
+            Price Range
+
+            Rating
+
+            Availability
+
+            Color
+
+            Size
+
+            Material
+
+            Discount
+
+            Delivery Location
+
+            Customers should be able to combine
+            multiple filters simultaneously.
+
+        )
+
+    }
+
+    // --------------------------------------------------
+    // Sorting
+    // --------------------------------------------------
+
+    section $sorting {
+
+        intent $(
+
+            Allow customers to sort search results.
+
+            Include:
+
+            Relevance
+
+            Newest
+
+            Best Selling
+
+            Highest Rated
+
+            Lowest Price
+
+            Highest Price
+
+            Most Popular
+
+            Recommended
+
+        )
+
+    }
+
+    // --------------------------------------------------
+    // Search Results
+    // --------------------------------------------------
+
+    section $results {
+
+        intent $(
+
+            Display matching marketplace products.
+
+            Every product card should include:
+
+            Product Image
+
+            Product Name
+
+            Price
+
+            Discount
+
+            Seller
+
+            Rating
+
+            Availability
+
+            Quick Actions:
+
+            View Product
+
+            Add to Cart
+
+            Add to Wishlist
+
+            Compare
+
+        )
+
+    }
+
+    // --------------------------------------------------
+    // Suggested Searches
+    // --------------------------------------------------
+
+    section $suggestions {
+
+        intent $(
+
+            Recommend useful search terms
+            related to the customer's query.
+
+            Suggestions should improve
+            search discoverability.
+
+        )
+
+    }
+
+    // --------------------------------------------------
+    // Related Categories
+    // --------------------------------------------------
+
+    section $relatedCategories {
+
+        intent $(
+
+            Recommend marketplace categories
+            related to the customer's search.
+
+            Encourage broader exploration
+            when appropriate.
+
+        )
+
+    }
+
+    // --------------------------------------------------
+    // Related Sellers
+    // --------------------------------------------------
+
+    section $relatedSellers {
+
+        intent $(
+
+            Recommend trusted sellers
+            relevant to the customer's search.
+
+            Display:
+
+            Store Logo
+
+            Store Name
+
+            Rating
+
+            Number of Products
+
+        )
+
+    }
+
+    // --------------------------------------------------
+    // Trending Searches
+    // --------------------------------------------------
+
+    section $trendingSearches {
+
+        intent $(
+
+            Display popular marketplace searches.
+
+            Update the list dynamically
+            based on marketplace activity.
+
+        )
+
+    }
+
+    // --------------------------------------------------
+    // Recently Viewed
+    // --------------------------------------------------
+
+    section $recentlyViewed {
+
+        intent $(
+
+            Display products recently viewed
+            by the customer.
+
+            Allow quick access back
+            to previously explored products.
+
+        )
+
+    }
+
+    // --------------------------------------------------
+    // Empty Search Results
+    // --------------------------------------------------
+
+    section $noResults {
+
+        intent $(
+
+            When no products are found,
+            provide a friendly experience.
+
+            Offer:
+
+            Search Suggestions
+
+            Related Categories
+
+            Popular Products
+
+            Trending Products
+
+            Encourage customers
+            to continue exploring.
+
+        )
+
+    }
+
+    // --------------------------------------------------
+    // Newsletter
+    // --------------------------------------------------
+
+    section $newsletter {
+
+        intent $(
+
+            Encourage customers to subscribe
+            for updates on:
+
+            New Products
+
+            Promotions
+
+            Trending Searches
+
+            Personalized Recommendations
+
+        )
+
+    }
+
+    // --------------------------------------------------
+    // Footer
+    // --------------------------------------------------
+
+    import $footer
+
+}
