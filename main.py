@@ -7,12 +7,10 @@ from itl.parser.parser import Parser
 
 from itl.analyzer.analyzer import Analyzer
 
-source = Path("examples/app.itl").read_text()
+source = Path("docs/examples/ecommerce/app.itl").read_text()
 
 tokens = Lexer(source).scan_tokens()
 
-ast = Parser(tokens).parse()
+parser = Parser(tokens)
 
-ir = IRBuilder().build(ast)
-
-print(ir)
+print(parser.parse())

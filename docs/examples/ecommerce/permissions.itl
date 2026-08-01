@@ -89,9 +89,9 @@ permissions {
 
             create $wishlist
 
-            remove $wishlist
+            delete $wishlist
 
-            checkout $order
+            create $order
 
         }
 

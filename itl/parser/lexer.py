@@ -13,9 +13,18 @@ KEYWORDS = {
     "target": TokenType.TARGET,
     "framework": TokenType.FRAMEWORK,
     "database": TokenType.DATABASE,
-
+    'system': TokenType.SYSTEM,
     "theme": TokenType.THEME,
     "intent": TokenType.INTENT,
+    "frontend": TokenType.FRONTEND,
+    "backend": TokenType.BACKEND,
+
+    # ==================================================
+    # Declarations
+    # ==================================================
+    "models": TokenType.MODELS,
+    "permissions": TokenType.PERMISSIONS,
+    "routes": TokenType.ROUTES,
 
     # ==================================================
     # UI
@@ -51,6 +60,7 @@ KEYWORDS = {
     # ==================================================
 
     "view": TokenType.VIEW,
+    "create": TokenType.CREATE,
     "get": TokenType.GET,
     "update": TokenType.UPDATE,
     "delete": TokenType.DELETE,
@@ -60,6 +70,7 @@ KEYWORDS = {
     # Models
     # ==================================================
 
+    "field": TokenType.FIELD,
     "model": TokenType.MODEL,
     "type": TokenType.TYPE,
 
@@ -87,8 +98,8 @@ KEYWORDS = {
 
     "min": TokenType.MIN,
     "max": TokenType.MAX,
-    "minLength": TokenType.MINLEN,
-    "maxLength": TokenType.MAXLEN,
+    "minLen": TokenType.MINLEN,
+    "maxLen": TokenType.MAXLEN,
 
     # ==================================================
     # Infrastructure
@@ -143,6 +154,7 @@ class Lexer:
                 self.add_token(TokenType.LEFT_PAREN)
             case ")":
                 self.add_token(TokenType.RIGHT_PAREN)
+                
             case " " | "\r" | "\t":
                 pass
 
@@ -152,17 +164,29 @@ class Lexer:
             case "$":
                 if self.peek() == "(":
                     self.advance()
-                    self.multiline_string()
+                    self.multiline_literal()
 
                 else:
                     self.literal()
-            case "#":
-                self.comment()
+            case "/":
+                if self.peek() == '/':
+                    self.advance()
+                    self.comment()
+
+                else:
+
+                    raise SyntaxError(
+                        f"Unexpected character '{c}' at line {self.line}"
+                    )
             case _:
 
                 if c.isalpha():
 
                     self.identifier()
+
+                elif c.isdigit():
+
+                    self.number()
 
                 else:
 
@@ -173,15 +197,26 @@ class Lexer:
     def identifier(self):
 
         while self.peek().isalnum() or self.peek() == "_":
-
             self.advance()
 
         text = self.source[self.start:self.current]
 
+        # Boolean literals
+        if text == "true" or text == "false":
+
+            self.tokens.append(
+                Token(
+                    TokenType.BOOLEAN,
+                    text,
+                    self.line,
+                    literal= text == 'true'
+                )
+            )
+            return
+
         token_type = KEYWORDS.get(text)
 
         if token_type is None:
-
             raise SyntaxError(
                 f"Unknown keyword '{text}' at line {self.line}"
             )
@@ -212,10 +247,69 @@ class Lexer:
 
     def multiline_literal(self):
 
-        raise NotImplementedError(
-            "Multiline literals are not implemented yet."
+        self.start = self.current
+
+        while not self.is_at_end():
+
+            if (
+                self.peek() == ")"
+            ):
+                break
+
+            if self.peek() == "\n":
+                self.line += 1
+
+            self.advance()
+
+        if self.is_at_end():
+
+            raise SyntaxError(
+                "Unterminated multiline literal."
+            )
+
+        value = self.source[self.start:self.current].strip()
+
+        self.advance()   # consume ')'
+
+        self.tokens.append(
+            Token(
+                TokenType.STRING,
+                value,
+                self.line,
+            )
         )
     
+    def number(self):
+
+        while self.peek().isdigit():
+
+            self.advance()
+
+        # Decimal numbers
+        if (
+            self.peek() == "."
+            and self.peek_next().isdigit()
+        ):
+
+            self.advance()
+
+            while self.peek().isdigit():
+
+                self.advance()
+
+        value = self.source[self.start:self.current]
+
+        literal = float(value) if "." in value else int(value)
+
+        self.tokens.append(
+            Token(
+                TokenType.NUMBER,
+                value,
+                self.line,
+                literal=literal
+            )
+        )
+
     def comment(self):
         while (
             not self.is_at_end()
@@ -241,6 +335,13 @@ class Lexer:
             return "\0"
 
         return self.source[self.current]
+    
+    def peek_next(self):
+
+        if self.current + 1 >= len(self.source):
+            return "\0"
+
+        return self.source[self.current + 1]
     
     def add_token(self, token_type):
 

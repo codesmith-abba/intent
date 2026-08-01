@@ -19,7 +19,6 @@ app $SMarket {
     system {
 
         frontend {
-
             framework $react
 
         }
@@ -45,7 +44,6 @@ app $SMarket {
         }
 
         storage {
-
             provider $local
 
         }

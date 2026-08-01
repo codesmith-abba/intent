@@ -13,6 +13,8 @@ class TokenType(Enum):
     TARGET = auto()
     FRAMEWORK = auto()
     DATABASE = auto()
+    FRONTEND = auto()
+    BACKEND = auto()
 
     THEME = auto()
     INTENT = auto()
@@ -63,6 +65,7 @@ class TokenType(Enum):
 
     VIEW = auto()
     GET = auto()
+    CREATE = auto()
     UPDATE = auto()
     DELETE = auto()
     MANAGE = auto()
@@ -70,7 +73,7 @@ class TokenType(Enum):
     # ==================================================
     # Data Models
     # ==================================================
-
+    FIELD = auto()
     MODEL = auto()
     TYPE = auto()
 
@@ -109,6 +112,7 @@ class TokenType(Enum):
 
     STRING = auto()
     NUMBER = auto()
+    BOOLEAN = auto()
 
     # ==================================================
     # Infrastructure

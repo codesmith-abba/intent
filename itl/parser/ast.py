@@ -1,35 +1,108 @@
 from dataclasses import dataclass, field
-from typing import Optional
+from typing import Optional, Literal, List
 
-
+# Base Node class
 @dataclass(slots=True)
 class Node:
     pass
-    # intent: str | None = None
 
-
+# Base Intent node
 @dataclass(slots=True)
-class App(Node):
+class IntentNode(Node):
+
+    intent: Optional[str]
+
+# Base Import node
+@dataclass(slots=True)
+class ImportNode(IntentNode):
+
+    imports: Optional[list[str]]
+
+# Framework node
+@dataclass(slots=True)
+class Framework(Node):
+    value: Literal["react", "vue", "angular", "svelte", 'django'] | str = "react"
+
+# Engine node
+@dataclass(slots=True)
+class Engine(Node):
+    value: str
+
+# Provider node
+@dataclass(slots=True)
+class Provider(Node):
+    value: str
+
+# API node
+@dataclass(slots=True)
+class API(Node):
+    value: str
+
+# Block nodes
+@dataclass(slots=True)
+class Frontend(IntentNode):
+    framework: Framework | None = None
+
+# Backend
+@dataclass(slots=True)
+class Backend(IntentNode):
+    framework: Framework | None = None
+    api: API | None = None
+
+# Database
+@dataclass(slots=True)
+class Database(IntentNode):
+    engine: Engine | None = None
+
+# Cache
+@dataclass(slots=True)
+class Cache(IntentNode):
+    engine: Engine | None = None
+
+# Storage
+@dataclass(slots=True)
+class Storage(IntentNode):
+    provider: Provider | None = None
+
+# System node
+@dataclass(slots=True)
+class System(IntentNode):
+
+    frontend: Frontend | None = None
+
+    backend: Backend | None = None
+
+    database: Database | None = None
+
+    cache: Cache | None = None
+
+    storage: Storage | None = None
+
+# App node
+@dataclass(slots=True)
+class App(ImportNode):
     name: str
-    pages: list["Page"] = field(default_factory=list)
 
-    target: Optional[str] = None
-    framework: Optional[str] = None
+    pages: List["Page"] | None = field(default_factory=list)
 
+    system: System | None = None
 
+    target: Literal['web', 'mobile'] | str = "web"
+
+# Page node
 @dataclass(slots=True)
-class Page(Node):
+class Page(ImportNode):
     name: str
 
     theme: Optional[str] = None
 
     hero: Optional["Hero"] = None
 
-    sections: list["Section"] = field(default_factory=list)
+    sections: List["Section"] = field(default_factory=list)
 
-
+# Hero node
 @dataclass(slots=True)
-class Hero(Node):
+class Hero(IntentNode):
     name: str
 
     image: Optional[str] = None
@@ -37,7 +110,12 @@ class Hero(Node):
     subtitle: Optional[str] = None
     action: Optional[str] = None
 
-
+# Section node
 @dataclass(slots=True)
-class Section(Node):
+class Section(ImportNode):
     name: str
+
+# Model node
+@dataclass(slots=True)
+class Model(ImportNode):
+    pass
