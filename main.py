@@ -1,16 +1,13 @@
-from pathlib import Path
+from itl.compiler.printer import ASTPrinter
 
-from itl.explain.explain import Explainer
-from itl.ir.builder import IRBuilder
-from itl.parser.lexer import Lexer
-from itl.parser.parser import Parser
+from itl.compiler.compiler import Compiler
 
-from itl.analyzer.analyzer import Analyzer
+compiler = Compiler(
+    "docs/examples/ecommerce"
+)
 
-source = Path("docs/examples/ecommerce/app.itl").read_text()
+app = compiler.compile()
 
-tokens = Lexer(source).scan_tokens()
+printer = ASTPrinter()
 
-parser = Parser(tokens)
-
-print(parser.parse())
+printer.print(app)

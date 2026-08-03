@@ -26,6 +26,7 @@ class Parser:
         }
 
         self.PAGE_MEMBERS = {
+            TokenType.IMPORT: self.parse_import,
 
             TokenType.THEME:
                 lambda page: setattr(
@@ -77,6 +78,13 @@ class Parser:
                     "subtitle",
                     self.subtitle(),
                 ),
+            
+            TokenType.INTENT:
+                lambda hero: setattr(
+                    hero,
+                    "intent",
+                    self.intent(),
+                ),
 
             TokenType.ACTION:
                 lambda hero: setattr(
@@ -85,6 +93,43 @@ class Parser:
                     self.action(),
                 ),
 
+        }
+
+        self.SECTION_MEMBERS = {
+            TokenType.SECTION:
+                lambda section: section.sections.append(
+                    self.section()
+                ),
+            TokenType.IMAGE:
+                lambda section: setattr(
+                    section,
+                    "image",
+                    self.image(),
+                ),
+            TokenType.HEADLINE:
+                lambda section: setattr(
+                    section,
+                    "headline",
+                    self.headline(),
+                ),
+            TokenType.SUBTITLE:
+                lambda section: setattr(
+                    section,
+                    "subtitle",
+                    self.subtitle(),
+                ),
+            TokenType.INTENT:
+                lambda section: setattr(
+                    section,
+                    "intent",
+                    self.intent(),
+                ),
+            TokenType.ACTION:
+                lambda section: setattr(
+                    section,
+                    "action",
+                    self.action(),
+                ),
         }
 
         self.FRONTEND_MEMBERS = {
@@ -160,8 +205,33 @@ class Parser:
             ),
         }
 
+        # Module Declarations
+        self.MODULE_DECLARATIONS = {
+            TokenType.PAGE: self.page,
+            TokenType.SECTION: self.section,
+            # TokenType.MODELS: self.models,
+            # TokenType.ROUTES: self.routes,
+            # TokenType.PERMISSIONS: self.permissions,
+        }
+
     def parse(self):
         return self.app()
+    
+    def parse_module(self):
+
+        handler = self.MODULE_DECLARATIONS.get(
+            self.peek().type
+        )
+
+        if handler is None:
+
+            raise ParseError(
+                "Expected a module declaration."
+            )
+
+        self.advance()
+
+        return handler()
     
     def dispatch(
         self,
@@ -232,7 +302,7 @@ class Parser:
         )
 
         app = App(
-            intent=self.intent(),
+            intent=self.optional_intent(),
             name=name,
             imports=[],
         )
@@ -254,7 +324,7 @@ class Parser:
         ).lexeme
 
         return self.parse_block(
-            Page(intent=self.intent(), name=name, imports=[]),
+            Page(intent=self.optional_intent(), name=name, imports=[]),
             self.PAGE_MEMBERS,
             "Expected '{' after page name.",
         )
@@ -267,7 +337,7 @@ class Parser:
         ).lexeme
 
         return self.parse_block(
-            Hero(intent=self.intent(), name=name),
+            Hero(intent=self.optional_intent(), name=name),
             self.HERO_MEMBERS,
             "Expected '{' after hero name.",
         )
@@ -280,17 +350,12 @@ class Parser:
             "Expected section name."
         ).lexeme
 
-        self.consume(
-            TokenType.LEFT_BRACE,
-            "Expected '{' after section name."
+        return self.parse_block(
+            Section(intent=self.optional_intent(), name=name, imports=[]),
+            self.SECTION_MEMBERS,
+            "Expected '{' after section name.",
         )
 
-        self.consume(
-            TokenType.RIGHT_BRACE,
-            "Expected '}' after section."
-        )
-
-        return Section(intent=self.intent(), name=name, imports=[])
 
     def image(self) -> str:
 
@@ -312,16 +377,11 @@ class Parser:
     
     def intent(self) -> str:
 
-        self.consume(
-            TokenType.INTENT,
-            "Expected 'intent'."
-        )
-
         return self.literal_value("Expected intent value.")
     
     def optional_intent(self):
 
-        if self.check(TokenType.INTENT):
+        if self.match(TokenType.INTENT):
             return self.intent()
 
         return None

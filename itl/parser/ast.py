@@ -115,6 +115,8 @@ class Hero(IntentNode):
 class Section(ImportNode):
     name: str
 
+    sections: List["Section"] = field(default_factory=list)
+
 # Model node
 @dataclass(slots=True)
 class Model(ImportNode):
