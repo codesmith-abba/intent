@@ -1,4 +1,5 @@
 from dataclasses import fields, is_dataclass
+from itl.analyzer.analyzer import Analyzer
 
 
 class ASTPrinter:
@@ -6,6 +7,10 @@ class ASTPrinter:
     INDENT = "    "
 
     def print(self, node):
+
+        self.analyzer = Analyzer()
+
+        self.analyzer.analyze(node)
 
         self.visit(node)
 

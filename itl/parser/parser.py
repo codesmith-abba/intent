@@ -1,5 +1,4 @@
-from platform import system
-
+from .token import Token
 from .token_type import TokenType
 from .ast import *
 
@@ -22,6 +21,13 @@ class Parser:
             TokenType.SYSTEM: self.parse_system,
 
             TokenType.TARGET: self.parse_target,
+
+            TokenType.INTENT:
+                lambda app: setattr(
+                    app,
+                    "intent",
+                    self.intent(),
+                ),
 
         }
 
@@ -215,7 +221,16 @@ class Parser:
         }
 
     def parse(self):
-        return self.app()
+        app = self.app()
+
+        token: Token = self.peek()
+
+        self.consume(
+            TokenType.EOF,
+            "Unexpected declaration after application block."
+        )
+
+        return app
     
     def parse_module(self):
 
@@ -224,14 +239,20 @@ class Parser:
         )
 
         if handler is None:
-
             raise ParseError(
                 "Expected a module declaration."
             )
 
         self.advance()
 
-        return handler()
+        node = handler()
+
+        self.consume(
+            TokenType.EOF,
+            f"Unexpected declaration after '{self.peek().lexeme}' block."
+        )
+
+        return node
     
     def dispatch(
         self,
@@ -244,10 +265,10 @@ class Parser:
 
         if handler is None:
 
-            token = self.peek()
+            token: Token = self.peek()
 
             raise ParseError(
-                f"[Line {token.line}] "
+                f"'{token.file}', {token.line}"
                 f"Unexpected token '{token.lexeme}'."
             )
 
@@ -296,10 +317,6 @@ class Parser:
             "Expected application name."
         ).lexeme
 
-        self.consume(
-            TokenType.LEFT_BRACE,
-            "Expected '{' after application name."
-        )
 
         app = App(
             intent=self.optional_intent(),
@@ -307,14 +324,11 @@ class Parser:
             imports=[],
         )
 
-        while (
-            not self.check(TokenType.RIGHT_BRACE)
-            and not self.is_at_end()
-        ):
-
-            self.declaration(app)
-        
-        return app
+        return self.parse_block(
+            app,
+            self.APP_DECLARATIONS,
+            "Expected '{' after application name.",
+        )
     
     def page(self) -> Page:
 
@@ -497,9 +511,6 @@ class Parser:
     
     def check(self, token_type):
 
-        if self.is_at_end():
-            return False
-
         return self.peek().type == token_type
         
     def match(self, *types):
@@ -519,8 +530,12 @@ class Parser:
         if self.check(token_type):
 
             return self.advance()
+        
+        token: Token = self.peek()
 
-        raise ParseError(message)
+        raise ParseError(
+            f"'{token.file}', line {token.line} {message}"
+        )
     
     def literal_value(self, message: str) -> str:
 
@@ -556,7 +571,6 @@ class Parser:
         handlers,
         message: str,
     ):
-
         self.consume(
             TokenType.LEFT_BRACE,
             message,
@@ -571,7 +585,6 @@ class Parser:
                 handlers,
                 node,
             )
-
         self.consume(
             TokenType.RIGHT_BRACE,
             "Expected '}'."

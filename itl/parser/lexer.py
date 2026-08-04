@@ -1,6 +1,8 @@
 from .token import Token
 from .token_type import TokenType
 
+from itl.parser.source import SourceFile
+
 KEYWORDS = {
 
     # ==================================================
@@ -115,9 +117,11 @@ KEYWORDS = {
 
 class Lexer:
 
-    def __init__(self, source: str):
+    def __init__(self, source: SourceFile):
 
         self.source = source
+
+        self.text = source.text
 
         self.tokens = []
 
@@ -199,7 +203,7 @@ class Lexer:
         while self.peek().isalnum() or self.peek() == "_":
             self.advance()
 
-        text = self.source[self.start:self.current]
+        text = self.text[self.start:self.current]
 
         # Boolean literals
         if text == "true" or text == "false":
@@ -235,7 +239,7 @@ class Lexer:
         ):
             self.advance()
 
-        value = self.source[self.start:self.current].rstrip()
+        value = self.text[self.start:self.current].rstrip()
 
         self.tokens.append(
             Token(
@@ -267,7 +271,7 @@ class Lexer:
                 "Unterminated multiline literal."
             )
 
-        value = self.source[self.start:self.current].strip()
+        value = self.text[self.start:self.current].strip()
 
         self.advance()   # consume ')'
 
@@ -297,7 +301,7 @@ class Lexer:
 
                 self.advance()
 
-        value = self.source[self.start:self.current]
+        value = self.text[self.start:self.current]
 
         literal = float(value) if "." in value else int(value)
 
@@ -319,11 +323,11 @@ class Lexer:
 
     def is_at_end(self):
 
-        return self.current >= len(self.source)
+        return self.current >= len(self.text)
     
     def advance(self):
 
-        c = self.source[self.current]
+        c = self.text[self.current]
 
         self.current += 1
 
@@ -334,19 +338,24 @@ class Lexer:
         if self.is_at_end():
             return "\0"
 
-        return self.source[self.current]
+        return self.text[self.current]
     
     def peek_next(self):
 
-        if self.current + 1 >= len(self.source):
+        if self.current + 1 >= len(self.text):
             return "\0"
 
-        return self.source[self.current + 1]
+        return self.text[self.current + 1]
     
     def add_token(self, token_type):
 
-        text = self.source[self.start:self.current]
+        text = self.text[self.start:self.current]
 
         self.tokens.append(
-            Token(token_type, text, self.line)
+            Token(
+                token_type, 
+                text, 
+                self.line,
+                column=self.start + 1,
+                file=self.source.path)
         )

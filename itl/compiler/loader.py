@@ -2,6 +2,7 @@ from pathlib import Path
 
 from itl.parser.lexer import Lexer
 from itl.parser.parser import Parser
+from itl.parser.source import SourceFile
 
 
 class ProjectLoader:
@@ -20,7 +21,9 @@ class ProjectLoader:
         filename: str,
         module: bool = False,
     ):
-        tokens = self.load_file(filename)
+        source = self.load_file(filename)
+
+        tokens = Lexer(source).scan_tokens()
 
         parser = Parser(tokens)
 
@@ -34,4 +37,4 @@ class ProjectLoader:
 
         source = path.read_text(encoding="utf-8")
 
-        return Lexer(source).scan_tokens()
+        return SourceFile(path=path, text=source)

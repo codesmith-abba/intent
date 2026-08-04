@@ -3,6 +3,8 @@
 // Example: E-Commerce Application
 // ======================================================
 
+//app $SMarket {}
+
 app $SMarket {
 
     intent $(
