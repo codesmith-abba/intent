@@ -1,7 +1,7 @@
 import argparse
 from pathlib import Path
 
-from itl.ir.writer import IRWriter
+from itl.gir.writer import IRWriter
 from itl.explain.explain import Explainer
 from itl.backend.react import ReactBackend
 

@@ -3,7 +3,7 @@ from pathlib import Path
 from itl.parser.lexer import Lexer
 from itl.parser.parser import Parser
 from itl.analyzer.analyzer import Analyzer
-from itl.ir.builder import IRBuilder
+from itl.gir.builder import IRBuilder
 
 
 class Pipeline:

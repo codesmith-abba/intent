@@ -1,4 +1,4 @@
-from itl.compiler.printer import ASTPrinter
+from itl.compiler.printer import ASTPrinter, GIRPrinter
 
 from itl.compiler.compiler import Compiler
 
@@ -8,6 +8,6 @@ compiler = Compiler(
 
 app = compiler.compile()
 
-printer = ASTPrinter()
+printer = GIRPrinter()
 
 printer.print(app)

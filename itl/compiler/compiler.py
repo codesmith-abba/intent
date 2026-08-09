@@ -1,6 +1,7 @@
 from .loader import ProjectLoader
 from .resolver import ImportResolver
 from itl.analyzer.analyzer import Analyzer
+from itl.gir.builder import GIRBuilder
 
 
 class Compiler:
@@ -13,12 +14,16 @@ class Compiler:
 
         self.analyzer = Analyzer()
 
+        self.builder = GIRBuilder()
+
     def compile(self):
 
         app = self.loader.load_app("app.itl")
 
         app = self.resolver.resolve(app)
 
-        app = self.analyzer.analyze(app)
+        self.analyzer.analyze(app)
 
-        return app
+        gir = self.builder.build(app)
+
+        return gir
