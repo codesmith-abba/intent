@@ -1,0 +1,378 @@
+// ======================================================
+// SMarket
+// Orders Page
+//
+// The Orders page allows customers to monitor and
+// manage every order placed on the marketplace.
+//
+// Customers should be able to quickly understand the
+// status of each order, track deliveries, review
+// purchases, and request assistance when necessary.
+//
+// ======================================================
+
+page $orders {
+
+    // --------------------------------------------------
+    // Theme
+    // --------------------------------------------------
+
+    theme $light
+
+    // --------------------------------------------------
+    // Page Intent
+    // --------------------------------------------------
+
+    intent $(
+
+        Design a modern and organized order management page.
+
+        Help customers easily monitor every purchase
+        they have made on the marketplace.
+
+        Make important order information immediately
+        visible while keeping detailed information
+        only one interaction away.
+
+        The page should build confidence by making
+        every stage of the order lifecycle transparent.
+
+    )
+
+    // --------------------------------------------------
+    // Global Navigation
+    // --------------------------------------------------
+
+    import $navigation
+
+    // --------------------------------------------------
+    // Orders Overview
+    // --------------------------------------------------
+
+    hero $overview {
+
+        headline $My Orders
+
+        subtitle $Track, manage, and review every order you've placed on SMarket.
+
+        action $Continue Shopping
+
+        intent $(
+
+            Welcome customers to their order history.
+
+            Provide a concise overview of
+            recent purchasing activity.
+
+            Encourage customers to continue
+            discovering products.
+
+        )
+
+    }
+
+    // --------------------------------------------------
+    // Order Statistics
+    // --------------------------------------------------
+
+    section $statistics {
+
+        intent $(
+
+            Display useful order statistics.
+
+            Include:
+
+            Total Orders
+
+            Active Orders
+
+            Delivered Orders
+
+            Cancelled Orders
+
+            Returned Orders
+
+            Total Spending
+
+        )
+
+    }
+
+    // --------------------------------------------------
+    // Order Filters
+    // --------------------------------------------------
+
+    section $filters {
+
+        intent $(
+
+            Help customers quickly locate
+            specific orders.
+
+            Support filtering by:
+
+            Order Status
+
+            Date Range
+
+            Seller
+
+            Payment Status
+
+            Delivery Status
+
+            Product Category
+
+            Order Number
+
+        )
+
+    }
+
+    // --------------------------------------------------
+    // Orders List
+    // --------------------------------------------------
+
+    section $orderList {
+
+        intent $(
+
+            Display customer orders
+            in chronological order.
+
+            Every order should display:
+
+            Order Number
+
+            Purchase Date
+
+            Seller
+
+            Number of Products
+
+            Total Amount
+
+            Payment Status
+
+            Delivery Status
+
+            Estimated Delivery Date
+
+            Customers should be able to
+            expand an order to view
+            complete details.
+
+        )
+
+    }
+
+    // --------------------------------------------------
+    // Order Tracking
+    // --------------------------------------------------
+
+    section $tracking {
+
+        intent $(
+
+            Provide real-time tracking
+            for active deliveries.
+
+            Display milestones such as:
+
+            Order Confirmed
+
+            Preparing Order
+
+            Shipped
+
+            Out for Delivery
+
+            Delivered
+
+            Present progress using
+            an intuitive timeline.
+
+        )
+
+    }
+
+    // --------------------------------------------------
+    // Order Details
+    // --------------------------------------------------
+
+    section $details {
+
+        intent $(
+
+            Display comprehensive
+            order information.
+
+            Include:
+
+            Purchased Products
+
+            Product Variations
+
+            Seller Information
+
+            Shipping Address
+
+            Payment Method
+
+            Applied Discounts
+
+            Delivery Method
+
+            Taxes
+
+            Final Total
+
+        )
+
+    }
+
+    // --------------------------------------------------
+    // Order Actions
+    // --------------------------------------------------
+
+    section $actions {
+
+        intent $(
+
+            Allow customers to perform
+            appropriate actions.
+
+            Examples include:
+
+            View Invoice
+
+            Download Receipt
+
+            Track Package
+
+            Contact Seller
+
+            Contact Support
+
+            Reorder Products
+
+            Cancel Order
+
+            Request Return
+
+            Request Refund
+
+        )
+
+    }
+
+    // --------------------------------------------------
+    // Purchase History
+    // --------------------------------------------------
+
+    section $history {
+
+        intent $(
+
+            Display previous purchases.
+
+            Allow customers to:
+
+            Search purchase history
+
+            Filter completed orders
+
+            Quickly reorder
+            previously purchased items.
+
+        )
+
+    }
+
+    // --------------------------------------------------
+    // Recommendations
+    // --------------------------------------------------
+
+    section $recommendations {
+
+        intent $(
+
+            Recommend products related
+            to previous purchases.
+
+            Base recommendations on:
+
+            Purchase History
+
+            Similar Customers
+
+            Frequently Bought Together
+
+            Trending Products
+
+        )
+
+    }
+
+    // --------------------------------------------------
+    // Customer Support
+    // --------------------------------------------------
+
+    section $support {
+
+        intent $(
+
+            Provide quick access
+            to order-related support.
+
+            Include:
+
+            Live Chat
+
+            Help Center
+
+            Frequently Asked Questions
+
+            Report an Issue
+
+            Contact Support
+
+        )
+
+    }
+
+    // --------------------------------------------------
+    // Empty Orders
+    // --------------------------------------------------
+
+    section $emptyOrders {
+
+        intent $(
+
+            If the customer has not yet
+            placed any orders,
+            provide a welcoming experience.
+
+            Encourage product discovery
+            by recommending:
+
+            Featured Products
+
+            Trending Categories
+
+            Best Sellers
+
+            Seasonal Collections
+
+        )
+
+    }
+
+    // --------------------------------------------------
+    // Footer
+    // --------------------------------------------------
+
+    import $footer
+
+}

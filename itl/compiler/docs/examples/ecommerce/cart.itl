@@ -1,0 +1,321 @@
+// ======================================================
+// SMarket
+// Shopping Cart
+//
+// The Cart page allows customers to review the products
+// they intend to purchase before proceeding to checkout.
+//
+// It should make it easy to modify quantities, remove
+// products, apply discounts, and clearly understand the
+// order summary.
+//
+// ======================================================
+
+page $cart {
+
+    // --------------------------------------------------
+    // Theme
+    // --------------------------------------------------
+
+    theme $light
+
+    // --------------------------------------------------
+    // Page Intent
+    // --------------------------------------------------
+
+    intent $(
+
+        Design a clean and trustworthy shopping cart.
+
+        Help customers confidently review
+        their selected products before checkout.
+
+        Make updating the cart effortless.
+
+        Clearly communicate pricing,
+        savings,
+        delivery costs,
+        taxes,
+        and the final amount payable.
+
+        Reduce friction and encourage customers
+        to complete their purchase.
+
+    )
+
+    // --------------------------------------------------
+    // Global Navigation
+    // --------------------------------------------------
+
+    import $navigation
+
+    // --------------------------------------------------
+    // Cart Hero
+    // --------------------------------------------------
+
+    hero $cartHero {
+
+        headline $Your Shopping Cart
+
+        subtitle $Review your selected items before completing your purchase.
+
+        action $Proceed to Checkout
+
+        intent $(
+
+            Welcome customers to their shopping cart.
+
+            Reinforce that they are only a few
+            steps away from completing their purchase.
+
+        )
+
+    }
+
+    // --------------------------------------------------
+    // Cart Items
+    // --------------------------------------------------
+
+    section $cartItems {
+
+        intent $(
+
+            Display every product currently
+            added to the customer's cart.
+
+            Each item should display:
+
+            Product Image
+
+            Product Name
+
+            Selected Variations
+
+            Seller
+
+            Unit Price
+
+            Quantity
+
+            Stock Availability
+
+            Subtotal
+
+            Allow customers to:
+
+            Increase Quantity
+
+            Decrease Quantity
+
+            Remove Product
+
+            Save for Later
+
+            Move to Wishlist
+
+        )
+
+    }
+
+    // --------------------------------------------------
+    // Cart Summary
+    // --------------------------------------------------
+
+    section $summary {
+
+        intent $(
+
+            Display a clear summary
+            of the customer's order.
+
+            Include:
+
+            Number of Items
+
+            Subtotal
+
+            Discount
+
+            Shipping Fee
+
+            Estimated Tax
+
+            Total Savings
+
+            Grand Total
+
+            Update totals immediately
+            whenever the cart changes.
+
+        )
+
+    }
+
+    // --------------------------------------------------
+    // Discount & Coupons
+    // --------------------------------------------------
+
+    section $coupons {
+
+        intent $(
+
+            Allow customers to apply:
+
+            Coupon Codes
+
+            Promotional Discounts
+
+            Gift Cards
+
+            Reward Points
+
+            Clearly explain whether
+            a discount was successfully applied.
+
+        )
+
+    }
+
+    // --------------------------------------------------
+    // Delivery Estimate
+    // --------------------------------------------------
+
+    section $delivery {
+
+        intent $(
+
+            Display estimated delivery information.
+
+            Include:
+
+            Delivery Method
+
+            Estimated Arrival Date
+
+            Shipping Cost
+
+            Pickup Availability
+
+            Delivery Region
+
+        )
+
+    }
+
+    // --------------------------------------------------
+    // Payment Preview
+    // --------------------------------------------------
+
+    section $payment {
+
+        intent $(
+
+            Display the supported payment methods
+            available during checkout.
+
+            Help customers understand
+            how payment will be completed.
+
+        )
+
+    }
+
+    // --------------------------------------------------
+    // Recommended Products
+    // --------------------------------------------------
+
+    section $recommendations {
+
+        intent $(
+
+            Recommend additional products
+            related to the customer's cart.
+
+            Suggestions should complement
+            existing cart items and encourage
+            larger purchases.
+
+        )
+
+    }
+
+    // --------------------------------------------------
+    // Recently Viewed
+    // --------------------------------------------------
+
+    section $recentlyViewed {
+
+        intent $(
+
+            Display products the customer
+            recently explored.
+
+            Make it easy to return
+            to previous discoveries.
+
+        )
+
+    }
+
+    // --------------------------------------------------
+    // Shopping Benefits
+    // --------------------------------------------------
+
+    section $benefits {
+
+        intent $(
+
+            Reinforce customer confidence.
+
+            Highlight marketplace benefits such as:
+
+            Secure Payments
+
+            Buyer Protection
+
+            Easy Returns
+
+            Verified Sellers
+
+            Fast Delivery
+
+            Customer Support
+
+        )
+
+    }
+
+    // --------------------------------------------------
+    // Empty Cart
+    // --------------------------------------------------
+
+    section $emptyCart {
+
+        intent $(
+
+            When the cart is empty,
+            display a friendly experience.
+
+            Encourage customers to continue shopping.
+
+            Recommend:
+
+            Featured Products
+
+            Trending Products
+
+            Popular Categories
+
+            Best Sellers
+
+        )
+
+    }
+
+    // --------------------------------------------------
+    // Footer
+    // --------------------------------------------------
+
+    import $footer
+
+}

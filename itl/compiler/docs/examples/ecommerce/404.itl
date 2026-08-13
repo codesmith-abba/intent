@@ -1,0 +1,222 @@
+// ======================================================
+// SMarket
+// 404 Not Found
+//
+// This page is displayed whenever a user attempts
+// to access a route that does not exist.
+//
+// Rather than presenting a dead end, the page should
+// help users recover by directing them back into
+// the marketplace.
+//
+// ======================================================
+
+page $404 {
+
+    // --------------------------------------------------
+    // Theme
+    // --------------------------------------------------
+
+    theme $light
+
+    // --------------------------------------------------
+    // Page Intent
+    // --------------------------------------------------
+
+    intent $(
+
+        Design a beautiful and friendly
+        error experience.
+
+        Inform users that the requested page
+        could not be found without making
+        them feel lost.
+
+        Encourage users to continue exploring
+        the marketplace through helpful
+        navigation and product recommendations.
+
+        The page should feel like a normal part
+        of the application rather than
+        an unexpected failure.
+
+    )
+
+    // --------------------------------------------------
+    // Global Navigation
+    // --------------------------------------------------
+
+    import $navigation
+
+    // --------------------------------------------------
+    // Error Hero
+    // --------------------------------------------------
+
+    hero $notFound {
+
+        headline $404 — Page Not Found
+
+        subtitle $The page you're looking for doesn't exist, may have been moved, or is no longer available.
+
+        action $Return Home
+
+        intent $(
+
+            Clearly communicate that
+            the requested page
+            could not be found.
+
+            Reassure the user that
+            the application is working normally.
+
+            Provide an obvious path
+            back to the marketplace.
+
+        )
+
+    }
+
+    // --------------------------------------------------
+    // Helpful Actions
+    // --------------------------------------------------
+
+    section $actions {
+
+        intent $(
+
+            Provide quick recovery options.
+
+            Examples include:
+
+            Return Home
+
+            Browse Categories
+
+            View Products
+
+            Search Marketplace
+
+            Contact Support
+
+        )
+
+    }
+
+    // --------------------------------------------------
+    // Search
+    // --------------------------------------------------
+
+    section $search {
+
+        intent $(
+
+            Allow users to search
+            for products,
+            sellers,
+            or categories directly
+            from the error page.
+
+            Help users quickly find
+            what they originally intended
+            to access.
+
+        )
+
+    }
+
+    // --------------------------------------------------
+    // Popular Categories
+    // --------------------------------------------------
+
+    section $categories {
+
+        intent $(
+
+            Display popular marketplace
+            categories.
+
+            Encourage users to continue
+            browsing instead of leaving
+            the application.
+
+        )
+
+    }
+
+    // --------------------------------------------------
+    // Featured Products
+    // --------------------------------------------------
+
+    section $featuredProducts {
+
+        intent $(
+
+            Showcase selected products
+            from the marketplace.
+
+            Examples include:
+
+            Best Sellers
+
+            Trending Products
+
+            New Arrivals
+
+            Editor's Picks
+
+        )
+
+    }
+
+    // --------------------------------------------------
+    // Recently Viewed
+    // --------------------------------------------------
+
+    section $recentlyViewed {
+
+        intent $(
+
+            If available,
+            display products recently
+            viewed by the customer.
+
+            Help them quickly resume
+            their shopping journey.
+
+        )
+
+    }
+
+    // --------------------------------------------------
+    // Customer Support
+    // --------------------------------------------------
+
+    section $support {
+
+        intent $(
+
+            Provide assistance
+            if the user believes
+            the missing page is an error.
+
+            Include:
+
+            Help Center
+
+            Frequently Asked Questions
+
+            Live Chat
+
+            Contact Support
+
+        )
+
+    }
+
+    // --------------------------------------------------
+    // Footer
+    // --------------------------------------------------
+
+    import $footer
+
+}

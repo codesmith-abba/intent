@@ -1,0 +1,366 @@
+// ======================================================
+// SMarket
+// Settings Page
+//
+// The Settings page allows customers to personalize
+// their marketplace experience, manage privacy,
+// control security, and configure application
+// preferences.
+//
+// This page centralizes all account-related settings
+// while keeping them organized and easy to manage.
+//
+// ======================================================
+
+page $settings {
+
+    // --------------------------------------------------
+    // Theme
+    // --------------------------------------------------
+
+    theme $light
+
+    // --------------------------------------------------
+    // Page Intent
+    // --------------------------------------------------
+
+    intent $(
+
+        Design a modern, organized, and secure
+        account settings experience.
+
+        Allow customers to personalize how they
+        interact with the marketplace while giving
+        them full control over their privacy,
+        notifications, security, and preferences.
+
+        Settings should be grouped logically,
+        easy to discover,
+        and simple to update.
+
+    )
+
+    // --------------------------------------------------
+    // Global Navigation
+    // --------------------------------------------------
+
+    import $navigation
+
+    // --------------------------------------------------
+    // Settings Overview
+    // --------------------------------------------------
+
+    hero $overview {
+
+        headline $Account Settings
+
+        subtitle $Manage your preferences, privacy, security, and personalize your marketplace experience.
+
+        action $Save Changes
+
+        intent $(
+
+            Welcome users to their settings.
+
+            Present account customization
+            as simple, safe,
+            and user-friendly.
+
+        )
+
+    }
+
+    // --------------------------------------------------
+    // Profile Settings
+    // --------------------------------------------------
+
+    section $profile {
+
+        intent $(
+
+            Allow customers to manage
+            their personal information.
+
+            Include:
+
+            Profile Photo
+
+            Full Name
+
+            Username
+
+            Email Address
+
+            Phone Number
+
+            Date of Birth
+
+            Gender
+
+            Biography
+
+            Allow updates
+            while validating information.
+
+        )
+
+    }
+
+    // --------------------------------------------------
+    // Security Settings
+    // --------------------------------------------------
+
+    section $security {
+
+        intent $(
+
+            Allow customers to manage
+            account security.
+
+            Include:
+
+            Change Password
+
+            Multi-Factor Authentication
+
+            Trusted Devices
+
+            Login History
+
+            Active Sessions
+
+            Security Notifications
+
+            Password Recovery
+
+        )
+
+    }
+
+    // --------------------------------------------------
+    // Privacy Settings
+    // --------------------------------------------------
+
+    section $privacy {
+
+        intent $(
+
+            Give customers full control
+            over their privacy.
+
+            Include settings for:
+
+            Profile Visibility
+
+            Contact Visibility
+
+            Data Sharing
+
+            Personalized Recommendations
+
+            Search Visibility
+
+            Activity Visibility
+
+        )
+
+    }
+
+    // --------------------------------------------------
+    // Notification Preferences
+    // --------------------------------------------------
+
+    section $notifications {
+
+        intent $(
+
+            Allow customers to choose
+            how they receive notifications.
+
+            Support:
+
+            Email Notifications
+
+            SMS Notifications
+
+            Push Notifications
+
+            Marketplace Announcements
+
+            Promotions
+
+            Order Updates
+
+            Security Alerts
+
+        )
+
+    }
+
+    // --------------------------------------------------
+    // Appearance
+    // --------------------------------------------------
+
+    section $appearance {
+
+        intent $(
+
+            Personalize the visual experience.
+
+            Include:
+
+            Light Theme
+
+            Dark Theme
+
+            System Theme
+
+            Font Size
+
+            Display Density
+
+            Accessibility Options
+
+        )
+
+    }
+
+    // --------------------------------------------------
+    // Regional Preferences
+    // --------------------------------------------------
+
+    section $regional {
+
+        intent $(
+
+            Allow customers to configure
+            regional preferences.
+
+            Include:
+
+            Language
+
+            Currency
+
+            Time Zone
+
+            Date Format
+
+            Measurement Units
+
+        )
+
+    }
+
+    // --------------------------------------------------
+    // Payment Preferences
+    // --------------------------------------------------
+
+    section $payments {
+
+        intent $(
+
+            Allow customers to manage
+            preferred payment options.
+
+            Include:
+
+            Default Payment Method
+
+            Saved Cards
+
+            Marketplace Wallet
+
+            Billing Preferences
+
+        )
+
+    }
+
+    // --------------------------------------------------
+    // Connected Accounts
+    // --------------------------------------------------
+
+    section $connectedAccounts {
+
+        intent $(
+
+            Display third-party services
+            connected to the account.
+
+            Allow customers to:
+
+            Link Accounts
+
+            Remove Accounts
+
+            View Connected Providers
+
+            Manage Permissions
+
+        )
+
+    }
+
+    // --------------------------------------------------
+    // Data Management
+    // --------------------------------------------------
+
+    section $dataManagement {
+
+        intent $(
+
+            Allow customers to manage
+            their personal marketplace data.
+
+            Include:
+
+            Download My Data
+
+            Export Purchase History
+
+            Delete Account
+
+            Data Retention Information
+
+            Explain every action clearly
+            before execution.
+
+        )
+
+    }
+
+    // --------------------------------------------------
+    // Help & Support
+    // --------------------------------------------------
+
+    section $support {
+
+        intent $(
+
+            Provide assistance
+            related to account settings.
+
+            Include:
+
+            Help Center
+
+            Frequently Asked Questions
+
+            Live Chat
+
+            Contact Support
+
+            Report a Problem
+
+        )
+
+    }
+
+    // --------------------------------------------------
+    // Footer
+    // --------------------------------------------------
+
+    import $footer
+
+}

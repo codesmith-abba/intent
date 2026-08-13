@@ -1,0 +1,313 @@
+// ======================================================
+// SMarket
+// Footer
+//
+// Global application footer.
+//
+// The footer appears on every page and provides
+// users with important links, company information,
+// support resources, and legal information.
+//
+// ======================================================
+
+section $footer {
+
+    intent $(
+
+        Design a clean, professional, and trustworthy
+        footer for a modern e-commerce marketplace.
+
+        The footer should provide quick access to
+        important resources while reinforcing the
+        SMarket brand.
+
+        The layout should be responsive and organized
+        into multiple columns on desktop while stacking
+        gracefully on smaller devices.
+
+    )
+
+    // --------------------------------------------------
+    // Company Branding
+    // --------------------------------------------------
+
+    section $branding {
+
+        intent $(
+
+            Display the SMarket logo together with
+            a short description of the marketplace.
+
+            Explain that SMarket connects customers
+            with trusted fashion brands, tailors,
+            and independent sellers.
+
+            Reinforce trust, quality, and convenience.
+
+        )
+
+    }
+
+    // --------------------------------------------------
+    // Marketplace Links
+    // --------------------------------------------------
+
+    section $marketplace {
+
+        intent $(
+
+            Display quick links to the primary
+            marketplace pages.
+
+            Include:
+
+            Home
+
+            Products
+
+            Categories
+
+            Featured Products
+
+            Sellers
+
+            New Arrivals
+
+            Best Sellers
+
+        )
+
+    }
+
+    // --------------------------------------------------
+    // Customer Services
+    // --------------------------------------------------
+
+    section $customer {
+
+        intent $(
+
+            Display helpful customer resources.
+
+            Include:
+
+            My Account
+
+            Orders
+
+            Wishlist
+
+            Shopping Cart
+
+            Track Order
+
+            Returns
+
+            Refund Policy
+
+            Frequently Asked Questions
+
+        )
+
+    }
+
+    // --------------------------------------------------
+    // Seller Resources
+    // --------------------------------------------------
+
+    section $seller {
+
+        intent $(
+
+            Provide resources for marketplace sellers.
+
+            Include:
+
+            Become a Seller
+
+            Seller Dashboard
+
+            Seller Guidelines
+
+            Store Management
+
+            Analytics
+
+            Seller Support
+
+        )
+
+    }
+
+    // --------------------------------------------------
+    // Customer Support
+    // --------------------------------------------------
+
+    section $support {
+
+        intent $(
+
+            Display customer support information.
+
+            Include:
+
+            Contact Us
+
+            Help Center
+
+            Live Chat
+
+            Email Support
+
+            Community
+
+            Report a Problem
+
+        )
+
+    }
+
+    // --------------------------------------------------
+    // Legal Information
+    // --------------------------------------------------
+
+    section $legal {
+
+        intent $(
+
+            Display important legal links.
+
+            Include:
+
+            Privacy Policy
+
+            Terms of Service
+
+            Cookie Policy
+
+            Shipping Policy
+
+            Refund Policy
+
+            Licenses
+
+        )
+
+    }
+
+    // --------------------------------------------------
+    // Social Media
+    // --------------------------------------------------
+
+    section $social {
+
+        intent $(
+
+            Display social media links.
+
+            Include recognizable icons for:
+
+            Facebook
+
+            Instagram
+
+            X
+
+            LinkedIn
+
+            TikTok
+
+            YouTube
+
+            Encourage users to follow SMarket
+            for promotions, fashion inspiration,
+            and marketplace updates.
+
+        )
+
+    }
+
+    // --------------------------------------------------
+    // Newsletter
+    // --------------------------------------------------
+
+    section $newsletter {
+
+        intent $(
+
+            Encourage visitors to subscribe
+            to the SMarket newsletter.
+
+            Explain the benefits of subscribing,
+            including:
+
+            Exclusive discounts
+
+            New product alerts
+
+            Marketplace announcements
+
+            Fashion inspiration
+
+            Seller promotions
+
+            Keep the subscription experience
+            simple and unobtrusive.
+
+        )
+
+    }
+
+    // --------------------------------------------------
+    // Payment Methods
+    // --------------------------------------------------
+
+    section $payments {
+
+        intent $(
+
+            Display the payment methods supported
+            by the marketplace.
+
+            Include recognizable payment icons
+            where appropriate.
+
+            Examples include:
+
+            Visa
+
+            Mastercard
+
+            PayPal
+
+            Apple Pay
+
+            Google Pay
+
+            Bank Transfer
+
+        )
+
+    }
+
+    // --------------------------------------------------
+    // Copyright
+    // --------------------------------------------------
+
+    section $copyright {
+
+        intent $(
+
+            Display the current copyright year.
+
+            State that all rights are reserved.
+
+            Include the company name together
+            with a short statement protecting
+            the marketplace's intellectual property.
+
+        )
+
+    }
+
+}

@@ -1,0 +1,354 @@
+// ======================================================
+// SMarket
+// Categories Page
+//
+// The Categories page helps customers quickly discover
+// products by organizing the marketplace into meaningful
+// shopping categories.
+//
+// It should provide a beautiful browsing experience
+// while making navigation effortless.
+//
+// ======================================================
+
+page $categories {
+
+    // --------------------------------------------------
+    // Theme
+    // --------------------------------------------------
+
+    theme $light
+
+    // --------------------------------------------------
+    // Page Intent
+    // --------------------------------------------------
+
+    intent $(
+
+        Design a clean, modern category browsing experience.
+
+        Make it easy for customers to explore
+        every area of the marketplace.
+
+        Categories should be visually attractive,
+        easy to recognize,
+        and optimized for both desktop and mobile.
+
+        Encourage exploration while reducing
+        the time required to discover products.
+
+    )
+
+    // --------------------------------------------------
+    // Global Navigation
+    // --------------------------------------------------
+
+    import $navigation
+
+    // --------------------------------------------------
+    // Hero
+    // --------------------------------------------------
+
+    hero $categoriesHero {
+
+        image $assets/categories.jpg
+
+        headline $Browse Every Category
+
+        subtitle $Discover thousands of products organized into carefully curated collections.
+
+        action $Start Exploring
+
+        intent $(
+
+            Welcome customers to the marketplace
+            categories.
+
+            Encourage exploration instead of
+            searching.
+
+            Create an attractive hero section
+            using colorful imagery that represents
+            multiple shopping categories.
+
+        )
+
+    }
+
+    // --------------------------------------------------
+    // Featured Categories
+    // --------------------------------------------------
+
+    section $featuredCategories {
+
+        intent $(
+
+            Showcase the marketplace's
+            most popular shopping categories.
+
+            Examples include:
+
+            Men's Fashion
+
+            Women's Fashion
+
+            Shoes
+
+            Bags
+
+            Watches
+
+            Jewelry
+
+            Traditional Wear
+
+            Beauty
+
+            Accessories
+
+            Kids Fashion
+
+            Each category should display:
+
+            • Cover Image
+
+            • Category Name
+
+            • Product Count
+
+            • Short Description
+
+            Selecting a category should navigate
+            directly to its products.
+
+        )
+
+    }
+
+    // --------------------------------------------------
+    // Browse By Collection
+    // --------------------------------------------------
+
+    section $collections {
+
+        intent $(
+
+            Organize products into curated
+            collections.
+
+            Examples include:
+
+            New Arrivals
+
+            Best Sellers
+
+            Trending
+
+            Editor's Picks
+
+            Luxury Fashion
+
+            Budget Friendly
+
+            Seasonal Collection
+
+            Limited Edition
+
+        )
+
+    }
+
+    // --------------------------------------------------
+    // Popular Brands
+    // --------------------------------------------------
+
+    section $brands {
+
+        intent $(
+
+            Display popular brands available
+            within the marketplace.
+
+            Show each brand using:
+
+            Logo
+
+            Brand Name
+
+            Number of Products
+
+            Selecting a brand should display
+            products belonging to that brand.
+
+        )
+
+    }
+
+    // --------------------------------------------------
+    // Shop By Style
+    // --------------------------------------------------
+
+    section $styles {
+
+        intent $(
+
+            Help customers discover products
+            based on fashion styles.
+
+            Examples include:
+
+            Casual
+
+            Corporate
+
+            Streetwear
+
+            Luxury
+
+            African Fashion
+
+            Vintage
+
+            Minimalist
+
+            Wedding
+
+            Sportswear
+
+        )
+
+    }
+
+    // --------------------------------------------------
+    // Recommended Categories
+    // --------------------------------------------------
+
+    section $recommended {
+
+        intent $(
+
+            Recommend categories based on:
+
+            Customer interests
+
+            Shopping history
+
+            Trending activity
+
+            Seasonal events
+
+            Display recommendations
+            in a visually engaging layout.
+
+        )
+
+    }
+
+    // --------------------------------------------------
+    // Featured Sellers
+    // --------------------------------------------------
+
+    section $featuredSellers {
+
+        intent $(
+
+            Showcase trusted sellers
+            associated with each category.
+
+            Display:
+
+            Store Logo
+
+            Store Name
+
+            Rating
+
+            Number of Products
+
+            Allow customers to visit
+            the seller's storefront.
+
+        )
+
+    }
+
+    // --------------------------------------------------
+    // Shopping Tips
+    // --------------------------------------------------
+
+    section $shoppingGuide {
+
+        intent $(
+
+            Provide helpful shopping tips.
+
+            Help customers choose products
+            that match their needs.
+
+            Offer guidance on:
+
+            Product quality
+
+            Sizing
+
+            Materials
+
+            Delivery
+
+            Returns
+
+        )
+
+    }
+
+    // --------------------------------------------------
+    // Popular Searches
+    // --------------------------------------------------
+
+    section $popularSearches {
+
+        intent $(
+
+            Display the marketplace's
+            most searched keywords.
+
+            Selecting a keyword should
+            immediately begin a search.
+
+            Keep the suggestions updated
+            based on marketplace activity.
+
+        )
+
+    }
+
+    // --------------------------------------------------
+    // Newsletter
+    // --------------------------------------------------
+
+    section $newsletter {
+
+        intent $(
+
+            Encourage customers to subscribe
+            for updates about:
+
+            New categories
+
+            Seasonal collections
+
+            Promotions
+
+            Fashion trends
+
+        )
+
+    }
+
+    // --------------------------------------------------
+    // Footer
+    // --------------------------------------------------
+
+    import $footer
+
+}

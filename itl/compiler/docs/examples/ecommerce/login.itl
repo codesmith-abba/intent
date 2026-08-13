@@ -1,0 +1,278 @@
+// ======================================================
+// SMarket
+// Login Page
+//
+// The Login page authenticates returning customers
+// and sellers.
+//
+// The experience should be simple, secure,
+// welcoming, and optimized for quick access
+// to the marketplace.
+//
+// ======================================================
+
+page $login {
+
+    // --------------------------------------------------
+    // Theme
+    // --------------------------------------------------
+
+    theme $light
+
+    // --------------------------------------------------
+    // Page Intent
+    // --------------------------------------------------
+
+    intent $(
+
+        Design a modern authentication experience
+        that feels trustworthy and effortless.
+
+        Help returning customers and sellers
+        access their accounts quickly.
+
+        Keep the interface clean,
+        distraction-free,
+        and mobile-friendly.
+
+        Build confidence by emphasizing
+        account security and privacy.
+
+    )
+
+    // --------------------------------------------------
+    // Global Navigation
+    // --------------------------------------------------
+
+    import $navigation
+
+    // --------------------------------------------------
+    // Login Hero
+    // --------------------------------------------------
+
+    hero $welcomeBack {
+
+        headline $Welcome Back
+
+        subtitle $Sign in to continue shopping, manage your orders, and access your account.
+
+        action $Sign In
+
+        intent $(
+
+            Create a friendly and professional
+            authentication experience.
+
+            Welcome returning users
+            while reinforcing the security
+            of the marketplace.
+
+        )
+
+    }
+
+    // --------------------------------------------------
+    // Authentication Form
+    // --------------------------------------------------
+
+    section $authentication {
+
+        intent $(
+
+            Display a secure login form.
+
+            Allow users to authenticate using:
+
+            Email Address
+
+            Username
+
+            Phone Number
+
+            Password
+
+            Validate credentials before submission.
+
+            Display clear validation messages
+            whenever input is invalid.
+
+        )
+
+    }
+
+    // --------------------------------------------------
+    // Remember Me
+    // --------------------------------------------------
+
+    section $rememberMe {
+
+        intent $(
+
+            Allow users to remain signed in
+            on trusted devices.
+
+            Clearly explain what the option does
+            while encouraging safe usage.
+
+        )
+
+    }
+
+    // --------------------------------------------------
+    // Forgot Password
+    // --------------------------------------------------
+
+    section $forgotPassword {
+
+        intent $(
+
+            Provide a simple recovery process.
+
+            Allow users to securely reset
+            their password.
+
+            Support verification using
+            available recovery methods.
+
+        )
+
+    }
+
+    // --------------------------------------------------
+    // Social Authentication
+    // --------------------------------------------------
+
+    section $socialLogin {
+
+        intent $(
+
+            Allow users to authenticate
+            using supported third-party providers.
+
+            Examples include:
+
+            Google
+
+            Apple
+
+            Facebook
+
+            Microsoft
+
+            Display only providers
+            configured by the application.
+
+        )
+
+    }
+
+    // --------------------------------------------------
+    // Marketplace Benefits
+    // --------------------------------------------------
+
+    section $benefits {
+
+        intent $(
+
+            Remind users why they should
+            sign in.
+
+            Highlight benefits such as:
+
+            Faster Checkout
+
+            Order Tracking
+
+            Wishlist Synchronization
+
+            Personalized Recommendations
+
+            Exclusive Promotions
+
+            Secure Purchase History
+
+        )
+
+    }
+
+    // --------------------------------------------------
+    // Security Information
+    // --------------------------------------------------
+
+    section $security {
+
+        intent $(
+
+            Reassure users that
+            their account is protected.
+
+            Highlight:
+
+            Secure Authentication
+
+            Encrypted Communication
+
+            Privacy Protection
+
+            Suspicious Login Detection
+
+            Multi-Factor Authentication
+            when available.
+
+        )
+
+    }
+
+    // --------------------------------------------------
+    // Create Account
+    // --------------------------------------------------
+
+    section $register {
+
+        intent $(
+
+            Encourage new visitors
+            to create an account.
+
+            Explain the advantages of joining
+            the marketplace.
+
+            Provide a clear action that
+            navigates to the registration page.
+
+        )
+
+    }
+
+    // --------------------------------------------------
+    // Customer Support
+    // --------------------------------------------------
+
+    section $support {
+
+        intent $(
+
+            Help users experiencing
+            login difficulties.
+
+            Provide access to:
+
+            Help Center
+
+            Live Chat
+
+            Contact Support
+
+            Account Recovery
+
+        )
+
+    }
+
+    // --------------------------------------------------
+    // Footer
+    // --------------------------------------------------
+
+    import $footer
+
+}

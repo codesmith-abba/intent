@@ -1,0 +1,100 @@
+// ======================================================
+// SMarket
+// Authentication
+//
+// This file defines how users authenticate
+// with the application.
+//
+// The compiler uses this configuration to
+// generate authentication services,
+// middleware,
+// session handling,
+// token generation,
+// and account verification.
+//
+// ======================================================
+
+auth {
+
+    intent $(
+
+        Configure authentication for
+        the marketplace.
+
+        Authentication should be secure,
+        flexible,
+        and backend independent.
+
+    )
+
+    // --------------------------------------------------
+    // Authentication Providers
+    // --------------------------------------------------
+
+    provider $email
+
+    provider $phone
+
+    provider $google
+
+    // --------------------------------------------------
+    // Registration
+    // --------------------------------------------------
+
+    registration {
+
+        enabled true
+
+        verification $email
+
+    }
+
+    // --------------------------------------------------
+    // Login
+    // --------------------------------------------------
+
+    login {
+
+        allow $email
+
+        allow $phone
+
+        rememberMe true
+
+    }
+
+    // --------------------------------------------------
+    // Password Recovery
+    // --------------------------------------------------
+
+    passwordRecovery {
+
+        enabled true
+
+        method $email
+
+    }
+
+    // --------------------------------------------------
+    // Sessions
+    // --------------------------------------------------
+
+    session {
+
+        timeout 30d
+
+        multipleDevices true
+
+    }
+
+    // --------------------------------------------------
+    // Multi-Factor Authentication
+    // --------------------------------------------------
+
+    mfa {
+
+        enabled false
+
+    }
+
+}
