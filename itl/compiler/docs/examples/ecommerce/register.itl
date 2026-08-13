@@ -1,0 +1,321 @@
+// ======================================================
+// SMarket
+// Registration Page
+//
+// The Registration page allows new customers and sellers
+// to create an account on the marketplace.
+//
+// The experience should be welcoming, secure,
+// and effortless while collecting only the
+// information required to create an account.
+//
+// ======================================================
+
+page $register {
+
+    // --------------------------------------------------
+    // Theme
+    // --------------------------------------------------
+
+    theme $light
+
+    // --------------------------------------------------
+    // Page Intent
+    // --------------------------------------------------
+
+    intent $(
+
+        Design a friendly and trustworthy
+        account creation experience.
+
+        Encourage visitors to become members
+        of the marketplace.
+
+        Keep registration simple,
+        transparent,
+        and secure.
+
+        Minimize friction while ensuring
+        the information collected is accurate
+        and sufficient for account creation.
+
+    )
+
+    // --------------------------------------------------
+    // Global Navigation
+    // --------------------------------------------------
+
+    import $navigation
+
+    // --------------------------------------------------
+    // Registration Hero
+    // --------------------------------------------------
+
+    hero $joinMarketplace {
+
+        headline $Create Your SMarket Account
+
+        subtitle $Join thousands of customers and sellers already using SMarket.
+
+        action $Create Account
+
+        intent $(
+
+            Welcome new users.
+
+            Reinforce that registration
+            is quick, secure,
+            and completely free.
+
+            Inspire confidence in the
+            marketplace before account creation.
+
+        )
+
+    }
+
+    // --------------------------------------------------
+    // Account Registration
+    // --------------------------------------------------
+
+    section $registrationForm {
+
+        intent $(
+
+            Collect the information required
+            to create a new account.
+
+            Include:
+
+            Full Name
+
+            Email Address
+
+            Phone Number
+
+            Username
+
+            Password
+
+            Confirm Password
+
+            Validate every field before submission.
+
+            Clearly explain validation errors
+            whenever they occur.
+
+        )
+
+    }
+
+    // --------------------------------------------------
+    // Account Type
+    // --------------------------------------------------
+
+    section $accountType {
+
+        intent $(
+
+            Allow users to choose
+            the type of account
+            they wish to create.
+
+            Examples include:
+
+            Customer
+
+            Seller
+
+            Explain the benefits
+            of each account type
+            before selection.
+
+        )
+
+    }
+
+    // --------------------------------------------------
+    // Terms & Privacy
+    // --------------------------------------------------
+
+    section $agreement {
+
+        intent $(
+
+            Require users to review
+            and accept the marketplace's:
+
+            Terms of Service
+
+            Privacy Policy
+
+            Community Guidelines
+
+            Clearly indicate that
+            registration cannot continue
+            without acceptance.
+
+        )
+
+    }
+
+    // --------------------------------------------------
+    // Email Verification
+    // --------------------------------------------------
+
+    section $verification {
+
+        intent $(
+
+            Explain that the user's
+            email address and/or phone number
+            may require verification.
+
+            Guide users through the
+            verification process.
+
+            Clearly communicate
+            what happens next.
+
+        )
+
+    }
+
+    // --------------------------------------------------
+    // Social Registration
+    // --------------------------------------------------
+
+    section $socialRegistration {
+
+        intent $(
+
+            Allow users to create
+            an account using
+            supported third-party providers.
+
+            Examples include:
+
+            Google
+
+            Apple
+
+            Facebook
+
+            Microsoft
+
+            Display only providers
+            supported by the application.
+
+        )
+
+    }
+
+    // --------------------------------------------------
+    // Marketplace Benefits
+    // --------------------------------------------------
+
+    section $benefits {
+
+        intent $(
+
+            Explain the advantages
+            of joining SMarket.
+
+            Examples include:
+
+            Faster Checkout
+
+            Wishlist Synchronization
+
+            Order Tracking
+
+            Personalized Recommendations
+
+            Exclusive Promotions
+
+            Buyer Protection
+
+            Seller Opportunities
+
+        )
+
+    }
+
+    // --------------------------------------------------
+    // Security & Privacy
+    // --------------------------------------------------
+
+    section $security {
+
+        intent $(
+
+            Build trust by explaining
+            how customer information
+            is protected.
+
+            Highlight:
+
+            Encrypted Data
+
+            Secure Authentication
+
+            Privacy Protection
+
+            Responsible Data Usage
+
+        )
+
+    }
+
+    // --------------------------------------------------
+    // Already Have an Account
+    // --------------------------------------------------
+
+    section $login {
+
+        intent $(
+
+            Help existing users
+            quickly access
+            the login page.
+
+            Display a clear call-to-action
+            for returning customers
+            and sellers.
+
+        )
+
+    }
+
+    // --------------------------------------------------
+    // Customer Support
+    // --------------------------------------------------
+
+    section $support {
+
+        intent $(
+
+            Assist users who encounter
+            difficulties during registration.
+
+            Provide access to:
+
+            Help Center
+
+            Frequently Asked Questions
+
+            Live Chat
+
+            Contact Support
+
+        )
+
+    }
+
+    // --------------------------------------------------
+    // Footer
+    // --------------------------------------------------
+
+    import $footer
+
+}

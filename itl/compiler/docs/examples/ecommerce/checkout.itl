@@ -1,0 +1,394 @@
+// ======================================================
+// SMarket
+// Checkout Page
+//
+// The Checkout page guides customers through the final
+// stage of completing their purchase.
+//
+// It should provide a smooth, secure, and trustworthy
+// experience while minimizing distractions and reducing
+// cart abandonment.
+//
+// ======================================================
+
+page $checkout {
+
+    // --------------------------------------------------
+    // Theme
+    // --------------------------------------------------
+
+    theme $light
+
+    // --------------------------------------------------
+    // Page Intent
+    // --------------------------------------------------
+
+    intent $(
+
+        Design a simple, secure, and premium checkout experience.
+
+        Help customers complete their purchase
+        with confidence.
+
+        Reduce unnecessary steps while ensuring
+        all required information is collected.
+
+        Clearly communicate pricing,
+        delivery expectations,
+        payment options,
+        and order confirmation.
+
+        The checkout should feel fast,
+        reliable,
+        and mobile-friendly.
+
+    )
+
+    // --------------------------------------------------
+    // Global Navigation
+    // --------------------------------------------------
+
+    import $navigation
+
+    // --------------------------------------------------
+    // Checkout Progress
+    // --------------------------------------------------
+
+    hero $checkoutProgress {
+
+        headline $Secure Checkout
+
+        subtitle $Complete your order in just a few simple steps.
+
+        action $Complete Purchase
+
+        intent $(
+
+            Display a checkout progress indicator.
+
+            Clearly communicate the customer's
+            current step in the checkout process.
+
+            Examples include:
+
+            Cart
+
+            Shipping
+
+            Payment
+
+            Review
+
+            Confirmation
+
+        )
+
+    }
+
+    // --------------------------------------------------
+    // Shipping Address
+    // --------------------------------------------------
+
+    section $shippingAddress {
+
+        intent $(
+
+            Allow customers to:
+
+            Add a new shipping address
+
+            Select an existing address
+
+            Edit saved addresses
+
+            Remove unused addresses
+
+            Validate required information
+            before continuing.
+
+        )
+
+    }
+
+    // --------------------------------------------------
+    // Delivery Method
+    // --------------------------------------------------
+
+    section $deliveryMethod {
+
+        intent $(
+
+            Present available delivery options.
+
+            Examples include:
+
+            Standard Delivery
+
+            Express Delivery
+
+            Same-Day Delivery
+
+            Pickup Station
+
+            Store Pickup
+
+            Display:
+
+            Estimated delivery time
+
+            Shipping fee
+
+            Service availability
+
+        )
+
+    }
+
+    // --------------------------------------------------
+    // Order Review
+    // --------------------------------------------------
+
+    section $orderReview {
+
+        intent $(
+
+            Display a complete summary
+            of the customer's order.
+
+            Include:
+
+            Products
+
+            Variations
+
+            Quantity
+
+            Seller
+
+            Individual Prices
+
+            Shipping Costs
+
+            Discounts
+
+            Taxes
+
+            Final Total
+
+            Allow customers to review
+            every item before payment.
+
+        )
+
+    }
+
+    // --------------------------------------------------
+    // Payment Method
+    // --------------------------------------------------
+
+    section $paymentMethod {
+
+        intent $(
+
+            Allow customers to choose
+            their preferred payment option.
+
+            Examples include:
+
+            Debit Card
+
+            Credit Card
+
+            Bank Transfer
+
+            Mobile Money
+
+            Digital Wallet
+
+            Marketplace Wallet
+
+            Display only supported
+            payment methods.
+
+        )
+
+    }
+
+    // --------------------------------------------------
+    // Billing Information
+    // --------------------------------------------------
+
+    section $billingInformation {
+
+        intent $(
+
+            Collect billing information
+            when required.
+
+            Allow customers to reuse
+            their shipping address
+            as the billing address.
+
+        )
+
+    }
+
+    // --------------------------------------------------
+    // Coupon & Rewards
+    // --------------------------------------------------
+
+    section $discounts {
+
+        intent $(
+
+            Allow customers to apply:
+
+            Coupon Codes
+
+            Promotional Discounts
+
+            Gift Cards
+
+            Marketplace Rewards
+
+            Loyalty Points
+
+            Clearly indicate savings
+            before payment.
+
+        )
+
+    }
+
+    // --------------------------------------------------
+    // Security Assurance
+    // --------------------------------------------------
+
+    section $security {
+
+        intent $(
+
+            Reassure customers that
+            their payment information
+            is secure.
+
+            Highlight:
+
+            Encrypted Payments
+
+            Secure Checkout
+
+            Buyer Protection
+
+            Privacy Protection
+
+            Trusted Payment Partners
+
+        )
+
+    }
+
+    // --------------------------------------------------
+    // Order Notes
+    // --------------------------------------------------
+
+    section $orderNotes {
+
+        intent $(
+
+            Allow customers to provide
+            optional notes for:
+
+            Sellers
+
+            Delivery Agents
+
+            Gift Instructions
+
+            Special Requests
+
+        )
+
+    }
+
+    // --------------------------------------------------
+    // Order Confirmation
+    // --------------------------------------------------
+
+    section $confirmation {
+
+        intent $(
+
+            Before completing payment,
+            present a final confirmation.
+
+            Summarize:
+
+            Shipping Address
+
+            Delivery Method
+
+            Payment Method
+
+            Order Total
+
+            Estimated Delivery
+
+            Require customer confirmation
+            before placing the order.
+
+        )
+
+    }
+
+    // --------------------------------------------------
+    // Related Products
+    // --------------------------------------------------
+
+    section $recommendations {
+
+        intent $(
+
+            Recommend complementary products
+            before checkout completion.
+
+            Ensure recommendations
+            remain subtle and do not distract
+            from completing the purchase.
+
+        )
+
+    }
+
+    // --------------------------------------------------
+    // Customer Support
+    // --------------------------------------------------
+
+    section $support {
+
+        intent $(
+
+            Provide quick access to
+            customer support during checkout.
+
+            Include:
+
+            Live Chat
+
+            Help Center
+
+            Contact Support
+
+            Frequently Asked Questions
+
+        )
+
+    }
+
+    // --------------------------------------------------
+    // Footer
+    // --------------------------------------------------
+
+    import $footer
+
+}

@@ -1,0 +1,450 @@
+// ======================================================
+// SMarket
+// Product Details Page
+//
+// The Product page presents complete information
+// about a single marketplace product.
+//
+// It should help customers confidently evaluate,
+// compare, and purchase the product while discovering
+// related products from the marketplace.
+//
+// ======================================================
+
+page $product {
+
+    // --------------------------------------------------
+    // Theme
+    // --------------------------------------------------
+
+    theme $light
+
+    // --------------------------------------------------
+    // Page Intent
+    // --------------------------------------------------
+
+    intent $(
+
+        Design a premium product detail page that
+        builds trust and encourages purchasing.
+
+        Showcase the product with high-quality imagery,
+        complete specifications, verified reviews,
+        seller information, and intelligent recommendations.
+
+        Make purchasing fast, informative,
+        and enjoyable across desktop and mobile devices.
+
+    )
+
+    // --------------------------------------------------
+    // Global Navigation
+    // --------------------------------------------------
+
+    import $navigation
+
+    // --------------------------------------------------
+    // Product Gallery
+    // --------------------------------------------------
+
+    hero $gallery {
+
+        intent $(
+
+            Display a beautiful product gallery.
+
+            Include:
+
+            High-resolution product images
+
+            Image zoom
+
+            Thumbnail gallery
+
+            Multiple viewing angles
+
+            Product videos when available
+
+            Allow customers to easily browse
+            every media asset associated with
+            the product.
+
+        )
+
+    }
+
+    // --------------------------------------------------
+    // Product Summary
+    // --------------------------------------------------
+
+    section $summary {
+
+        intent $(
+
+            Display the product's most important
+            information immediately.
+
+            Include:
+
+            Product Name
+
+            Current Price
+
+            Original Price
+
+            Discount
+
+            Product Rating
+
+            Review Count
+
+            Availability
+
+            Product SKU
+
+            Brand
+
+            Short Description
+
+            Highlight promotions and limited-time
+            offers when applicable.
+
+        )
+
+    }
+
+    // --------------------------------------------------
+    // Purchase Actions
+    // --------------------------------------------------
+
+    section $purchase {
+
+        intent $(
+
+            Allow customers to purchase
+            the product with minimal effort.
+
+            Include actions for:
+
+            Add to Cart
+
+            Buy Now
+
+            Add to Wishlist
+
+            Compare Product
+
+            Share Product
+
+            Customers should receive immediate
+            feedback after every action.
+
+        )
+
+    }
+
+    // --------------------------------------------------
+    // Product Variations
+    // --------------------------------------------------
+
+    section $variations {
+
+        intent $(
+
+            Display every available product option.
+
+            Examples include:
+
+            Color
+
+            Size
+
+            Material
+
+            Style
+
+            Quantity
+
+            Selecting an option should update
+            pricing, availability,
+            and product imagery where necessary.
+
+        )
+
+    }
+
+    // --------------------------------------------------
+    // Product Description
+    // --------------------------------------------------
+
+    section $description {
+
+        intent $(
+
+            Display a comprehensive product description.
+
+            Explain the product's purpose,
+            quality,
+            craftsmanship,
+            and key selling points.
+
+            Format the content for readability.
+
+        )
+
+    }
+
+    // --------------------------------------------------
+    // Product Specifications
+    // --------------------------------------------------
+
+    section $specifications {
+
+        intent $(
+
+            Display detailed product specifications.
+
+            Examples include:
+
+            Brand
+
+            Category
+
+            Material
+
+            Weight
+
+            Dimensions
+
+            Available Sizes
+
+            Available Colors
+
+            Manufacturing Country
+
+            Care Instructions
+
+        )
+
+    }
+
+    // --------------------------------------------------
+    // Delivery Information
+    // --------------------------------------------------
+
+    section $delivery {
+
+        intent $(
+
+            Inform customers about delivery.
+
+            Include:
+
+            Shipping Options
+
+            Estimated Delivery Time
+
+            Delivery Fees
+
+            Pickup Availability
+
+            Delivery Coverage
+
+        )
+
+    }
+
+    // --------------------------------------------------
+    // Return Policy
+    // --------------------------------------------------
+
+    section $returns {
+
+        intent $(
+
+            Clearly explain the marketplace's
+            return and refund policy.
+
+            Help customers purchase confidently.
+
+        )
+
+    }
+
+    // --------------------------------------------------
+    // Seller Information
+    // --------------------------------------------------
+
+    section $seller {
+
+        intent $(
+
+            Display information about
+            the product's seller.
+
+            Include:
+
+            Store Logo
+
+            Store Name
+
+            Seller Rating
+
+            Verification Status
+
+            Years on Marketplace
+
+            Number of Products
+
+            Customer Response Time
+
+            Allow customers to visit
+            the seller's storefront.
+
+        )
+
+    }
+
+    // --------------------------------------------------
+    // Customer Reviews
+    // --------------------------------------------------
+
+    section $reviews {
+
+        intent $(
+
+            Display verified customer reviews.
+
+            Include:
+
+            Overall Rating
+
+            Rating Distribution
+
+            Written Reviews
+
+            Customer Images
+
+            Helpful Votes
+
+            Allow customers to filter reviews
+            by rating and relevance.
+
+        )
+
+    }
+
+    // --------------------------------------------------
+    // Questions & Answers
+    // --------------------------------------------------
+
+    section $questions {
+
+        intent $(
+
+            Allow customers to ask questions
+            about the product.
+
+            Display answers from:
+
+            Sellers
+
+            Marketplace Administrators
+
+            Previous Buyers
+
+        )
+
+    }
+
+    // --------------------------------------------------
+    // Frequently Bought Together
+    // --------------------------------------------------
+
+    section $frequentlyBought {
+
+        intent $(
+
+            Recommend complementary products
+            that are commonly purchased together.
+
+            Encourage bundle purchases.
+
+        )
+
+    }
+
+    // --------------------------------------------------
+    // Similar Products
+    // --------------------------------------------------
+
+    section $similarProducts {
+
+        intent $(
+
+            Display products similar to
+            the current product.
+
+            Base recommendations on:
+
+            Category
+
+            Style
+
+            Brand
+
+            Price Range
+
+            Customer Interests
+
+        )
+
+    }
+
+    // --------------------------------------------------
+    // Recently Viewed Products
+    // --------------------------------------------------
+
+    section $recentlyViewed {
+
+        intent $(
+
+            Display products the customer
+            has recently explored.
+
+            Make it easy to continue browsing.
+
+        )
+
+    }
+
+    // --------------------------------------------------
+    // Newsletter
+    // --------------------------------------------------
+
+    section $newsletter {
+
+        intent $(
+
+            Encourage customers to subscribe
+            for updates about:
+
+            Price Drops
+
+            Restocked Products
+
+            Exclusive Offers
+
+            New Collections
+
+        )
+
+    }
+
+    // --------------------------------------------------
+    // Footer
+    // --------------------------------------------------
+
+    import $footer
+
+}

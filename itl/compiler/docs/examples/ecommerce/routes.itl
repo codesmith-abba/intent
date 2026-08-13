@@ -1,0 +1,182 @@
+// ======================================================
+// SMarket
+// Application Routes
+//
+// This file defines the application's navigation map.
+//
+// Routes describe how users navigate throughout the
+// marketplace. Every page should have a unique route,
+// and the compiler should generate the appropriate
+// routing implementation for the selected backend.
+//
+// ======================================================
+
+routes {
+
+    intent $(
+
+        Define every public and protected route
+        within the marketplace.
+
+        Routes should be human-readable,
+        SEO-friendly where applicable,
+        and automatically connected to
+        their corresponding pages.
+
+        The backend should generate the
+        appropriate routing implementation
+        without requiring manual configuration.
+
+    )
+
+    // --------------------------------------------------
+    // Public Pages
+    // --------------------------------------------------
+
+    route $home {
+
+        path $/
+
+        page $home
+
+    }
+
+    route $categories {
+
+        path $/categories
+
+        page $categories
+
+    }
+
+    route $products {
+
+        path $/products
+
+        page $products
+
+    }
+
+    route $product {
+
+        path $/products/:id
+
+        page $product
+
+    }
+
+    route $search {
+
+        path $/search
+
+        page $search
+
+    }
+
+    route $login {
+
+        path $/login
+
+        page $login
+
+    }
+
+    route $register {
+
+        path $/register
+
+        page $register
+
+    }
+
+    // --------------------------------------------------
+    // Authenticated Customer Pages
+    // --------------------------------------------------
+
+    route $cart {
+
+        path $/cart
+
+        page $cart
+
+        auth $customer
+
+    }
+
+    route $checkout {
+
+        path $/checkout
+
+        page $checkout
+
+        auth $customer
+
+    }
+
+    route $orders {
+
+        path $/orders
+
+        page $orders
+
+        auth $customer
+
+    }
+
+    route $wishlist {
+
+        path $/wishlist
+
+        page $wishlist
+
+        auth $customer
+
+    }
+
+    route $account {
+
+        path $/account
+
+        page $account
+
+        auth $customer
+
+    }
+
+    route $settings {
+
+        path $/settings
+
+        page $settings
+
+        auth $customer
+
+    }
+
+    // --------------------------------------------------
+    // Seller Pages
+    // --------------------------------------------------
+
+    route $seller {
+
+        path $/seller
+
+        page $seller
+
+        auth $seller
+
+    }
+
+    // --------------------------------------------------
+    // Error Pages
+    // --------------------------------------------------
+
+    route $notFound {
+
+        path $*
+
+        page $404
+
+    }
+
+}

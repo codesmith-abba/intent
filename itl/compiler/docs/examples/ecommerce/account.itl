@@ -1,0 +1,376 @@
+// ======================================================
+// SMarket
+// My Account
+//
+// The Account page serves as the customer's personal
+// dashboard within the marketplace.
+//
+// It allows users to manage their profile,
+// orders, addresses, security, preferences,
+// and other account-related activities.
+//
+// ======================================================
+
+page $account {
+
+    // --------------------------------------------------
+    // Theme
+    // --------------------------------------------------
+
+    theme $light
+
+    // --------------------------------------------------
+    // Page Intent
+    // --------------------------------------------------
+
+    intent $(
+
+        Design a modern and organized customer dashboard.
+
+        Help customers easily manage every aspect
+        of their marketplace account.
+
+        Make frequently used actions immediately
+        accessible while keeping advanced settings
+        well organized.
+
+        The experience should feel personal,
+        secure,
+        and easy to navigate.
+
+    )
+
+    // --------------------------------------------------
+    // Global Navigation
+    // --------------------------------------------------
+
+    import $navigation
+
+    // --------------------------------------------------
+    // Account Overview
+    // --------------------------------------------------
+
+    hero $overview {
+
+        headline $My Account
+
+        subtitle $Manage your profile, orders, addresses, and marketplace preferences.
+
+        action $Edit Profile
+
+        intent $(
+
+            Welcome the customer back
+            with a personalized dashboard.
+
+            Display a concise overview
+            of recent marketplace activity.
+
+        )
+
+    }
+
+    // --------------------------------------------------
+    // Profile Summary
+    // --------------------------------------------------
+
+    section $profile {
+
+        intent $(
+
+            Display the customer's profile.
+
+            Include:
+
+            Profile Picture
+
+            Full Name
+
+            Username
+
+            Email Address
+
+            Phone Number
+
+            Membership Date
+
+            Verification Status
+
+            Marketplace Membership Level
+
+            Allow customers to edit
+            their personal information.
+
+        )
+
+    }
+
+    // --------------------------------------------------
+    // Dashboard Statistics
+    // --------------------------------------------------
+
+    section $statistics {
+
+        intent $(
+
+            Display useful account statistics.
+
+            Examples include:
+
+            Total Orders
+
+            Completed Orders
+
+            Active Orders
+
+            Wishlist Items
+
+            Saved Addresses
+
+            Reward Points
+
+            Wallet Balance
+
+        )
+
+    }
+
+    // --------------------------------------------------
+    // Recent Orders
+    // --------------------------------------------------
+
+    section $recentOrders {
+
+        intent $(
+
+            Display the customer's
+            most recent orders.
+
+            Include:
+
+            Order Number
+
+            Purchase Date
+
+            Status
+
+            Total Amount
+
+            Delivery Progress
+
+            Allow customers to
+            quickly view order details.
+
+        )
+
+    }
+
+    // --------------------------------------------------
+    // Saved Addresses
+    // --------------------------------------------------
+
+    section $addresses {
+
+        intent $(
+
+            Allow customers to manage
+            their saved addresses.
+
+            Support:
+
+            Add Address
+
+            Edit Address
+
+            Delete Address
+
+            Set Default Address
+
+        )
+
+    }
+
+    // --------------------------------------------------
+    // Wishlist
+    // --------------------------------------------------
+
+    section $wishlist {
+
+        intent $(
+
+            Display products
+            saved by the customer.
+
+            Allow customers to:
+
+            View Product
+
+            Move to Cart
+
+            Remove Item
+
+            Share Wishlist
+
+        )
+
+    }
+
+    // --------------------------------------------------
+    // Payment Methods
+    // --------------------------------------------------
+
+    section $paymentMethods {
+
+        intent $(
+
+            Allow customers to manage
+            saved payment methods.
+
+            Support:
+
+            Add Payment Method
+
+            Remove Payment Method
+
+            Set Default Method
+
+            View Supported Payment Options
+
+        )
+
+    }
+
+    // --------------------------------------------------
+    // Notifications
+    // --------------------------------------------------
+
+    section $notifications {
+
+        intent $(
+
+            Display marketplace notifications.
+
+            Examples include:
+
+            Order Updates
+
+            Delivery Notifications
+
+            Promotions
+
+            Seller Messages
+
+            Security Alerts
+
+            Allow customers
+            to manage notification preferences.
+
+        )
+
+    }
+
+    // --------------------------------------------------
+    // Account Security
+    // --------------------------------------------------
+
+    section $security {
+
+        intent $(
+
+            Provide account security settings.
+
+            Allow customers to:
+
+            Change Password
+
+            Enable Multi-Factor Authentication
+
+            View Login Activity
+
+            Manage Trusted Devices
+
+            Log Out of Other Sessions
+
+        )
+
+    }
+
+    // --------------------------------------------------
+    // Preferences
+    // --------------------------------------------------
+
+    section $preferences {
+
+        intent $(
+
+            Allow customers to personalize
+            their marketplace experience.
+
+            Examples include:
+
+            Language
+
+            Currency
+
+            Theme
+
+            Communication Preferences
+
+            Privacy Settings
+
+        )
+
+    }
+
+    // --------------------------------------------------
+    // Support
+    // --------------------------------------------------
+
+    section $support {
+
+        intent $(
+
+            Provide quick access
+            to customer support.
+
+            Include:
+
+            Help Center
+
+            Contact Support
+
+            Live Chat
+
+            Frequently Asked Questions
+
+            Report a Problem
+
+        )
+
+    }
+
+    // --------------------------------------------------
+    // Sign Out
+    // --------------------------------------------------
+
+    section $logout {
+
+        intent $(
+
+            Provide a safe and obvious way
+            for customers to sign out.
+
+            Confirm the action
+            before ending the session.
+
+        )
+
+    }
+
+    // --------------------------------------------------
+    // Footer
+    // --------------------------------------------------
+
+    import $footer
+
+}

@@ -1,0 +1,56 @@
+// ======================================================
+// Intent Language (ITL)
+// Example: E-Commerce Application
+// ======================================================
+
+//app $SMarket {}
+
+app $SMarket {
+
+    intent $(
+        Build a modern AI-assisted fashion marketplace where
+        customers can discover products, communicate with sellers,
+        place orders securely, and track deliveries.
+
+        The application should be responsive, accessible,
+        scalable, and optimized for mobile-first experiences.
+    )
+
+    import $home
+
+    system {
+
+        frontend {
+            framework $react
+
+        }
+
+        backend {
+
+            framework $django
+
+            api $rest
+
+        }
+
+        database {
+
+            engine $postgres
+
+        }
+
+        cache {
+
+            engine $redis
+
+        }
+
+        storage {
+            provider $local
+
+        }
+
+    }
+
+    target $web
+}

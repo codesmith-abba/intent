@@ -1,0 +1,359 @@
+// ======================================================
+// SMarket
+// Wishlist Page
+//
+// The Wishlist page allows customers to save products
+// they are interested in purchasing later.
+//
+// It helps customers organize products, compare options,
+// monitor price changes, and quickly move products to
+// their shopping cart.
+//
+// ======================================================
+
+page $wishlist {
+
+    // --------------------------------------------------
+    // Theme
+    // --------------------------------------------------
+
+    theme $light
+
+    // --------------------------------------------------
+    // Page Intent
+    // --------------------------------------------------
+
+    intent $(
+
+        Design a clean and engaging wishlist experience.
+
+        Help customers save products they love,
+        organize future purchases,
+        and easily return to products they
+        are interested in.
+
+        Encourage customers to complete purchases
+        while making wishlist management effortless.
+
+    )
+
+    // --------------------------------------------------
+    // Global Navigation
+    // --------------------------------------------------
+
+    import $navigation
+
+    // --------------------------------------------------
+    // Wishlist Overview
+    // --------------------------------------------------
+
+    hero $overview {
+
+        headline $My Wishlist
+
+        subtitle $Keep track of products you love and purchase them whenever you're ready.
+
+        action $Continue Shopping
+
+        intent $(
+
+            Welcome customers back
+            to their wishlist.
+
+            Reinforce that saved products
+            are always available for
+            future purchases.
+
+        )
+
+    }
+
+    // --------------------------------------------------
+    // Wishlist Statistics
+    // --------------------------------------------------
+
+    section $statistics {
+
+        intent $(
+
+            Display useful wishlist information.
+
+            Include:
+
+            Total Saved Products
+
+            Categories Represented
+
+            Price Drop Alerts
+
+            Recently Added Products
+
+            Available Products
+
+            Out of Stock Products
+
+        )
+
+    }
+
+    // --------------------------------------------------
+    // Wishlist Products
+    // --------------------------------------------------
+
+    section $products {
+
+        intent $(
+
+            Display every product
+            saved by the customer.
+
+            Each product should include:
+
+            Product Image
+
+            Product Name
+
+            Seller
+
+            Current Price
+
+            Previous Price
+
+            Discount
+
+            Rating
+
+            Availability
+
+            Date Added
+
+        )
+
+    }
+
+    // --------------------------------------------------
+    // Product Actions
+    // --------------------------------------------------
+
+    section $actions {
+
+        intent $(
+
+            Allow customers to manage
+            saved products.
+
+            Support actions such as:
+
+            View Product
+
+            Add to Cart
+
+            Buy Now
+
+            Compare Product
+
+            Share Product
+
+            Remove from Wishlist
+
+            Move to Collection
+
+        )
+
+    }
+
+    // --------------------------------------------------
+    // Price Tracking
+    // --------------------------------------------------
+
+    section $priceTracking {
+
+        intent $(
+
+            Notify customers whenever
+            the price of a saved product changes.
+
+            Highlight:
+
+            Price Drops
+
+            Flash Sales
+
+            Limited Offers
+
+            Restocked Products
+
+            Encourage customers
+            to purchase before offers expire.
+
+        )
+
+    }
+
+    // --------------------------------------------------
+    // Availability Alerts
+    // --------------------------------------------------
+
+    section $availability {
+
+        intent $(
+
+            Inform customers when
+            wishlist products become:
+
+            Available
+
+            Low in Stock
+
+            Out of Stock
+
+            Back in Stock
+
+        )
+
+    }
+
+    // --------------------------------------------------
+    // Collections
+    // --------------------------------------------------
+
+    section $collections {
+
+        intent $(
+
+            Allow customers to organize
+            wishlist products into collections.
+
+            Examples include:
+
+            Favorites
+
+            Birthday Wishes
+
+            Fashion Inspiration
+
+            Holiday Shopping
+
+            Gift Ideas
+
+            Future Purchases
+
+        )
+
+    }
+
+    // --------------------------------------------------
+    // Recommendations
+    // --------------------------------------------------
+
+    section $recommendations {
+
+        intent $(
+
+            Recommend products related
+            to items already saved.
+
+            Base recommendations on:
+
+            Similar Products
+
+            Customer Preferences
+
+            Shopping History
+
+            Trending Products
+
+            Frequently Bought Together
+
+        )
+
+    }
+
+    // --------------------------------------------------
+    // Share Wishlist
+    // --------------------------------------------------
+
+    section $sharing {
+
+        intent $(
+
+            Allow customers
+            to share their wishlist.
+
+            Support sharing with:
+
+            Friends
+
+            Family
+
+            Social Media
+
+            Direct Link
+
+            Encourage collaborative shopping
+            and gift planning.
+
+        )
+
+    }
+
+    // --------------------------------------------------
+    // Empty Wishlist
+    // --------------------------------------------------
+
+    section $emptyWishlist {
+
+        intent $(
+
+            If the wishlist is empty,
+            encourage customers
+            to begin exploring products.
+
+            Recommend:
+
+            Featured Products
+
+            Trending Products
+
+            New Arrivals
+
+            Popular Categories
+
+            Best Sellers
+
+        )
+
+    }
+
+    // --------------------------------------------------
+    // Customer Support
+    // --------------------------------------------------
+
+    section $support {
+
+        intent $(
+
+            Provide assistance
+            related to wishlist management.
+
+            Include:
+
+            Help Center
+
+            Frequently Asked Questions
+
+            Contact Support
+
+            Live Chat
+
+        )
+
+    }
+
+    // --------------------------------------------------
+    // Footer
+    // --------------------------------------------------
+
+    import $footer
+
+}
