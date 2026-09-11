@@ -1,0 +1,28 @@
+app $StorefrontShell {
+    system {
+        frontend {
+            framework $react
+        }
+    }
+
+    page $shell $A reusable storefront shell with navigation and shared actions {
+        theme $light
+
+        hero $header {
+            headline "Shop with confidence"
+            subtitle "A simple storefront shell for the Phase 16 end-to-end build."
+            action "Browse products"
+        }
+
+        section $navigation $Shared navigation and account controls {
+            headline "Store navigation"
+            action "Open menu"
+        }
+
+        section $footer $Support, delivery, and account links {
+            headline "Store support"
+        }
+    }
+
+    target $web
+}
