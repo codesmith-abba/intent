@@ -32,6 +32,11 @@ EXAMPLE_DIR = Path(__file__).parents[1] / "examples" / "storefront"
 UNIT_NAMES = ("shell", "home", "catalog", "product", "checkout")
 
 
+def storefront_mapper(source: str) -> Path:
+    """Emit each storefront compilation unit into the E2E output root."""
+    return Path(Path(source).name).with_suffix(".generated")
+
+
 class ReferenceRepairProvider:
     def repair(self, request, prompt):
         return RepairProviderResponse(
@@ -141,7 +146,7 @@ class Phase16E2ETest(unittest.TestCase):
             BuildPlanner(CacheDecider(cache), graph),
             executor,
             gir_store=GIRFingerprintStore(root / ".project" / "gir" / "fingerprints.json"),
-            emitter=Emitter(root / "output"),
+            emitter=Emitter(root / "output", mapper=storefront_mapper),
         )
         return pipeline, fingerprints, gir, contexts
 
@@ -231,7 +236,7 @@ class Phase16E2ETest(unittest.TestCase):
             product.write_text(
                 product_text.replace(
                     "section $delivery",
-                    "section $reviews {\n            intent $(\n\n                Show recent customer feedback.\n\n                Customer reviews.\n\n            )\n        }\n\n        section $delivery",
+                    "section $reviews {\n            intent $(\n\n                Show recent customer feedback.\n\n            )\n        }\n\n        section $delivery",
                 ),
                 encoding="utf-8",
             )
@@ -344,7 +349,7 @@ class Phase16E2ETest(unittest.TestCase):
                     ),
                     repairer=repairer,
                 ),
-                emitter=Emitter(root / "output"),
+                emitter=Emitter(root / "output", mapper=storefront_mapper),
             )
 
             outcome = pipeline.build([source])
