@@ -1,0 +1,29 @@
+app $StorefrontProduct {
+    system {
+        frontend {
+            framework $react
+        }
+    }
+
+    page $product $The product detail page helps a customer decide before checkout {
+        theme $light
+
+        hero $productHero {
+            headline $Understand the product before you buy
+            subtitle $See the important product information, delivery expectations, and next action.
+            action $Add to cart
+        }
+
+        section $details $Show the core product information and value proposition {
+            headline $Product details
+            subtitle $Clear information helps customers make confident decisions.
+        }
+
+        section $delivery $Set delivery expectations before payment {
+            headline $Delivery information
+            subtitle $Show estimated delivery timing and available options.
+        }
+    }
+
+    target $web
+}
