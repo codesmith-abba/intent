@@ -152,11 +152,16 @@ class GIRDiffAnalyzer:
                 current_type=type(current).__name__ if current else None,
             )
 
+        if type(previous) is not type(current):
+            return GIRNodeDiff(
+                node_id=node_id,
+                categories=(GIRDiffCategory.STRUCTURAL,),
+                previous_type=type(previous).__name__,
+                current_type=type(current).__name__,
+            )
+
         categories: set[GIRDiffCategory] = set()
         diffs: list[GIRFieldDiff] = []
-
-        if type(previous) is not type(current):
-            categories.add(GIRDiffCategory.STRUCTURAL)
 
         previous_fields = {
             field.name: getattr(previous, field.name)
