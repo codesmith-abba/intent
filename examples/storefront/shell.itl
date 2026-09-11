@@ -5,21 +5,50 @@ app $StorefrontShell {
         }
     }
 
-    page $shell $A reusable storefront shell with navigation and shared actions {
+    page $shell {
+        intent $(
+
+            A reusable storefront shell with
+            navigation and shared actions.
+
+        )
+
         theme $light
 
         hero $header {
+            intent $(
+
+                Provide a confident storefront
+                introduction and a clear path
+                into product browsing.
+
+            )
+
             headline $Shop with confidence
             subtitle $A simple storefront shell for the Phase 16 end-to-end build.
             action $Browse products
         }
 
-        section $navigation $Shared navigation and account controls {
+        section $navigation {
+            intent $(
+
+                Provide shared navigation and
+                account controls for the storefront.
+
+            )
+
             headline $Store navigation
             action $Open menu
         }
 
-        section $footer $Support, delivery, and account links {
+        section $footer {
+            intent $(
+
+                Provide support, delivery, and
+                account links across the storefront.
+
+            )
+
             headline $Store support
         }
     }
