@@ -36,10 +36,10 @@ app $StorefrontProduct {
                 Show the core product information
                 and value proposition clearly.
 
-            )
+                Product details.
+                Clear information helps customers make confident decisions.
 
-            headline $Product details
-            subtitle $Clear information helps customers make confident decisions.
+            )
         }
 
         section $delivery {
@@ -48,10 +48,10 @@ app $StorefrontProduct {
                 Set clear delivery expectations before
                 the customer proceeds to payment.
 
-            )
+                Delivery information.
+                Show estimated delivery timing and available options.
 
-            headline $Delivery information
-            subtitle $Show estimated delivery timing and available options.
+            )
         }
     }
 
