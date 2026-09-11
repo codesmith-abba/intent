@@ -7,17 +7,19 @@ import inspect
 import pkgutil
 import sys
 import traceback
+from pathlib import Path
 
 
 PACKAGE_NAME = __package__ or "tests"
 TEST_SUFFIX = "_test"
+TESTS_DIR = Path(__file__).resolve().parent
 
 
 def discover_test_modules() -> list[str]:
     """Return test modules in deterministic order."""
     modules = [
         module.name
-        for module in pkgutil.iter_modules(__path__)
+        for module in pkgutil.iter_modules([str(TESTS_DIR)])
         if module.name.endswith(TEST_SUFFIX)
     ]
     return sorted(modules)
@@ -88,9 +90,7 @@ def run() -> int:
         if module_failed == 0:
             print(f"  {module_passed} test(s) passed\n")
         else:
-            print(
-                f"  {module_passed} passed, {module_failed} failed\n"
-            )
+            print(f"  {module_passed} passed, {module_failed} failed\n")
 
     print("=" * 60)
     print(f"Tests passed: {passed}")
