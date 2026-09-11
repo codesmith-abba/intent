@@ -7,6 +7,9 @@ from itl.build.results import (
     BuildResultStatus,
 )
 from itl.build.scheduler import BuildScheduler
+from itl.validation.models import ValidationContext
+from itl.validation.pipeline import ValidatorPipeline
+from itl.validation.errors import ValidationFailure
 
 
 class BuildExecutor:
@@ -15,9 +18,13 @@ class BuildExecutor:
         self,
         builder: Callable[[BuildItem], object],
         scheduler: BuildScheduler | None = None,
+        validator: ValidatorPipeline | None = None,
+        validation_context_factory: Callable[[BuildItem, object], ValidationContext] | None = None,
     ):
         self.builder = builder
         self.scheduler = scheduler or BuildScheduler()
+        self.validator = validator
+        self.validation_context_factory = validation_context_factory
 
     def execute(
         self,
@@ -64,11 +71,36 @@ class BuildExecutor:
 
                 try:
                     output = self.builder(item)
+                    validation_report = None
+                    if self.validator is not None:
+                        context = (
+                            self.validation_context_factory(item, output)
+                            if self.validation_context_factory is not None
+                            else ValidationContext(
+                                unit_id=source,
+                                source=source,
+                                output=output,
+                            )
+                        )
+                        validation_report = self.validator.validate(context)
+                        if not validation_report.passed:
+                            results.add(
+                                BuildResult(
+                                    source=source,
+                                    status=BuildResultStatus.FAILED,
+                                    output=output,
+                                    error=ValidationFailure(validation_report),
+                                    validation_report=validation_report,
+                                )
+                            )
+                            continue
+
                     results.add(
                         BuildResult(
                             source=source,
                             status=BuildResultStatus.SUCCESS,
                             output=output,
+                            validation_report=validation_report,
                         )
                     )
                 except Exception as error:
