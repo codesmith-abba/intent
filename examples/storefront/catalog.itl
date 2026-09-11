@@ -36,11 +36,11 @@ app $StorefrontCatalog {
                 filtering controls without overwhelming
                 the browsing experience.
 
-            )
+                Filter products.
+                Keep browsing focused without overwhelming the customer.
+                Apply filters.
 
-            headline $Filter products
-            subtitle $Keep browsing focused without overwhelming the customer.
-            action $Apply filters
+            )
         }
 
         section $productGrid {
@@ -50,10 +50,10 @@ app $StorefrontCatalog {
                 grid so customers can compare products
                 before opening a product detail page.
 
-            )
+                Product catalog.
+                Compare products before opening a product detail page.
 
-            headline $Product catalog
-            subtitle $Compare products before opening a product detail page.
+            )
         }
     }
 
