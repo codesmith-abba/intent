@@ -1,8 +1,9 @@
 from pathlib import Path
 
 from itl.build.executor import BuildExecutor
-from itl.build.planner import BuildPlanner
 from itl.build.outcome import BuildOutcome
+from itl.build.planner import BuildPlanner
+from itl.build.results import BuildResults
 from itl.build.summary import summarize
 from itl.gir.changes import GIRChangeDetector
 from itl.gir.store import GIRFingerprintStore
@@ -25,6 +26,7 @@ class BuildPipeline:
         sources: list[str | Path],
         gir_fingerprints: dict[str, str] | None = None,
         previous_dependents: dict[str, set[str]] | None = None,
+        previous_results: BuildResults | None = None,
     ) -> BuildOutcome:
         sources = [str(source) for source in sources]
         gir_changes = None
@@ -38,7 +40,10 @@ class BuildPipeline:
             gir_changes=gir_changes,
             previous_dependents=previous_dependents,
         )
-        results = self.executor.execute(plan)
+        results = self.executor.execute(
+            plan,
+            previous_results=previous_results,
+        )
 
         if (
             self.gir_store is not None
