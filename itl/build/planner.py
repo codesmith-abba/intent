@@ -13,7 +13,6 @@ class BuildPlanner:
         decider: CacheDecider,
         graph: DependencyGraph,
     ):
-
         self.decider = decider
         self.graph = graph
         self.gir_invalidator = GIRDependencyInvalidator(graph)
@@ -24,37 +23,31 @@ class BuildPlanner:
         gir_changes: GIRChangeSet | None = None,
         previous_dependents: dict[str, set[str]] | None = None,
     ) -> BuildPlan:
-
         decisions = {}
 
         for source in sources:
-
-            decisions[source] = (
-                self.decider.decide(source)
-            )
+            decisions[source] = self.decider.decide(source)
 
         affected = set()
 
-        for source, decision in decisions.items():
-
-            if decision.status in {
-                CacheStatus.MISS,
-                CacheStatus.INVALIDATED,
-            }:
-
-                affected.update(
-                    self.graph.affected_by(source)
-                )
-
-        removed = []
-
-        if gir_changes is not None:
+        if gir_changes is None:
+            for source, decision in decisions.items():
+                if decision.status in {
+                    CacheStatus.MISS,
+                    CacheStatus.INVALIDATED,
+                }:
+                    affected.update(self.graph.affected_by(source))
+        else:
             affected.update(
                 self.gir_invalidator.affected_nodes(
                     gir_changes,
                     previous_dependents=previous_dependents,
                 )
             )
+
+        removed = []
+
+        if gir_changes is not None:
             removed = sorted(
                 change.node_id
                 for change in gir_changes.removed
@@ -63,23 +56,15 @@ class BuildPlanner:
         plan = BuildPlan(removed=removed)
 
         for source in sources:
-
             if source not in affected:
                 continue
 
             decision = decisions.get(source)
 
             if decision is None:
+                decision = self.decider.decide(source)
 
-                decision = self.decider.decide(
-                    source
-                )
-
-            dependencies = (
-                self.graph.dependencies_of(
-                    source
-                )
-            )
+            dependencies = self.graph.dependencies_of(source)
 
             plan.add(
                 BuildItem(
