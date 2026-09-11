@@ -7,6 +7,7 @@ from itl.build.results import (
     BuildResultStatus,
 )
 from itl.build.scheduler import BuildScheduler
+from itl.repair.interfaces import Repairer
 from itl.validation.models import ValidationContext
 from itl.validation.pipeline import ValidatorPipeline
 from itl.validation.errors import ValidationFailure
@@ -20,11 +21,13 @@ class BuildExecutor:
         scheduler: BuildScheduler | None = None,
         validator: ValidatorPipeline | None = None,
         validation_context_factory: Callable[[BuildItem, object], ValidationContext] | None = None,
+        repairer: Repairer | None = None,
     ):
         self.builder = builder
         self.scheduler = scheduler or BuildScheduler()
         self.validator = validator
         self.validation_context_factory = validation_context_factory
+        self.repairer = repairer
 
     def execute(
         self,
@@ -84,12 +87,35 @@ class BuildExecutor:
                         )
                         validation_report = self.validator.validate(context)
                         if not validation_report.passed:
+                            if self.repairer is not None:
+                                repair_result = self.repairer.repair(
+                                    item,
+                                    str(output),
+                                    validation_report,
+                                )
+                                if repair_result.succeeded:
+                                    results.add(
+                                        BuildResult(
+                                            source=source,
+                                            status=BuildResultStatus.SUCCESS,
+                                            output=repair_result.output,
+                                            validation_report=repair_result.validation_report,
+                                        )
+                                    )
+                                    continue
+                                output = repair_result.output
+                                validation_report = repair_result.validation_report or validation_report
+                                error = RuntimeError(
+                                    repair_result.error or "Repair failed."
+                                )
+                            else:
+                                error = ValidationFailure(validation_report)
                             results.add(
                                 BuildResult(
                                     source=source,
                                     status=BuildResultStatus.FAILED,
                                     output=output,
-                                    error=ValidationFailure(validation_report),
+                                    error=error,
                                     validation_report=validation_report,
                                 )
                             )
