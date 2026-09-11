@@ -5,21 +5,50 @@ app $StorefrontCheckout {
         }
     }
 
-    page $checkout $The checkout page turns a product decision into a completed order {
+    page $checkout {
+        intent $(
+
+            Turn a product decision into a completed
+            order by helping customers review items,
+            confirm delivery details, and place the order.
+
+        )
+
         theme $light
 
         hero $checkoutHero {
+            intent $(
+
+                Guide customers through the final
+                checkout action with clear expectations.
+
+            )
+
             headline $Complete your order
             subtitle $Review your items, confirm delivery details, and place the order.
             action $Place order
         }
 
-        section $orderSummary $Show the products and totals before payment {
+        section $orderSummary {
+            intent $(
+
+                Show the products and totals before
+                payment so the final amount is clear.
+
+            )
+
             headline $Order summary
             subtitle $Make the final amount easy to understand.
         }
 
-        section $deliveryDetails $Collect the information needed for fulfillment {
+        section $deliveryDetails {
+            intent $(
+
+                Collect the information needed for
+                fulfillment and confirm the delivery method.
+
+            )
+
             headline $Delivery details
             subtitle $Confirm the destination and delivery method.
         }
