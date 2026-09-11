@@ -6,11 +6,7 @@ from itl.cache.decision import CacheStatus
 
 
 def item(source, dependencies=()):
-    return BuildItem(
-        source=source,
-        status=CacheStatus.MISS,
-        dependencies=set(dependencies),
-    )
+    return BuildItem(source=source, status=CacheStatus.MISS, dependencies=set(dependencies))
 
 
 def plan(*items):
@@ -18,35 +14,22 @@ def plan(*items):
 
 
 def test_dependency_ordering():
-    schedule = BuildScheduler().schedule(
-        plan(item("b", ["a"]), item("a"))
-    )
+    schedule = BuildScheduler().schedule(plan(item("b", ["a"]), item("a")))
     assert schedule.batches[0].items == ("a",)
     assert schedule.batches[1].items == ("b",)
 
 
 def test_independent_nodes_share_batch():
-    schedule = BuildScheduler().schedule(
-        plan(item("a"), item("b"), item("c"))
-    )
+    schedule = BuildScheduler().schedule(plan(item("a"), item("b"), item("c")))
     assert schedule.batches == (schedule.batches[0],)
     assert schedule.batches[0].items == ("a", "b", "c")
 
 
 def test_multiple_scheduling_levels():
     schedule = BuildScheduler().schedule(
-        plan(
-            item("d", ["b", "c"]),
-            item("b", ["a"]),
-            item("c", ["a"]),
-            item("a"),
-        )
+        plan(item("d", ["b", "c"]), item("b", ["a"]), item("c", ["a"]), item("a"))
     )
-    assert [batch.items for batch in schedule.batches] == [
-        ("a",),
-        ("b", "c"),
-        ("d",),
-    ]
+    assert [batch.items for batch in schedule.batches] == [("a",), ("b", "c"), ("d",)]
 
 
 def test_failed_dependency_skips_dependent_work():
@@ -58,9 +41,7 @@ def test_failed_dependency_skips_dependent_work():
             raise RuntimeError("boom")
         return build_item.source
 
-    results = BuildExecutor(builder).execute(
-        plan(item("a"), item("b", ["a"]), item("c"))
-    )
+    results = BuildExecutor(builder).execute(plan(item("a"), item("b", ["a"]), item("c")))
     assert calls == ["a", "c"]
     assert [result.source for result in results.failed] == ["a"]
     assert [result.source for result in results.skipped] == ["b"]
@@ -73,11 +54,7 @@ def test_skipped_dependency_skips_transitive_dependents():
         return build_item.source
 
     results = BuildExecutor(builder).execute(
-        plan(
-            item("a"),
-            item("b", ["a"]),
-            item("c", ["b"]),
-        )
+        plan(item("a"), item("b", ["a"]), item("c", ["b"]))
     )
     assert [result.source for result in results.failed] == ["a"]
     assert [result.source for result in results.skipped] == ["b", "c"]
@@ -85,19 +62,14 @@ def test_skipped_dependency_skips_transitive_dependents():
 
 def test_resume_skips_successful_previous_work():
     calls = []
-    previous = BuildResults(
-        results=[
-            BuildResult("a", BuildResultStatus.SUCCESS, output="cached")
-        ]
-    )
+    previous = BuildResults(results=[BuildResult("a", BuildResultStatus.SUCCESS, output="cached")])
 
     def builder(build_item):
         calls.append(build_item.source)
         return build_item.source
 
     results = BuildExecutor(builder).execute(
-        plan(item("a"), item("b", ["a"])),
-        previous_results=previous,
+        plan(item("a"), item("b", ["a"])), previous_results=previous
     )
     assert calls == ["b"]
     assert [result.source for result in results.successful] == ["a", "b"]
@@ -125,20 +97,14 @@ def test_single_node_plan():
 
 
 def test_external_dependency_is_already_resolved():
-    schedule = BuildScheduler().schedule(
-        plan(item("b", ["a"]))
-    )
+    schedule = BuildScheduler().schedule(plan(item("b", ["a"])))
     assert schedule.sources == ("b",)
 
 
 def test_schedule_is_deterministic():
-    first = BuildScheduler().schedule(
-        plan(item("c"), item("a"), item("b", ["a"]))
-    )
-    second = BuildScheduler().schedule(
-        plan(item("b", ["a"]), item("c"), item("a"))
-    )
-    assert first == second
+    scheduler = BuildScheduler()
+    build_plan = plan(item("c"), item("a"), item("b", ["a"]))
+    assert scheduler.schedule(build_plan) == scheduler.schedule(build_plan)
 
 
 if __name__ == "__main__":
