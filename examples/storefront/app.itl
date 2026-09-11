@@ -1,0 +1,9 @@
+app $Storefront {
+    system {
+        frontend {
+            framework $react
+        }
+    }
+
+    target $web
+}

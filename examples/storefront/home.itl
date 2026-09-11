@@ -1,0 +1,59 @@
+app $StorefrontHome {
+    system {
+        frontend {
+            framework $react
+        }
+    }
+
+    page $home {
+        intent $(
+
+            Introduce the storefront brand,
+            featured products, and the main
+            shopping journey for customers.
+
+        )
+
+        theme $light
+
+        hero $welcome {
+            intent $(
+
+                Welcome customers and guide them
+                toward discovering featured products.
+
+            )
+
+            headline $Discover products made for everyday life
+            subtitle $Browse trusted products with clear pricing and simple delivery.
+            action $Shop now
+        }
+
+        section $featured {
+            intent $(
+
+                Feature the products customers are
+                most likely to buy first.
+
+                Featured products.
+                A focused selection for the current season.
+                View featured products.
+
+            )
+        }
+
+        section $benefits {
+            intent $(
+
+                Explain the reasons customers
+                should trust the storefront.
+
+                Why customers choose us.
+                Transparent prices, dependable delivery, and responsive support.
+
+            )
+        }
+    }
+
+    target $web
+}

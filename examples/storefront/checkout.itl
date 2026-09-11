@@ -1,0 +1,58 @@
+app $StorefrontCheckout {
+    system {
+        frontend {
+            framework $react
+        }
+    }
+
+    page $checkout {
+        intent $(
+
+            Turn a product decision into a completed
+            order by helping customers review items,
+            confirm delivery details, and place the order.
+
+        )
+
+        theme $light
+
+        hero $checkoutHero {
+            intent $(
+
+                Guide customers through the final
+                checkout action with clear expectations.
+
+            )
+
+            headline $Complete your order
+            subtitle $Review your items, confirm delivery details, and place the order.
+            action $Place order
+        }
+
+        section $orderSummary {
+            intent $(
+
+                Show the products and totals before
+                payment so the final amount is clear.
+
+                Order summary.
+                Make the final amount easy to understand.
+
+            )
+        }
+
+        section $deliveryDetails {
+            intent $(
+
+                Collect the information needed for
+                fulfillment and confirm the delivery method.
+
+                Delivery details.
+                Confirm the destination and delivery method.
+
+            )
+        }
+    }
+
+    target $web
+}

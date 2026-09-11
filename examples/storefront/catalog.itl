@@ -1,0 +1,61 @@
+app $StorefrontCatalog {
+    system {
+        frontend {
+            framework $react
+        }
+    }
+
+    page $catalog {
+        intent $(
+
+            Group products into a useful browsing
+            experience that helps customers find
+            what is available today.
+
+        )
+
+        theme $light
+
+        hero $catalogHero {
+            intent $(
+
+                Introduce the catalog and encourage
+                customers to explore available products.
+
+            )
+
+            headline $Find something useful
+            subtitle $Browse the catalog by product type and discover what is available today.
+            action $Browse catalog
+        }
+
+        section $filters {
+            intent $(
+
+                Give customers a small set of useful
+                filtering controls without overwhelming
+                the browsing experience.
+
+                Filter products.
+                Keep browsing focused without overwhelming the customer.
+                Apply filters.
+
+            )
+        }
+
+        section $productGrid {
+            intent $(
+
+                Present available products in a clear
+                grid so customers can compare products
+                before opening a product detail page.
+
+                Product catalog.
+                Compare products before opening a product detail page.
+
+            )
+        }
+    }
+
+    target $web
+}
