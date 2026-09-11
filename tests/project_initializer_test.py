@@ -30,6 +30,8 @@ def test_initialize_project():
         assert paths.generation.is_dir()
 
         assert paths.state.is_file()
+        assert (root / "app.itl").is_file()
+        assert "app $SMarket" in (root / "app.itl").read_text(encoding="utf-8")
 
         loaded = ProjectStateStore(
             paths.state
@@ -68,6 +70,7 @@ def test_initialize_is_idempotent():
         assert first.project == second.project
         assert first.state == second.state
         assert first.cache == second.cache
+        assert (root / "app.itl").is_file()
 
 
 if __name__ == "__main__":
