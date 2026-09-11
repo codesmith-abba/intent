@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 420" role="img" aria-labelledby="title desc">
+  <title id="title">ITL Storefront</title>
+  <desc id="desc">A simple illustration for the ITL browser runtime example.</desc>
+  <rect width="800" height="420" rx="32" fill="#111827"/>
+  <rect x="110" y="110" width="580" height="210" rx="24" fill="#f9fafb"/>
+  <path d="M145 160h510l-34-58H179z" fill="#d1d5db"/>
+  <circle cx="250" cy="225" r="46" fill="#9ca3af"/>
+  <rect x="330" y="190" width="270" height="22" rx="11" fill="#374151"/>
+  <rect x="330" y="232" width="210" height="16" rx="8" fill="#9ca3af"/>
+  <rect x="330" y="266" width="150" height="16" rx="8" fill="#d1d5db"/>
+</svg>

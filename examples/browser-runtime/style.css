@@ -1,0 +1,9 @@
+:root { font-family: system-ui, sans-serif; color: #111827; background: #f3f4f6; }
+body { margin: 0; }
+#app { max-width: 960px; margin: 0 auto; padding: 24px; }
+.itl-navigation { display: flex; gap: 16px; margin-bottom: 24px; }
+.itl-navigation a { color: inherit; font-weight: 600; text-decoration: none; }
+.itl-hero, .itl-section { background: white; border-radius: 20px; padding: 28px; margin-bottom: 20px; box-shadow: 0 8px 24px rgba(0,0,0,.06); }
+.itl-hero img { width: 100%; max-height: 360px; object-fit: cover; border-radius: 14px; margin-bottom: 20px; }
+.itl-hero button { border: 0; border-radius: 10px; padding: 12px 18px; font-weight: 700; cursor: pointer; }
+.itl-runtime-error { white-space: pre-wrap; padding: 20px; background: #fee2e2; color: #991b1b; border-radius: 12px; }

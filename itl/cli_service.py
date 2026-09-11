@@ -117,7 +117,27 @@ class ProjectService:
         entrypoint = self.app_file(project)
         try:
             compiled = Pipeline().compile(entrypoint)
-            ReactBackend().generate(compiled, project / ".project" / "build")
+            build_root = project / ".project" / "build"
+            ReactBackend().generate(compiled, build_root)
+            IRWriter(project / ".project").write(compiled)
+
+            browser_root = build_root / "browser"
+            browser_root.mkdir(parents=True, exist_ok=True)
+            shutil.copy2(Path(__file__).resolve().parents[1] / "runtime" / "browser.js", browser_root / "browser.js")
+            shutil.copy2(project / ".project" / "runtime.json", browser_root / "runtime.json")
+            (browser_root / "index.html").write_text(
+                "<!doctype html>\n"
+                '<html lang="en"><head><meta charset="utf-8">'
+                '<meta name="viewport" content="width=device-width, initial-scale=1">'
+                "<title>ITL Development Runtime</title></head>\n"
+                '<body><div id="app"></div>\n'
+                '<script src="./browser.js"></script>\n'
+                "<script>new ITLBrowserRuntime.BrowserRuntime({"
+                "root: document.getElementById('app')"
+                "}).start('./runtime.json');</script>\n"
+                "</body></html>\n",
+                encoding="utf-8",
+            )
         except Exception as error:
             raise CLIServiceError(
                 f"Development build failed for '{project}': {error}"

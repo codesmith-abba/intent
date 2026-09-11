@@ -63,6 +63,7 @@ class CLITest(unittest.TestCase):
             self.assertEqual(first.returncode, 0, first.stderr)
             self.assertIn("Build", first.stdout)
             self.assertTrue((project / ".project" / "app.json").exists())
+            self.assertTrue((project / ".project" / "runtime.json").exists())
 
             second = self.run_cli("plan", str(project))
             self.assertEqual(second.returncode, 0, second.stderr)
@@ -74,6 +75,16 @@ class CLITest(unittest.TestCase):
             result = self.run_cli("build", "--dry-run", str(project))
             self.assertEqual(result.returncode, 0, result.stderr)
             self.assertIn("Dry run", result.stdout)
+
+    def test_dev_build_contains_browser_runtime_bundle(self):
+        with tempfile.TemporaryDirectory() as directory:
+            project = self.make_project(Path(directory))
+            result = self.run_cli("dev", str(project))
+            self.assertEqual(result.returncode, 0, result.stderr)
+            browser = project / ".project" / "build" / "browser"
+            self.assertTrue((browser / "browser.js").exists())
+            self.assertTrue((browser / "runtime.json").exists())
+            self.assertTrue((browser / "index.html").exists())
 
     def test_explain(self):
         with tempfile.TemporaryDirectory() as directory:
