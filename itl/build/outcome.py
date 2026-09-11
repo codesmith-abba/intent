@@ -15,4 +15,11 @@ class BuildOutcome:
 
     summary: BuildSummary
 
-    validation: ValidationSummary | None = None
+    @property
+    def validation(self) -> ValidationSummary | None:
+        reports = [
+            result.validation_report
+            for result in self.results.results
+            if result.validation_report is not None
+        ]
+        return ValidationSummary(reports=reports) if reports else None
