@@ -161,11 +161,7 @@ class Phase16E2ETest(unittest.TestCase):
             sources = self.copy_example(example_root)
             graph = self.make_graph(sources)
 
-            pipeline, fingerprints, previous_gir, contexts = self.make_pipeline(
-                root,
-                sources,
-                graph,
-            )
+            pipeline, fingerprints, previous_gir, contexts = self.make_pipeline(root, sources, graph)
             previous_nodes = self.diff_nodes(previous_gir)
 
             initial = pipeline.build(sources, gir_fingerprints=fingerprints)
@@ -174,9 +170,7 @@ class Phase16E2ETest(unittest.TestCase):
             self.assertIsNotNone(initial.emission)
             self.assertEqual(len(initial.emission.created), 5)
             for source in sources:
-                self.assertTrue(
-                    (root / "output" / f"{source.stem}.generated").exists()
-                )
+                self.assertTrue((root / "output" / f"{source.stem}.generated").exists())
 
             unchanged = pipeline.build(sources, gir_fingerprints=fingerprints)
             self.assertTrue(unchanged.summary.succeeded)
@@ -195,26 +189,15 @@ class Phase16E2ETest(unittest.TestCase):
             changed_gir = self.compile_units(sources)
             self.refresh_contexts(contexts, changed_gir, graph)
             changed_fingerprints = {
-                source: GIRFingerprint.calculate(node)
-                for source, node in changed_gir.items()
+                source: GIRFingerprint.calculate(node) for source, node in changed_gir.items()
             }
-            content_diff = GIRDiffAnalyzer.analyze(
-                previous_nodes,
-                self.diff_nodes(changed_gir),
-            )
+            content_diff = GIRDiffAnalyzer.analyze(previous_nodes, self.diff_nodes(changed_gir))
             home_hero_id = f"{home}#welcome"
             self.assertIn(
                 GIRDiffCategory.CONTENT,
-                next(
-                    node.categories
-                    for node in content_diff.changed
-                    if node.node_id == home_hero_id
-                ),
+                next(node.categories for node in content_diff.changed if node.node_id == home_hero_id),
             )
-            content_build = pipeline.build(
-                sources,
-                gir_fingerprints=changed_fingerprints,
-            )
+            content_build = pipeline.build(sources, gir_fingerprints=changed_fingerprints)
             self.assertEqual(content_build.summary.successful, 4)
             self.assertEqual(content_build.summary.processed, 4)
             previous_gir = changed_gir
@@ -223,28 +206,16 @@ class Phase16E2ETest(unittest.TestCase):
 
             catalog = next(source for source in sources if source.stem == "catalog")
             catalog_text = catalog.read_text(encoding="utf-8")
-            catalog.write_text(
-                catalog_text.replace("theme $light", "theme $dark"),
-                encoding="utf-8",
-            )
+            catalog.write_text(catalog_text.replace("theme $light", "theme $dark"), encoding="utf-8")
             styled_gir = self.compile_units(sources)
             self.refresh_contexts(contexts, styled_gir, graph)
             styled_fingerprints = {
-                source: GIRFingerprint.calculate(node)
-                for source, node in styled_gir.items()
+                source: GIRFingerprint.calculate(node) for source, node in styled_gir.items()
             }
-            style_diff = GIRDiffAnalyzer.analyze(
-                previous_nodes,
-                self.diff_nodes(styled_gir),
-            )
-            catalog_diff = next(
-                node for node in style_diff.changed if node.node_id == str(catalog)
-            )
+            style_diff = GIRDiffAnalyzer.analyze(previous_nodes, self.diff_nodes(styled_gir))
+            catalog_diff = next(node for node in style_diff.changed if node.node_id == str(catalog))
             self.assertIn(GIRDiffCategory.STYLE, catalog_diff.categories)
-            style_build = pipeline.build(
-                sources,
-                gir_fingerprints=styled_fingerprints,
-            )
+            style_build = pipeline.build(sources, gir_fingerprints=styled_fingerprints)
             self.assertEqual(style_build.summary.successful, 3)
             self.assertEqual(style_build.summary.processed, 3)
             previous_gir = styled_gir
@@ -256,28 +227,19 @@ class Phase16E2ETest(unittest.TestCase):
             product.write_text(
                 product_text.replace(
                     "section $delivery",
-                    "section $reviews $Show recent customer feedback {\n            headline $Customer reviews\n        }\n\n        section $delivery",
+                    "section $reviews {\n            intent $(\n\n                Show recent customer feedback.\n\n            )\n\n            headline $Customer reviews\n        }\n\n        section $delivery",
                 ),
                 encoding="utf-8",
             )
             structural_gir = self.compile_units(sources)
             self.refresh_contexts(contexts, structural_gir, graph)
             structural_fingerprints = {
-                source: GIRFingerprint.calculate(node)
-                for source, node in structural_gir.items()
+                source: GIRFingerprint.calculate(node) for source, node in structural_gir.items()
             }
-            structural_diff = GIRDiffAnalyzer.analyze(
-                previous_nodes,
-                self.diff_nodes(structural_gir),
-            )
-            product_diff = next(
-                node for node in structural_diff.changed if node.node_id == str(product)
-            )
+            structural_diff = GIRDiffAnalyzer.analyze(previous_nodes, self.diff_nodes(structural_gir))
+            product_diff = next(node for node in structural_diff.changed if node.node_id == str(product))
             self.assertIn(GIRDiffCategory.STRUCTURAL, product_diff.categories)
-            structural_build = pipeline.build(
-                sources,
-                gir_fingerprints=structural_fingerprints,
-            )
+            structural_build = pipeline.build(sources, gir_fingerprints=structural_fingerprints)
             self.assertEqual(structural_build.summary.successful, 2)
             self.assertEqual(structural_build.summary.processed, 2)
             previous_gir = structural_gir
@@ -287,10 +249,7 @@ class Phase16E2ETest(unittest.TestCase):
             checkout = next(source for source in sources if source.stem == "checkout")
             checkout_text = checkout.read_text(encoding="utf-8")
             checkout.write_text(
-                checkout_text.replace(
-                    "Complete your order",
-                    "Complete your secure order",
-                ),
+                checkout_text.replace("Complete your order", "Complete your secure order"),
                 encoding="utf-8",
             )
             new_graph = self.make_graph(sources)
@@ -299,8 +258,7 @@ class Phase16E2ETest(unittest.TestCase):
             dependency_gir = self.compile_units(sources)
             self.refresh_contexts(contexts, dependency_gir, new_graph)
             dependency_fingerprints = {
-                source: GIRFingerprint.calculate(node)
-                for source, node in dependency_gir.items()
+                source: GIRFingerprint.calculate(node) for source, node in dependency_gir.items()
             }
             dependency_diff = GIRDiffAnalyzer.analyze(
                 previous_nodes,
@@ -308,17 +266,12 @@ class Phase16E2ETest(unittest.TestCase):
                 {str(checkout): graph.dependencies_of(str(checkout))},
                 {str(checkout): new_graph.dependencies_of(str(checkout))},
             )
-            checkout_diff = next(
-                node for node in dependency_diff.changed if node.node_id == str(checkout)
-            )
+            checkout_diff = next(node for node in dependency_diff.changed if node.node_id == str(checkout))
             self.assertIn(GIRDiffCategory.ARCHITECTURE, checkout_diff.categories)
             self.assertIn(GIRDiffCategory.STRUCTURAL, checkout_diff.categories)
 
             pipeline, _, _, _ = self.make_pipeline(root, sources, new_graph)
-            dependency_build = pipeline.build(
-                sources,
-                gir_fingerprints=dependency_fingerprints,
-            )
+            dependency_build = pipeline.build(sources, gir_fingerprints=dependency_fingerprints)
             self.assertTrue(dependency_build.results.succeeded)
             self.assertGreaterEqual(dependency_build.summary.processed, 1)
             self.assertTrue((root / "output" / "checkout.generated").exists())
