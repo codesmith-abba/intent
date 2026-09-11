@@ -3,7 +3,6 @@ from __future__ import annotations
 import importlib
 from importlib import metadata as importlib_metadata
 from collections.abc import Iterable
-from typing import Any
 
 from itl.generation.models import GenerationRequest
 from itl.generation.provider import GenerationProvider, ProviderResponse
@@ -15,7 +14,6 @@ from itl.plugins.errors import (
     PluginNotFoundError,
     PluginSelectionError,
 )
-from itl.plugins.interfaces import GenerationPlugin, ValidationPlugin
 from itl.plugins.models import (
     PLUGIN_API_VERSION,
     PluginConfig,
@@ -48,6 +46,11 @@ class PluginRegistry:
 
     def register(self, plugin: object) -> None:
         metadata = self._metadata_for(plugin)
+        configure = getattr(plugin, "configure", None)
+        if not callable(configure):
+            raise InvalidPluginError(
+                f"Plugin '{metadata.name}' does not implement configure()."
+            )
         self._validate_compatibility(metadata)
 
         key = metadata.name.casefold()
@@ -143,12 +146,6 @@ class PluginRegistry:
         return metadata
 
     def _validate_compatibility(self, metadata: PluginMetadata) -> None:
-        if metadata.api_version != PLUGIN_API_VERSION:
-            raise IncompatiblePluginError(
-                f"Plugin '{metadata.name}' requires plugin API "
-                f"{metadata.api_version}; supported API is {PLUGIN_API_VERSION}."
-            )
-
         current = _version(self.compiler_version)
         minimum = _version(metadata.min_compiler_version)
         maximum = (
@@ -169,7 +166,8 @@ class PluginRegistry:
         framework: str | None,
     ) -> bool:
         if metadata.targets and (
-            target is None or target.casefold() not in {value.casefold() for value in metadata.targets}
+            target is None
+            or target.casefold() not in {value.casefold() for value in metadata.targets}
         ):
             return False
         if metadata.frameworks and (
