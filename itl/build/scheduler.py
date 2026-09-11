@@ -35,20 +35,24 @@ class BuildScheduler:
     ) -> BuildSchedule:
         completed = set(completed or ())
         items = {item.source: item for item in plan.items}
-
-        # Dependencies outside the current plan are assumed to be already
-        # available (for example, cache hits that were not scheduled).
+        plan_order = {
+            item.source: index
+            for index, item in enumerate(plan.items)
+        }
         remaining = set(items) - completed
         batches: list[BuildBatch] = []
 
         while remaining:
             ready = sorted(
-                source
-                for source in remaining
-                if all(
-                    dependency not in remaining
-                    for dependency in items[source].dependencies
-                )
+                (
+                    source
+                    for source in remaining
+                    if all(
+                        dependency not in remaining
+                        for dependency in items[source].dependencies
+                    )
+                ),
+                key=plan_order.__getitem__,
             )
 
             if not ready:
