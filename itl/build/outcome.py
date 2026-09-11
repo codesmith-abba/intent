@@ -3,6 +3,7 @@ from dataclasses import dataclass
 from itl.build.models import BuildPlan
 from itl.build.results import BuildResults
 from itl.build.summary import BuildSummary
+from itl.emit.models import EmitResults
 from itl.validation.models import ValidationSummary
 
 
@@ -14,6 +15,8 @@ class BuildOutcome:
     results: BuildResults
 
     summary: BuildSummary
+
+    emission: EmitResults | None = None
 
     @property
     def validation(self) -> ValidationSummary | None:
