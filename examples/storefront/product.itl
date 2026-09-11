@@ -5,21 +5,51 @@ app $StorefrontProduct {
         }
     }
 
-    page $product $The product detail page helps a customer decide before checkout {
+    page $product {
+        intent $(
+
+            Help customers understand a product
+            before checkout by presenting the key
+            value, delivery expectations, and next action.
+
+        )
+
         theme $light
 
         hero $productHero {
+            intent $(
+
+                Give customers the essential product
+                information they need before deciding
+                whether to buy.
+
+            )
+
             headline $Understand the product before you buy
             subtitle $See the important product information, delivery expectations, and next action.
             action $Add to cart
         }
 
-        section $details $Show the core product information and value proposition {
+        section $details {
+            intent $(
+
+                Show the core product information
+                and value proposition clearly.
+
+            )
+
             headline $Product details
             subtitle $Clear information helps customers make confident decisions.
         }
 
-        section $delivery $Set delivery expectations before payment {
+        section $delivery {
+            intent $(
+
+                Set clear delivery expectations before
+                the customer proceeds to payment.
+
+            )
+
             headline $Delivery information
             subtitle $Show estimated delivery timing and available options.
         }
