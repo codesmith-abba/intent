@@ -17,5 +17,13 @@ jobs:
         with:
           python-version: "3.12"
 
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
       - name: Run ITL test suite
         run: python -m tests
+
+      - name: Run browser runtime tests
+        run: node tests/browser_runtime_test.js
