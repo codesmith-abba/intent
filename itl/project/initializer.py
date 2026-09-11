@@ -6,9 +6,10 @@ from itl.project.state import ProjectStateStore
 
 
 DEFAULT_APP_TEMPLATE = """app $__PROJECT_NAME__ {
-
+    page $home {
+        section $main {}
+    }
     target $web
-
     framework $react
 }
 """
