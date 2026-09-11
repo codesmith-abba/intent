@@ -231,7 +231,7 @@ class Phase16E2ETest(unittest.TestCase):
             product.write_text(
                 product_text.replace(
                     "section $delivery",
-                    "section $reviews {\n            intent $(\n\n                Show recent customer feedback.\n\n            )\n\n            headline $Customer reviews\n        }\n\n        section $delivery",
+                    "section $reviews {\n            intent $(\n\n                Show recent customer feedback.\n\n                Customer reviews.\n\n            )\n        }\n\n        section $delivery",
                 ),
                 encoding="utf-8",
             )
