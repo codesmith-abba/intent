@@ -35,10 +35,10 @@ app $StorefrontShell {
                 Provide shared navigation and
                 account controls for the storefront.
 
-            )
+                Store navigation.
+                Open menu.
 
-            headline $Store navigation
-            action $Open menu
+            )
         }
 
         section $footer {
@@ -47,9 +47,9 @@ app $StorefrontShell {
                 Provide support, delivery, and
                 account links across the storefront.
 
-            )
+                Store support.
 
-            headline $Store support
+            )
         }
     }
 
