@@ -1,6 +1,8 @@
 from dataclasses import dataclass, field
 from enum import Enum
 
+from itl.validation.models import ValidationReport
+
 
 class BuildResultStatus(Enum):
     SUCCESS = "success"
@@ -14,6 +16,7 @@ class BuildResult:
     status: BuildResultStatus
     output: object | None = None
     error: Exception | None = None
+    validation_report: ValidationReport | None = None
 
 
 @dataclass(slots=True)
