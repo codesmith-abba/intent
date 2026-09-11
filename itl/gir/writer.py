@@ -2,6 +2,8 @@ import json
 from dataclasses import asdict
 from pathlib import Path
 
+from itl.runtime.manifest import BrowserManifestBuilder
+
 
 class IRWriter:
 
@@ -38,3 +40,5 @@ class IRWriter:
 
         with open(root / "graph.json", "w", encoding="utf-8") as f:
             json.dump(graph, f, indent=4)
+
+        BrowserManifestBuilder().write([project], root / "runtime.json")
