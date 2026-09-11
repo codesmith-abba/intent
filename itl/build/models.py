@@ -22,12 +22,20 @@ class BuildPlan:
         default_factory=list
     )
 
+    removed: list[str] = field(
+        default_factory=list
+    )
+
     def add(
         self,
         item: BuildItem,
     ):
 
         self.items.append(item)
+
+    def __iter__(self):
+        """Iterate over planned build items for backwards compatibility."""
+        return iter(self.items)
 
     @property
     def sources(self) -> list[str]:
@@ -40,15 +48,18 @@ class BuildPlan:
     def ordered(
         self,
         order: list[str],
-    ) -> list[BuildItem]:
+    ) -> "BuildPlan":
 
         items = {
             item.source: item
             for item in self.items
         }
 
-        return [
-            items[source]
-            for source in order
-            if source in items
-        ]
+        return BuildPlan(
+            items=[
+                items[source]
+                for source in order
+                if source in items
+            ],
+            removed=list(self.removed),
+        )

@@ -365,7 +365,6 @@ The ITL compiler currently follows this architecture.
  Intermediate Representation
 
                  │
-
                  ▼
 
              Backend
@@ -420,6 +419,28 @@ itl dev examples/app
 
 ---
 
+# Testing
+
+ITL's development test suite uses **Python's standard library only**. No pytest or other third-party test dependency is required.
+
+Run the complete test suite from the repository root:
+
+```bash
+python3 -m tests
+```
+
+The test runner automatically discovers every `*_test.py` module in `tests/` and executes every zero-argument function whose name starts with `test_`.
+
+Individual tests can still be run as modules when debugging a specific area:
+
+```bash
+python3 -m tests.build_executor_test
+```
+
+The repository also runs the same test command automatically through GitHub Actions on pushes and pull requests.
+
+---
+
 # Project Structure
 
 ```
@@ -444,6 +465,10 @@ intent/
 │   ├── pipeline.py
 
 │   └── cli.py
+
+├── tests/
+│   ├── __main__.py
+│   └── *_test.py
 
 ├── spec/
 
