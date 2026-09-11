@@ -2,6 +2,7 @@ from pathlib import Path
 
 from itl.parser.lexer import Lexer
 from itl.parser.parser import Parser
+from itl.parser.source import SourceFile
 from itl.analyzer.analyzer import Analyzer
 from itl.gir.builder import GIRBuilder
 
@@ -15,7 +16,10 @@ class Pipeline:
         if path.suffix != ".itl":
             path = path.with_suffix(".itl")
 
-        source = path.read_text(encoding="utf-8")
+        source = SourceFile(
+            path=path,
+            text=path.read_text(encoding="utf-8"),
+        )
 
         tokens = Lexer(source).scan_tokens()
 
