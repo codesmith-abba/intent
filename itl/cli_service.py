@@ -24,12 +24,7 @@ class CLIServiceError(Exception):
 
 
 class ProjectService:
-    """Thin application service used by CLI commands.
-
-    Command handlers should only parse arguments, call this service, and
-    format the returned information. Compiler/build policy stays here or in
-    the existing compiler/build modules.
-    """
+    """Thin application service used by CLI commands."""
 
     def __init__(self) -> None:
         self.discoverer = ProjectDiscoverer()
@@ -54,7 +49,6 @@ class ProjectService:
     def check(self, path: str | Path):
         project = self.discover(path)
         try:
-            # Use the project compiler for project-level validation.
             return project, Compiler(project).compile()
         except Exception as error:
             raise CLIServiceError(
@@ -64,7 +58,6 @@ class ProjectService:
     def explain(self, path: str | Path):
         project = self.discover(path)
         try:
-            # Keep the existing human-readable explainer contract.
             ir = Pipeline().compile(self.app_file(project))
             return project, Explainer().explain(ir)
         except Exception as error:
@@ -75,8 +68,8 @@ class ProjectService:
     def build(self, path: str | Path, *, dry_run: bool = False):
         project = self.discover(path)
         entrypoint = self.app_file(project)
-
-        cache = Cache(ProjectPaths(project).cache)
+        paths = ProjectPaths(project)
+        cache = Cache(paths.cache)
         decision = CacheDecider(cache).decide(str(entrypoint))
 
         try:
@@ -95,8 +88,9 @@ class ProjectService:
                 "entrypoint": entrypoint,
             }
 
+        output_root = paths.project
         try:
-            IRWriter().write(ir)
+            IRWriter(output_root).write(ir)
         except Exception as error:
             raise CLIServiceError(
                 f"Build output failed for '{project}': {error}"
@@ -104,7 +98,7 @@ class ProjectService:
 
         cache.put(
             str(entrypoint),
-            output=str(project / ".project" / "app.json"),
+            output=str(output_root / "app.json"),
             metadata={"status": "success"},
         )
         cache.save()
@@ -115,7 +109,7 @@ class ProjectService:
             "cache_status": decision.status.value,
             "cache_reason": decision.reason,
             "entrypoint": entrypoint,
-            "output": project / ".project" / "app.json",
+            "output": output_root / "app.json",
         }
 
     def dev(self, path: str | Path):
@@ -132,10 +126,13 @@ class ProjectService:
 
     def graph(self, path: str | Path) -> str:
         project = self.discover(path)
-        # The persisted graph is compiler state when present. Do not invent a
-        # second dependency model in the CLI.
-        graph_file = ProjectPaths(project).graph / "graph.json"
-        if graph_file.is_file():
+        paths = ProjectPaths(project)
+        candidates = (
+            paths.graph / "graph.json",
+            paths.project / "graph.json",
+        )
+        graph_file = next((candidate for candidate in candidates if candidate.is_file()), None)
+        if graph_file is not None:
             try:
                 data = json.loads(graph_file.read_text(encoding="utf-8"))
                 return json.dumps(data, indent=2, sort_keys=True)
@@ -143,7 +140,6 @@ class ProjectService:
                 raise CLIServiceError(
                     f"Unable to read project graph: {graph_file}"
                 ) from error
-
         return repr(DependencyGraph())
 
     def plan(self, path: str | Path) -> dict[str, object]:
