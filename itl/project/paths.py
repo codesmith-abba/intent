@@ -36,6 +36,11 @@ class ProjectPaths:
         return self.project / "gir"
 
     @property
+    def gir_fingerprints(self) -> Path:
+
+        return self.gir / "fingerprints.json"
+
+    @property
     def generation(self) -> Path:
 
         return self.project / "generation"
