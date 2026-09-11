@@ -47,6 +47,9 @@ class ReferenceRepairProvider:
 
 class Phase16E2ETest(unittest.TestCase):
     def copy_example(self, root: Path) -> list[Path]:
+        app_source = EXAMPLE_DIR / "app.itl"
+        app_target = root / "app.itl"
+        shutil.copy2(app_source, app_target)
         paths = []
         for name in UNIT_NAMES:
             source = EXAMPLE_DIR / f"{name}.itl"
@@ -159,6 +162,7 @@ class Phase16E2ETest(unittest.TestCase):
             example_root = root / "storefront"
             example_root.mkdir()
             sources = self.copy_example(example_root)
+            self.assertTrue((example_root / "app.itl").is_file())
             graph = self.make_graph(sources)
 
             pipeline, fingerprints, previous_gir, contexts = self.make_pipeline(root, sources, graph)
@@ -282,6 +286,7 @@ class Phase16E2ETest(unittest.TestCase):
             example_root = root / "storefront"
             example_root.mkdir()
             sources = self.copy_example(example_root)
+            self.assertTrue((example_root / "app.itl").is_file())
             source = next(path for path in sources if path.stem == "product")
             graph = self.make_graph(sources)
             gir = self.compile_units(sources)
