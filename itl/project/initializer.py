@@ -5,6 +5,15 @@ from itl.project.paths import ProjectPaths
 from itl.project.state import ProjectStateStore
 
 
+DEFAULT_APP_TEMPLATE = """app ${name} {
+
+    target $web
+
+    framework $react
+}
+"""
+
+
 class ProjectInitializer:
 
     def initialize(
@@ -43,5 +52,12 @@ class ProjectInitializer:
         ProjectStateStore(
             paths.state
         ).save(state)
+
+        entrypoint = root / (state.entrypoint or "app.itl")
+        if not entrypoint.exists():
+            entrypoint.write_text(
+                DEFAULT_APP_TEMPLATE.format(name=state.name),
+                encoding="utf-8",
+            )
 
         return paths
