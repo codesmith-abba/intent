@@ -50,7 +50,7 @@
     }
 
     async load(url) {
-      const response = await fetch(url, { headers: { Accept: "application/json" } });
+      const response = await global.fetch(url, { headers: { Accept: "application/json" } });
       if (!response.ok) throw new RuntimeError("Unable to load runtime manifest: " + response.status);
       return response.json();
     }
@@ -65,24 +65,26 @@
     }
 
     resolveInitialPage() {
-      const requested = location.hash ? decodeURIComponent(location.hash.slice(1)) : this.manifest.initialPage;
+      const requested = global.location.hash
+        ? decodeURIComponent(global.location.hash.slice(1))
+        : this.manifest.initialPage;
       return this.pages.has(requested) ? requested : this.manifest.initialPage;
     }
 
     navigate(name) {
       if (!this.pages.has(name)) throw new RuntimeError("Unknown ITL page: " + name);
       this.state.currentPage = name;
-      history.pushState({ itlPage: name }, "", "#" + encodeURIComponent(name));
+      global.history.pushState({ itlPage: name }, "", "#" + encodeURIComponent(name));
       this.render();
       this.emit("navigate", name);
     }
 
     bindEvents() {
-      addEventListener("popstate", () => {
+      global.addEventListener("popstate", () => {
         this.state.currentPage = this.resolveInitialPage();
         this.render();
       });
-      addEventListener("hashchange", () => {
+      global.addEventListener("hashchange", () => {
         this.state.currentPage = this.resolveInitialPage();
         this.render();
       });
@@ -207,7 +209,7 @@
 
     report(error, render = true) {
       const normalized = error instanceof Error ? error : new RuntimeError(String(error));
-      console.error(normalized);
+      global.console.error(normalized);
       if (!render) return;
       const panel = document.createElement("pre");
       panel.className = "itl-runtime-error";
