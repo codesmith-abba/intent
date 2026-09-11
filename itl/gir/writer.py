@@ -22,9 +22,13 @@ class IRWriter:
         with open(root / "app.json", "w", encoding="utf-8") as f:
             json.dump(asdict(project), f, indent=4)
 
+        framework = None
+        if project.system is not None:
+            framework = project.system.frontend
+
         metadata = {
             "version": "0.1.0",
-            "framework": project.framework,
+            "framework": framework,
             "target": project.target,
         }
 
