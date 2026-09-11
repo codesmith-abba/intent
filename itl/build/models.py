@@ -33,6 +33,10 @@ class BuildPlan:
 
         self.items.append(item)
 
+    def __iter__(self):
+        """Iterate over planned build items for backwards compatibility."""
+        return iter(self.items)
+
     @property
     def sources(self) -> list[str]:
 
