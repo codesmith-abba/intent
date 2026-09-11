@@ -68,8 +68,10 @@ class AIGenerator:
                     metadata=metadata,
                 )
 
+        prompt = self.prompt_builder.build(request)
+
         try:
-            response = self.provider.generate(request)
+            response = self.provider.generate(request, prompt)
         except Exception as error:
             return GenerationResult(
                 unit_id=item.source,
