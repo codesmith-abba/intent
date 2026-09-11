@@ -35,11 +35,11 @@ app $StorefrontHome {
                 Feature the products customers are
                 most likely to buy first.
 
-            )
+                Featured products.
+                A focused selection for the current season.
+                View featured products.
 
-            headline $Featured products
-            subtitle $A focused selection for the current season.
-            action $View featured products
+            )
         }
 
         section $benefits {
@@ -48,10 +48,10 @@ app $StorefrontHome {
                 Explain the reasons customers
                 should trust the storefront.
 
-            )
+                Why customers choose us.
+                Transparent prices, dependable delivery, and responsive support.
 
-            headline $Why customers choose us
-            subtitle $Transparent prices, dependable delivery, and responsive support.
+            )
         }
     }
 
