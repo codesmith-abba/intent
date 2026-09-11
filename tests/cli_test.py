@@ -7,7 +7,15 @@ import unittest
 from pathlib import Path
 
 
-VALID_APP = """app $CLIApp {\n    page $home {\n        section $main {}\n    }\n    target $web\n    framework $react\n}\n"""
+VALID_APP = """app $CLIApp {
+    system {
+        frontend {
+            framework $react
+        }
+    }
+    target $web
+}
+"""
 
 
 class CLITest(unittest.TestCase):
