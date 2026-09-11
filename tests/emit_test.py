@@ -5,6 +5,24 @@ from itl.build.models import BuildItem, BuildPlan
 from itl.build.results import BuildResult, BuildResults, BuildResultStatus
 from itl.cache.decision import CacheStatus
 from itl.emit import EmitStatus, Emitter, UnsafeOutputPathError
+from itl.validation.models import ValidationIssue, ValidationReport, ValidationResult, ValidationStatus
+
+
+def _report(source="pages/home.itl", passed=True):
+    if passed:
+        result = ValidationResult(
+            unit_id=source,
+            validator="test",
+            status=ValidationStatus.PASSED,
+        )
+    else:
+        result = ValidationResult(
+            unit_id=source,
+            validator="test",
+            status=ValidationStatus.FAILED,
+            issues=(ValidationIssue("test", "invalid output", code="invalid"),),
+        )
+    return ValidationReport(unit_id=source, results=(result,))
 
 
 def _plan(source="pages/home.itl", removed=None):
@@ -14,9 +32,16 @@ def _plan(source="pages/home.itl", removed=None):
     )
 
 
-def _results(source="pages/home.itl", output="hello"):
+def _results(source="pages/home.itl", output="hello", validated=True):
     results = BuildResults()
-    results.add(BuildResult(source=source, status=BuildResultStatus.SUCCESS, output=output))
+    results.add(
+        BuildResult(
+            source=source,
+            status=BuildResultStatus.SUCCESS,
+            output=output,
+            validation_report=_report(source, passed=validated),
+        )
+    )
     return results
 
 
@@ -66,10 +91,18 @@ def test_failed_generation_is_never_emitted():
         assert not (Path(directory) / "pages/home.generated").exists()
 
 
-def test_failed_validation_result_is_never_emitted():
+def test_failed_validation_is_never_emitted():
+    with tempfile.TemporaryDirectory() as directory:
+        emitter = Emitter(directory)
+        result = emitter.emit(_plan(), _results(validated=False))
+        assert not result.results
+        assert not (Path(directory) / "pages/home.generated").exists()
+
+
+def test_unvalidated_success_is_never_emitted():
     with tempfile.TemporaryDirectory() as directory:
         results = BuildResults()
-        results.add(BuildResult(source="pages/home.itl", status=BuildResultStatus.FAILED, output="invalid"))
+        results.add(BuildResult(source="pages/home.itl", status=BuildResultStatus.SUCCESS, output="unvalidated"))
         emitter = Emitter(directory)
         result = emitter.emit(_plan(), results)
         assert not result.results
