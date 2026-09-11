@@ -5,7 +5,7 @@ from itl.project.paths import ProjectPaths
 from itl.project.state import ProjectStateStore
 
 
-DEFAULT_APP_TEMPLATE = """app ${name} {
+DEFAULT_APP_TEMPLATE = """app $__PROJECT_NAME__ {
 
     target $web
 
@@ -56,7 +56,7 @@ class ProjectInitializer:
         entrypoint = root / (state.entrypoint or "app.itl")
         if not entrypoint.exists():
             entrypoint.write_text(
-                DEFAULT_APP_TEMPLATE.format(name=state.name),
+                DEFAULT_APP_TEMPLATE.replace("$__PROJECT_NAME__", f"${state.name}"),
                 encoding="utf-8",
             )
 
