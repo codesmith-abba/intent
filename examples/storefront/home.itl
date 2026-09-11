@@ -1,0 +1,30 @@
+app $StorefrontHome {
+    system {
+        frontend {
+            framework $react
+        }
+    }
+
+    page $home $The storefront landing page introduces the brand and featured products {
+        theme $light
+
+        hero $welcome {
+            headline $Discover products made for everyday life
+            subtitle $Browse trusted products with clear pricing and simple delivery.
+            action $Shop now
+        }
+
+        section $featured $Feature the products customers are most likely to buy first {
+            headline $Featured products
+            subtitle $A focused selection for the current season.
+            action $View featured products
+        }
+
+        section $benefits $Explain the reasons customers should trust the storefront {
+            headline $Why customers choose us
+            subtitle $Transparent prices, dependable delivery, and responsive support.
+        }
+    }
+
+    target $web
+}
