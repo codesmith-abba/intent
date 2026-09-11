@@ -166,6 +166,12 @@ def test_multiple_validation_failures_are_carried_into_repair_context():
         name = "multi"
 
         def validate(self, validation_context):
+            if validation_context.output == "valid":
+                return ValidationResult(
+                    unit_id=validation_context.unit_id,
+                    validator=self.name,
+                    status=ValidationStatus.PASSED,
+                )
             return ValidationResult(
                 unit_id=validation_context.unit_id,
                 validator=self.name,
@@ -180,11 +186,16 @@ def test_multiple_validation_failures_are_carried_into_repair_context():
     repair = AIRepairer(
         provider=provider,
         contexts=context(),
-        validator=ValidatorPipeline([MultiValidator(), RuleValidator()]),
+        validator=ValidatorPipeline([MultiValidator()]),
     )
-    result = repair.repair(item(), "invalid", failed_report())
+    initial_report = ValidatorPipeline([MultiValidator()]).validate(
+        ValidationContext(unit_id="home", output="invalid", source="home")
+    )
+    assert len(initial_report.issues) == 2
+    result = repair.repair(item(), "invalid", initial_report)
 
     assert result.succeeded
+    assert result.attempt == 1
     assert provider.calls == 1
 
 
