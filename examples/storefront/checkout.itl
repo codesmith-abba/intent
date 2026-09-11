@@ -35,10 +35,10 @@ app $StorefrontCheckout {
                 Show the products and totals before
                 payment so the final amount is clear.
 
-            )
+                Order summary.
+                Make the final amount easy to understand.
 
-            headline $Order summary
-            subtitle $Make the final amount easy to understand.
+            )
         }
 
         section $deliveryDetails {
@@ -47,10 +47,10 @@ app $StorefrontCheckout {
                 Collect the information needed for
                 fulfillment and confirm the delivery method.
 
-            )
+                Delivery details.
+                Confirm the destination and delivery method.
 
-            headline $Delivery details
-            subtitle $Confirm the destination and delivery method.
+            )
         }
     }
 
