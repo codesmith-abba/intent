@@ -5,22 +5,53 @@ app $StorefrontCatalog {
         }
     }
 
-    page $catalog $The product catalog groups products into a useful browsing experience {
+    page $catalog {
+        intent $(
+
+            Group products into a useful browsing
+            experience that helps customers find
+            what is available today.
+
+        )
+
         theme $light
 
         hero $catalogHero {
+            intent $(
+
+                Introduce the catalog and encourage
+                customers to explore available products.
+
+            )
+
             headline $Find something useful
             subtitle $Browse the catalog by product type and discover what is available today.
             action $Browse catalog
         }
 
-        section $filters $Give customers a small set of useful filtering controls {
+        section $filters {
+            intent $(
+
+                Give customers a small set of useful
+                filtering controls without overwhelming
+                the browsing experience.
+
+            )
+
             headline $Filter products
             subtitle $Keep browsing focused without overwhelming the customer.
             action $Apply filters
         }
 
-        section $productGrid $Present the available products in a clear grid {
+        section $productGrid {
+            intent $(
+
+                Present available products in a clear
+                grid so customers can compare products
+                before opening a product detail page.
+
+            )
+
             headline $Product catalog
             subtitle $Compare products before opening a product detail page.
         }
