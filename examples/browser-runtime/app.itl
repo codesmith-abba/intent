@@ -1,0 +1,70 @@
+app $BrowserStorefront {
+    system {
+        frontend {
+            framework $react
+        }
+    }
+
+    page $home {
+        intent $(
+            A welcoming storefront home page.
+            Introduce the brand and guide customers into the catalog.
+        )
+
+        theme $light
+
+        hero $welcome {
+            image $assets/storefront.svg
+            headline $Welcome to the ITL Storefront
+            subtitle $A small browser runtime demo powered by generated ITL runtime data.
+            action $Browse catalog
+        }
+
+        section $featured {
+            intent $(
+                Featured products.
+                Carefully selected everyday products with simple delivery.
+            )
+        }
+    }
+
+    page $catalog {
+        intent $(
+            The product catalog page.
+            Customers can browse the available collection.
+        )
+
+        theme $light
+
+        section $products {
+            intent $(
+                Product One.
+                Product Two.
+                Product Three.
+            )
+        }
+
+        section $back {
+            intent $(
+                Use the navigation above to return home.
+            )
+        }
+    }
+
+    page $about {
+        intent $(
+            Learn about the storefront and the browser runtime.
+        )
+
+        theme $light
+
+        section $story {
+            intent $(
+                ITL describes what the application should be.
+                The browser runtime renders the generated representation.
+            )
+        }
+    }
+
+    target $web
+}
