@@ -2,6 +2,8 @@ from dataclasses import dataclass, field
 from enum import Enum
 from typing import Any
 
+from itl.gir.models import GIRNode
+
 
 @dataclass(frozen=True, slots=True)
 class GenerationContext:
@@ -16,6 +18,37 @@ class GenerationContext:
     framework: str | None = None
     existing_output: str | None = None
     metadata: tuple[tuple[str, Any], ...] = ()
+
+    @classmethod
+    def from_gir(
+        cls,
+        unit_id: str,
+        node: GIRNode,
+        dependencies: set[str] | tuple[str, ...] = (),
+        existing_output: str | None = None,
+    ) -> "GenerationContext":
+        """Create context from normalized GIR, never from source text."""
+        system = getattr(node, "system", None)
+        target = getattr(node, "target", None)
+        framework = getattr(node, "framework", None)
+
+        if system is not None:
+            target = target or getattr(system, "target", None)
+            framework = framework or getattr(system, "framework", None)
+
+        raw_constraints = getattr(node, "constraints", ())
+        constraints = tuple(sorted(str(value) for value in raw_constraints))
+
+        return cls(
+            unit_id=unit_id,
+            unit_type=type(node).__name__,
+            intent=node.intent,
+            constraints=constraints,
+            dependencies=tuple(sorted(dependencies)),
+            target=target,
+            framework=framework,
+            existing_output=existing_output,
+        )
 
 
 @dataclass(frozen=True, slots=True)
