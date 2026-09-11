@@ -14,7 +14,7 @@ app $BrowserStorefront {
         theme $light
 
         hero $welcome {
-            image $assets/storefront.svg
+            image $storefront.svg
             headline $Welcome to the ITL Storefront
             subtitle $A small browser runtime demo powered by generated ITL runtime data.
             action $Browse catalog
