@@ -2,6 +2,8 @@ from itl.build.models import BuildItem, BuildPlan
 from itl.cache.decider import CacheDecider
 from itl.cache.decision import CacheStatus
 from itl.graph.graph import DependencyGraph
+from itl.gir.changes import GIRChangeSet
+from itl.gir.invalidation import GIRDependencyInvalidator
 
 
 class BuildPlanner:
@@ -14,10 +16,13 @@ class BuildPlanner:
 
         self.decider = decider
         self.graph = graph
+        self.gir_invalidator = GIRDependencyInvalidator(graph)
 
     def plan(
         self,
         sources: list[str],
+        gir_changes: GIRChangeSet | None = None,
+        previous_dependents: dict[str, set[str]] | None = None,
     ) -> BuildPlan:
 
         decisions = {}
@@ -41,7 +46,21 @@ class BuildPlanner:
                     self.graph.affected_by(source)
                 )
 
-        plan = BuildPlan()
+        removed = []
+
+        if gir_changes is not None:
+            affected.update(
+                self.gir_invalidator.affected_nodes(
+                    gir_changes,
+                    previous_dependents=previous_dependents,
+                )
+            )
+            removed = sorted(
+                change.node_id
+                for change in gir_changes.removed
+            )
+
+        plan = BuildPlan(removed=removed)
 
         for source in sources:
 
@@ -72,6 +91,4 @@ class BuildPlanner:
 
         order = self.graph.topological_order()
 
-        return BuildPlan(
-            items=plan.ordered(order)
-        )
+        return plan.ordered(order)
