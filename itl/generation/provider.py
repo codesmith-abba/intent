@@ -15,5 +15,9 @@ class ProviderResponse:
 class GenerationProvider(Protocol):
     """Provider boundary used by the compiler generation backend."""
 
-    def generate(self, request: GenerationRequest) -> ProviderResponse:
+    def generate(
+        self,
+        request: GenerationRequest,
+        prompt: str,
+    ) -> ProviderResponse:
         ...
