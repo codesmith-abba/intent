@@ -8,6 +8,7 @@ from itl.cache.decision import CacheStatus
 from itl.generation.generator import AIGenerator
 from itl.generation.models import (
     GenerationContext,
+    GenerationRequest,
     GenerationStatus,
 )
 from itl.generation.prompt import GenerationPromptBuilder
@@ -62,7 +63,7 @@ def test_prompt_is_deterministic_and_structured():
         framework="react",
         existing_output="old output",
     )
-    request = __import__("itl.generation.models", fromlist=["GenerationRequest"]).GenerationRequest(
+    request = GenerationRequest(
         context=context,
         requested_unit="home",
     )
