@@ -3,8 +3,8 @@ from itl.gir.models import GIRHero, GIRPage, GIRSection, GIRSystem
 
 
 def test_style_change_is_classified():
-    previous = {"page": GIRPage("page", theme="light")}
-    current = {"page": GIRPage("page", theme="dark")}
+    previous = {"page": GIRPage(None, "page", theme="light")}
+    current = {"page": GIRPage(None, "page", theme="dark")}
 
     diff = GIRDiffAnalyzer.analyze(previous, current)
 
@@ -13,8 +13,14 @@ def test_style_change_is_classified():
 
 
 def test_layout_change_is_classified():
-    previous = {"page": GIRPage("page", components=[])}
-    current = {"page": GIRPage("page", components=[GIRHero("hero")])}
+    previous = {"page": GIRPage(None, "page", components=[])}
+    current = {
+        "page": GIRPage(
+            None,
+            "page",
+            components=[GIRHero(None, "hero")],
+        )
+    }
 
     diff = GIRDiffAnalyzer.analyze(previous, current)
 
@@ -23,8 +29,8 @@ def test_layout_change_is_classified():
 
 
 def test_content_change_is_classified():
-    previous = {"hero": GIRHero("hero", headline="Old")}
-    current = {"hero": GIRHero("hero", headline="New")}
+    previous = {"hero": GIRHero(None, "hero", headline="Old")}
+    current = {"hero": GIRHero(None, "hero", headline="New")}
 
     diff = GIRDiffAnalyzer.analyze(previous, current)
 
@@ -32,8 +38,8 @@ def test_content_change_is_classified():
 
 
 def test_logic_change_is_classified():
-    previous = {"hero": GIRHero("hero", action="open")}
-    current = {"hero": GIRHero("hero", action="submit")}
+    previous = {"hero": GIRHero(None, "hero", action="open")}
+    current = {"hero": GIRHero(None, "hero", action="submit")}
 
     diff = GIRDiffAnalyzer.analyze(previous, current)
 
@@ -41,8 +47,8 @@ def test_logic_change_is_classified():
 
 
 def test_architecture_change_is_classified():
-    previous = {"system": GIRSystem("system", backend="old-api")}
-    current = {"system": GIRSystem("system", backend="new-api")}
+    previous = {"system": GIRSystem(None, backend="old-api")}
+    current = {"system": GIRSystem(None, backend="new-api")}
 
     diff = GIRDiffAnalyzer.analyze(previous, current)
 
@@ -50,7 +56,7 @@ def test_architecture_change_is_classified():
 
 
 def test_dependency_change_is_architectural_and_structural():
-    node = GIRPage("page")
+    node = GIRPage(None, "page")
     diff = GIRDiffAnalyzer.analyze(
         {"page": node},
         {"page": node},
@@ -68,6 +74,7 @@ def test_dependency_change_is_architectural_and_structural():
 def test_multiple_change_categories_are_reported_together():
     previous = {
         "hero": GIRHero(
+            None,
             "hero",
             headline="Old",
             action="open",
@@ -75,6 +82,7 @@ def test_multiple_change_categories_are_reported_together():
     }
     current = {
         "hero": GIRHero(
+            None,
             "hero",
             headline="New",
             action="submit",
@@ -96,10 +104,10 @@ def test_multiple_change_categories_are_reported_together():
 def test_added_and_removed_nodes_are_structural():
     added = GIRDiffAnalyzer.analyze(
         {},
-        {"hero": GIRHero("hero")},
+        {"hero": GIRHero(None, "hero")},
     )
     removed = GIRDiffAnalyzer.analyze(
-        {"hero": GIRHero("hero")},
+        {"hero": GIRHero(None, "hero")},
         {},
     )
 
@@ -111,8 +119,8 @@ def test_added_and_removed_nodes_are_structural():
 
 def test_node_type_change_is_structural():
     diff = GIRDiffAnalyzer.analyze(
-        {"node": GIRHero("node")},
-        {"node": GIRSection("node")},
+        {"node": GIRHero(None, "node")},
+        {"node": GIRSection(None, "node")},
     )
 
     assert diff.nodes[0].categories == (GIRDiffCategory.STRUCTURAL,)
@@ -121,10 +129,10 @@ def test_node_type_change_is_structural():
 
 
 def test_unchanged_nodes_are_not_changed():
-    node = GIRPage("page", theme="light")
+    node = GIRPage(None, "page", theme="light")
     diff = GIRDiffAnalyzer.analyze(
         {"page": node},
-        {"page": GIRPage("page", theme="light")},
+        {"page": GIRPage(None, "page", theme="light")},
     )
 
     assert diff.changed == ()
@@ -133,12 +141,12 @@ def test_unchanged_nodes_are_not_changed():
 
 def test_results_are_deterministic():
     previous = {
-        "z": GIRHero("z", headline="old"),
-        "a": GIRHero("a", action="open"),
+        "z": GIRHero(None, "z", headline="old"),
+        "a": GIRHero(None, "a", action="open"),
     }
     current = {
-        "a": GIRHero("a", action="submit"),
-        "z": GIRHero("z", headline="new"),
+        "a": GIRHero(None, "a", action="submit"),
+        "z": GIRHero(None, "z", headline="new"),
     }
 
     first = GIRDiffAnalyzer.analyze(previous, current)
