@@ -22,6 +22,10 @@ class BuildPlan:
         default_factory=list
     )
 
+    removed: list[str] = field(
+        default_factory=list
+    )
+
     def add(
         self,
         item: BuildItem,
@@ -40,15 +44,18 @@ class BuildPlan:
     def ordered(
         self,
         order: list[str],
-    ) -> list[BuildItem]:
+    ) -> "BuildPlan":
 
         items = {
             item.source: item
             for item in self.items
         }
 
-        return [
-            items[source]
-            for source in order
-            if source in items
-        ]
+        return BuildPlan(
+            items=[
+                items[source]
+                for source in order
+                if source in items
+            ],
+            removed=list(self.removed),
+        )
