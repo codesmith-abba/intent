@@ -1,15 +1,13 @@
-from dataclasses import dataclass
-
 from itl.build.models import BuildItem
 from itl.cache.decision import CacheStatus
 from itl.generation.generator import AIGenerator
 from itl.generation.models import GenerationContext, GenerationRequest
-from itl.generation.provider import ProviderResponse
 from itl.plugins import (
     DuplicatePluginError,
     IncompatiblePluginError,
     InvalidPluginError,
     PluginConfig,
+    PluginManager,
     PluginMetadata,
     PluginNotFoundError,
     PluginRegistry,
@@ -183,7 +181,7 @@ def test_plugin_generation_integrates_with_ai_generator():
     registry = PluginRegistry()
     registry.register(ReactReferencePlugin())
     generator = AIGenerator(
-        provider=registry.generation_provider(),
+        provider=PluginManager(registry).generation_provider(),
         contexts={
             "home": _request().context,
         },
@@ -203,7 +201,10 @@ def test_plugin_manager_validation_selects_same_plugin():
     registry.register(ReactReferencePlugin())
     request = _request()
 
-    result = registry_manager_validate(registry, request, "const invalid = true;")
+    result = PluginManager(registry).validate(
+        request,
+        "const invalid = true;",
+    )
 
     assert result.status == PluginValidationStatus.FAILED
 
@@ -221,12 +222,6 @@ def test_plugin_without_validation_capability_is_skipped():
     registry = PluginRegistry()
     registry.register(GenerationOnlyPlugin())
 
-    result = registry_manager_validate(registry, _request(), "anything")
+    result = PluginManager(registry).validate(_request(), "anything")
 
     assert result.status == PluginValidationStatus.SKIPPED
-
-
-def registry_manager_validate(registry, request, output):
-    from itl.plugins import PluginManager
-
-    return PluginManager(registry).validate(request, output)
