@@ -52,7 +52,12 @@ class Emitter:
 
         for item in plan.items:
             result = by_source.get(item.source)
-            if result is None or result.status != BuildResultStatus.SUCCESS:
+            if (
+                result is None
+                or result.status != BuildResultStatus.SUCCESS
+                or result.validation_report is None
+                or not result.validation_report.passed
+            ):
                 continue
             if not isinstance(result.output, str):
                 emitted.add(EmitResult(item.source, EmitStatus.FAILED, error=EmitError("Emitter requires text output.")))
