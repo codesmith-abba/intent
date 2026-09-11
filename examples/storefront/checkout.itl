@@ -1,0 +1,29 @@
+app $StorefrontCheckout {
+    system {
+        frontend {
+            framework $react
+        }
+    }
+
+    page $checkout $The checkout page turns a product decision into a completed order {
+        theme $light
+
+        hero $checkoutHero {
+            headline $Complete your order
+            subtitle $Review your items, confirm delivery details, and place the order.
+            action $Place order
+        }
+
+        section $orderSummary $Show the products and totals before payment {
+            headline $Order summary
+            subtitle $Make the final amount easy to understand.
+        }
+
+        section $deliveryDetails $Collect the information needed for fulfillment {
+            headline $Delivery details
+            subtitle $Confirm the destination and delivery method.
+        }
+    }
+
+    target $web
+}
