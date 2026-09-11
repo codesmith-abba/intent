@@ -9,18 +9,18 @@ app $StorefrontShell {
         theme $light
 
         hero $header {
-            headline "Shop with confidence"
-            subtitle "A simple storefront shell for the Phase 16 end-to-end build."
-            action "Browse products"
+            headline $Shop with confidence
+            subtitle $A simple storefront shell for the Phase 16 end-to-end build.
+            action $Browse products
         }
 
         section $navigation $Shared navigation and account controls {
-            headline "Store navigation"
-            action "Open menu"
+            headline $Store navigation
+            action $Open menu
         }
 
         section $footer $Support, delivery, and account links {
-            headline "Store support"
+            headline $Store support
         }
     }
 
