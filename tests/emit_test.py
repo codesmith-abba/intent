@@ -90,7 +90,7 @@ def test_atomic_write_failure_is_reported_and_original_is_preserved():
         try:
             result = emitter.emit(_plan(), _results("pages/home.itl", "replacement"))
         finally:
-            Emitter._atomic_write = original
+            Emitter._atomic_write = staticmethod(original)
 
         assert result.failed
         assert (Path(directory) / "pages/home.generated").read_text() == "original"
