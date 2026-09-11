@@ -11,19 +11,18 @@ from itl.build.planner import BuildPlanner
 from itl.cache.cache import Cache
 from itl.cache.decider import CacheDecider
 from itl.emit.emitter import Emitter
+from itl.generation.generator import AIGenerator
+from itl.generation.models import GenerationContext, GenerationRequest
 from itl.gir.diff import GIRDiffAnalyzer, GIRDiffCategory
 from itl.gir.fingerprint import GIRFingerprint
 from itl.gir.store import GIRFingerprintStore
 from itl.graph.graph import DependencyGraph
-from itl.generation.models import GenerationContext, GenerationRequest
-from itl.generation.provider import ProviderResponse
-from itl.generation.generator import AIGenerator
+from itl.pipeline import Pipeline
 from itl.plugins.reference_react import ReactReferencePlugin
 from itl.plugins.registry import PluginManager, PluginRegistry
 from itl.repair.models import RepairPolicy
 from itl.repair.provider import RepairProviderResponse
 from itl.repair.repairer import AIRepairer
-from itl.pipeline import Pipeline
 from itl.validation.models import ValidationContext
 from itl.validation.pipeline import ValidatorPipeline
 from itl.validation.plugin import PluginValidator
@@ -50,7 +49,7 @@ class Phase16E2ETest(unittest.TestCase):
     def copy_example(self, root: Path) -> list[Path]:
         paths = []
         for name in UNIT_NAMES:
-            source = root / f"{name}.itl"
+            source = EXAMPLE_DIR / f"{name}.itl"
             target = root / f"{name}.itl"
             shutil.copy2(source, target)
             paths.append(target)
@@ -62,6 +61,14 @@ class Phase16E2ETest(unittest.TestCase):
             str(source): compiler.compile(source).pages[0]
             for source in sources
         }
+
+    def diff_nodes(self, pages):
+        nodes = dict(pages)
+        for source, page in pages.items():
+            for component in page.components:
+                component_id = f"{source}#{component.name}"
+                nodes[component_id] = component
+        return nodes
 
     def make_graph(self, sources: list[Path]) -> DependencyGraph:
         by_name = {source.stem: str(source) for source in sources}
@@ -135,6 +142,17 @@ class Phase16E2ETest(unittest.TestCase):
         )
         return pipeline, fingerprints, gir, contexts
 
+    def refresh_contexts(self, contexts, gir, graph):
+        for source, node in gir.items():
+            contexts[source] = GenerationContext(
+                unit_id=source,
+                unit_type=type(node).__name__,
+                intent=node.intent,
+                dependencies=tuple(sorted(graph.dependencies_of(source))),
+                target="web",
+                framework="react",
+            )
+
     def test_real_application_incremental_workflow(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
@@ -143,11 +161,12 @@ class Phase16E2ETest(unittest.TestCase):
             sources = self.copy_example(example_root)
             graph = self.make_graph(sources)
 
-            pipeline, fingerprints, previous_gir, _ = self.make_pipeline(
+            pipeline, fingerprints, previous_gir, contexts = self.make_pipeline(
                 root,
                 sources,
                 graph,
             )
+            previous_nodes = self.diff_nodes(previous_gir)
 
             initial = pipeline.build(sources, gir_fingerprints=fingerprints)
             self.assertTrue(initial.results.succeeded)
@@ -159,10 +178,7 @@ class Phase16E2ETest(unittest.TestCase):
                     (root / "output" / f"{source.stem}.generated").exists()
                 )
 
-            unchanged = pipeline.build(
-                sources,
-                gir_fingerprints=fingerprints,
-            )
+            unchanged = pipeline.build(sources, gir_fingerprints=fingerprints)
             self.assertTrue(unchanged.summary.succeeded)
             self.assertEqual(unchanged.summary.processed, 0)
             self.assertEqual(unchanged.summary.skipped, 5)
@@ -177,26 +193,22 @@ class Phase16E2ETest(unittest.TestCase):
                 encoding="utf-8",
             )
             changed_gir = self.compile_units(sources)
+            self.refresh_contexts(contexts, changed_gir, graph)
             changed_fingerprints = {
                 source: GIRFingerprint.calculate(node)
                 for source, node in changed_gir.items()
             }
             content_diff = GIRDiffAnalyzer.analyze(
-                previous_gir,
-                changed_gir,
-                {source: graph.dependencies_of(source) for source in sources},
-                {source: graph.dependencies_of(source) for source in sources},
+                previous_nodes,
+                self.diff_nodes(changed_gir),
             )
-            self.assertIn(
-                str(home),
-                {node.node_id for node in content_diff.changed},
-            )
+            home_hero_id = f"{home}#welcome"
             self.assertIn(
                 GIRDiffCategory.CONTENT,
                 next(
                     node.categories
                     for node in content_diff.changed
-                    if node.node_id == str(home)
+                    if node.node_id == home_hero_id
                 ),
             )
             content_build = pipeline.build(
@@ -206,6 +218,7 @@ class Phase16E2ETest(unittest.TestCase):
             self.assertEqual(content_build.summary.successful, 4)
             self.assertEqual(content_build.summary.processed, 4)
             previous_gir = changed_gir
+            previous_nodes = self.diff_nodes(changed_gir)
             fingerprints = changed_fingerprints
 
             catalog = next(source for source in sources if source.stem == "catalog")
@@ -215,15 +228,14 @@ class Phase16E2ETest(unittest.TestCase):
                 encoding="utf-8",
             )
             styled_gir = self.compile_units(sources)
+            self.refresh_contexts(contexts, styled_gir, graph)
             styled_fingerprints = {
                 source: GIRFingerprint.calculate(node)
                 for source, node in styled_gir.items()
             }
             style_diff = GIRDiffAnalyzer.analyze(
-                previous_gir,
-                styled_gir,
-                {source: graph.dependencies_of(source) for source in sources},
-                {source: graph.dependencies_of(source) for source in sources},
+                previous_nodes,
+                self.diff_nodes(styled_gir),
             )
             catalog_diff = next(
                 node for node in style_diff.changed if node.node_id == str(catalog)
@@ -236,6 +248,7 @@ class Phase16E2ETest(unittest.TestCase):
             self.assertEqual(style_build.summary.successful, 3)
             self.assertEqual(style_build.summary.processed, 3)
             previous_gir = styled_gir
+            previous_nodes = self.diff_nodes(styled_gir)
             fingerprints = styled_fingerprints
 
             product = next(source for source in sources if source.stem == "product")
@@ -248,15 +261,14 @@ class Phase16E2ETest(unittest.TestCase):
                 encoding="utf-8",
             )
             structural_gir = self.compile_units(sources)
+            self.refresh_contexts(contexts, structural_gir, graph)
             structural_fingerprints = {
                 source: GIRFingerprint.calculate(node)
                 for source, node in structural_gir.items()
             }
             structural_diff = GIRDiffAnalyzer.analyze(
-                previous_gir,
-                structural_gir,
-                {source: graph.dependencies_of(source) for source in sources},
-                {source: graph.dependencies_of(source) for source in sources},
+                previous_nodes,
+                self.diff_nodes(structural_gir),
             )
             product_diff = next(
                 node for node in structural_diff.changed if node.node_id == str(product)
@@ -269,6 +281,7 @@ class Phase16E2ETest(unittest.TestCase):
             self.assertEqual(structural_build.summary.successful, 2)
             self.assertEqual(structural_build.summary.processed, 2)
             previous_gir = structural_gir
+            previous_nodes = self.diff_nodes(structural_gir)
             fingerprints = structural_fingerprints
 
             checkout = next(source for source in sources if source.stem == "checkout")
@@ -281,20 +294,19 @@ class Phase16E2ETest(unittest.TestCase):
                 encoding="utf-8",
             )
             new_graph = self.make_graph(sources)
-            new_graph.add_dependency(
-                str(checkout),
-                str(next(source for source in sources if source.stem == "shell")),
-            )
+            shell = next(source for source in sources if source.stem == "shell")
+            new_graph.add_dependency(str(checkout), str(shell))
             dependency_gir = self.compile_units(sources)
+            self.refresh_contexts(contexts, dependency_gir, new_graph)
             dependency_fingerprints = {
                 source: GIRFingerprint.calculate(node)
                 for source, node in dependency_gir.items()
             }
             dependency_diff = GIRDiffAnalyzer.analyze(
-                previous_gir,
-                dependency_gir,
-                {source: graph.dependencies_of(source) for source in sources},
-                {source: new_graph.dependencies_of(source) for source in sources},
+                previous_nodes,
+                self.diff_nodes(dependency_gir),
+                {str(checkout): graph.dependencies_of(str(checkout))},
+                {str(checkout): new_graph.dependencies_of(str(checkout))},
             )
             checkout_diff = next(
                 node for node in dependency_diff.changed if node.node_id == str(checkout)
@@ -309,9 +321,7 @@ class Phase16E2ETest(unittest.TestCase):
             )
             self.assertTrue(dependency_build.results.succeeded)
             self.assertGreaterEqual(dependency_build.summary.processed, 1)
-            self.assertTrue(
-                (root / "output" / "checkout.generated").exists()
-            )
+            self.assertTrue((root / "output" / "checkout.generated").exists())
 
     def test_validation_failure_repair_and_emission(self):
         with tempfile.TemporaryDirectory() as directory:
