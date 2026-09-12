@@ -41,44 +41,67 @@ app $Hello {
 
 ## 3. Validate
 
+From inside the project, the project argument can be omitted:
+
 ```bash
-itl check hello-itl
+cd hello-itl
+itl check
 ```
 
 ## 4. Build GIR/output
 
 ```bash
-itl build hello-itl
+itl build
 ```
 
-The generated compiler state is written under `hello-itl/.project/`.
+The generated compiler state is written under `.project/`.
 
-## 5. Generate the development browser build
+## 5. Generate and start the development server
 
 ```bash
-itl dev hello-itl
+itl dev
 ```
 
-The browser development output is under:
+`itl dev` builds the development output and starts the React/Vite development server automatically. On the default Vite port, open:
 
 ```text
-hello-itl/.project/build/browser/
+http://localhost:5173
 ```
 
-It contains the runtime bundle, runtime manifest, and an `index.html` entry point.
+The development output is under:
+
+```text
+.project/build/
+```
+
+It contains the React application and browser runtime output.
+
+The first `itl dev` automatically installs the generated npm dependencies when they are not already installed. Installation uses `--ignore-scripts` by default for safety. Use `--allow-install-scripts` only when lifecycle scripts are explicitly trusted.
+
+To generate the development build without starting the server:
+
+```bash
+itl dev --no-run
+```
+
+The explicit form remains supported:
+
+```bash
+itl dev --run
+```
 
 ## 6. Inspect the project
 
 ```bash
-itl explain hello-itl
-itl graph hello-itl
-itl plan hello-itl
+itl explain
+itl graph
+itl plan
 ```
 
 ## 7. Clean generated development output
 
 ```bash
-itl clean hello-itl
+itl clean
 ```
 
 ## Scope of v1.0
