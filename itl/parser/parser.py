@@ -106,7 +106,11 @@ class Parser:
 
     def models(self):
         node = Models(intent=self.optional_intent(), models=[])
-        return self.parse_block(node, {TokenType.MODEL: lambda n: n.models.append(self.model())}, "Expected '{' after models.")
+        handlers = {
+            TokenType.MODEL: lambda n: n.models.append(self.model()),
+            TokenType.INTENT: lambda n: setattr(n, "intent", self.intent()),
+        }
+        return self.parse_block(node, handlers, "Expected '{' after models.")
 
     def model(self):
         name = self.consume(TokenType.STRING, "Expected model name.").lexeme
