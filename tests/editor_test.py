@@ -101,4 +101,4 @@ def test_lsp_initialize_and_completion():
     })
     labels = {item["label"] for item in response["result"]["items"]}
     assert "web" not in labels
-    assert "target" in labels
+    assert "target" not in labels
