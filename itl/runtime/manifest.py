@@ -1,6 +1,10 @@
 from __future__ import annotations
 
+import json
+import os
 from dataclasses import asdict
+from pathlib import Path
+from tempfile import NamedTemporaryFile
 from typing import Iterable
 
 from itl.gir.models import GIRApplication
@@ -40,12 +44,22 @@ class BrowserManifestBuilder:
         }
 
     def write(self, applications: Iterable[GIRApplication], path) -> None:
-        import json
-        from pathlib import Path
-
         destination = Path(path)
         destination.parent.mkdir(parents=True, exist_ok=True)
-        destination.write_text(
-            json.dumps(self.build(applications), indent=2),
+        payload = json.dumps(self.build(applications), indent=2) + "\n"
+        with NamedTemporaryFile(
+            "w",
             encoding="utf-8",
-        )
+            dir=destination.parent,
+            prefix=f".{destination.name}.",
+            delete=False,
+        ) as temporary:
+            temporary.write(payload)
+            temporary.flush()
+            os.fsync(temporary.fileno())
+            temporary_path = Path(temporary.name)
+        try:
+            os.replace(temporary_path, destination)
+        except Exception:
+            temporary_path.unlink(missing_ok=True)
+            raise
