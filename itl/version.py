@@ -1,1 +1,3 @@
-__version__ = "0.1.0"
+"""ITL distribution version."""
+
+__version__ = "1.0.0"
