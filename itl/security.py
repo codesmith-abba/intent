@@ -38,6 +38,11 @@ def safe_relative_path(value: str) -> str:
     return path.as_posix()
 
 
+def contains_secret_like_value(text: str) -> bool:
+    """Return true when text resembles a credential-bearing key/value pair."""
+    return _SECRET_PATTERN.search(text) is not None
+
+
 def redact_secret(text: str) -> str:
     """Redact common secret-like key/value material before user-visible output."""
     return _SECRET_PATTERN.sub(lambda match: f"{match.group(1)}=<redacted>", text)
