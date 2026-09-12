@@ -38,11 +38,18 @@ def sha256_file(path: Path) -> str:
 class PackageReader:
     """Reads and verifies .itlpkg archives without executing their contents."""
 
+    @staticmethod
+    def _validated_names(archive: ZipFile) -> list[str]:
+        names = [_safe_member(info.filename) for info in archive.infolist()]
+        if len(names) != len(set(names)):
+            raise PackageIntegrityError("Package contains duplicate archive members.")
+        return names
+
     def read_manifest(self, package_path: str | Path) -> PackageManifest:
         path = Path(package_path)
         try:
             with ZipFile(path, "r") as archive:
-                names = [_safe_member(info.filename) for info in archive.infolist()]
+                names = self._validated_names(archive)
                 if MANIFEST_NAME not in names:
                     raise InvalidPackageError("Package does not contain manifest.json.")
                 raw = archive.read(MANIFEST_NAME)
@@ -60,7 +67,7 @@ class PackageReader:
         expected = dict(manifest.files)
         try:
             with ZipFile(path, "r") as archive:
-                actual_names = {_safe_member(info.filename) for info in archive.infolist()}
+                actual_names = set(self._validated_names(archive))
                 actual_names.discard(MANIFEST_NAME)
                 if actual_names != set(expected):
                     missing = sorted(set(expected) - actual_names)
