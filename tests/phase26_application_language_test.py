@@ -19,20 +19,39 @@ def parse(source: str):
 
 
 def test_model_fields_constraints_and_relationships_parse():
-    app = parse("""app $Store { models {
+    app = parse("""app $Store {
+    models {
         model $User {
-            field $id { type $id primary }
-            field $email { type $email required unique }
-            field $name { type $string nullable maxLen 100 }
-            field $active { type $boolean default true readonly }
+            field $id {
+                type $id
+                primary
+            }
+            field $email {
+                type $email
+                required
+                unique
+            }
+            field $name {
+                type $string
+                nullable
+                maxLen 100
+            }
+            field $active {
+                type $boolean
+                default true
+                readonly
+            }
             hasMany $Order
         }
         model $Order {
-            field $id { type $id primary }
+            field $id {
+                type $id
+                primary
+            }
             belongsTo $User
         }
-    } }""")
-
+    }
+}""")
     user = app.models.models[0]
     assert isinstance(user, Model)
     assert user.fields[1].unique is True
@@ -42,25 +61,47 @@ def test_model_fields_constraints_and_relationships_parse():
 
 
 def test_all_relationship_kinds_are_accepted():
-    app = parse("""app $Store { models {
-        model $A { field $id { type $id primary }
+    app = parse("""app $Store {
+    models {
+        model $A {
+            field $id {
+                type $id
+                primary
+            }
             belongsTo $B
             hasOne $B
             hasMany $B
             belongsToMany $B
             hasManyThrough $B
         }
-        model $B { field $id { type $id primary } }
-    } }""")
+        model $B {
+            field $id {
+                type $id
+                primary
+            }
+        }
+    }
+}""")
     Analyzer().analyze(app)
 
 
 def test_invalid_model_semantics_are_rejected():
     cases = [
-        "app $X { models { model $User { field $id { type $id primary } field $id { type $string } } } }",
-        "app $X { models { model $User { field $id { type $id primary } field $x { type $unknown } } } }",
-        "app $X { models { model $User { field $id { type $id primary nullable } } } }",
-        "app $X { models { model $User { field $id { type $id primary } belongsTo $Missing } } }",
+        """app $X { models { model $User {
+            field $id { type $id primary }
+            field $id { type $string }
+        } } }""",
+        """app $X { models { model $User {
+            field $id { type $id primary }
+            field $x { type $unknown }
+        } } }""",
+        """app $X { models { model $User {
+            field $id { type $id primary nullable }
+        } } }""",
+        """app $X { models { model $User {
+            field $id { type $id primary }
+            belongsTo $Missing
+        } } }""",
     ]
     for source in cases:
         with pytest.raises((ParseError, SemanticError)):
@@ -69,10 +110,23 @@ def test_invalid_model_semantics_are_rejected():
 
 def test_routes_and_permissions_have_application_semantics():
     app = parse("""app $Store {
-        page $home {}
-        routes { route $home { path $/ page $home auth $guest } }
-        permissions { role $guest { allow { view $home create $order } } }
-    }""")
+    page $home {}
+    routes {
+        route $home {
+            path $/
+            page $home
+            auth $guest
+        }
+    }
+    permissions {
+        role $guest {
+            allow {
+                view $home
+                create $order
+            }
+        }
+    }
+}""")
     Analyzer().analyze(app)
     assert app.routes.routes[0].path == "/"
     assert app.permissions.roles[0].actions[1].kind == "create"
@@ -80,16 +134,20 @@ def test_routes_and_permissions_have_application_semantics():
 
 def test_invalid_route_page_reference_is_rejected():
     app = parse("""app $Store {
-        page $home {}
-        routes { route $missing { path $/missing page $missing } }
-    }""")
+    page $home {}
+    routes {
+        route $missing {
+            path $/missing
+            page $missing
+        }
+    }
+}""")
     with pytest.raises(SemanticError, match="unknown page"):
         Analyzer().analyze(app)
 
 
 def test_ecommerce_models_compile_through_gir():
-    root = Path("docs/examples/ecommerce")
-    gir = Compiler(root).compile()
+    gir = Compiler(Path("docs/examples/ecommerce")).compile()
     assert gir.name == "SMarket"
     assert len(gir.models) >= 10
     assert any(model.name == "Product" for model in gir.models)
