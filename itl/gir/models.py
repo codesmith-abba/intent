@@ -1,4 +1,5 @@
 from dataclasses import dataclass, field
+from typing import Optional
 
 
 @dataclass(slots=True)
@@ -10,7 +11,7 @@ class GIRNode:
 class GIRApplication(GIRNode):
     name: str
     target: str
-    system: "GIRSystem" | None = None
+    system: Optional["GIRSystem"] = None
     pages: list["GIRPage"] = field(default_factory=list)
     models: list["GIRModel"] = field(default_factory=list)
     routes: list["GIRRoute"] = field(default_factory=list)
