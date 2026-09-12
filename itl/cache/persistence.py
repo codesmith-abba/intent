@@ -31,7 +31,7 @@ class CachePersistence:
                     metadata=entry.get("metadata", {}),
                 )
             return entries
-        except (OSError, json.JSONDecodeError, KeyError, TypeError, ValueError) as error:
+        except (OSError, json.JSONDecodeError, KeyError, TypeError, ValueError):
             self._quarantine_corrupt_state()
             return {}
 
