@@ -2,706 +2,244 @@
 
 > **Programming by intention, not implementation.**
 
-Intent Language (ITL) is an experimental open-source programming language designed to help developers build software by describing **what they want** instead of manually implementing every file, component, API, and configuration.
+Intent Language (ITL) is an open-source declarative programming language and compiler for describing application intent and transforming it into a structured intermediate representation and generated runtime artifacts.
 
-Rather than writing hundreds or thousands of lines of framework-specific code, developers write their **intent**, and the ITL compiler transforms that intent into complete applications.
+**v1.0.0 — Stable**
 
-ITL is not another AI coding assistant.
+## What is stable in v1.0
 
-It is a **programming language**, **compiler**, and **runtime** that explores a new way of building software.
+ITL v1.0.0 stabilizes the implemented language/compiler boundary and the surrounding build tooling:
 
----
+- lexer and parser
+- AST and import resolution
+- semantic analysis
+- Graph Intermediate Representation (GIR)
+- dependency graph and build planning
+- deterministic scheduling
+- fingerprints, diff analysis, and incremental builds
+- cache persistence and recovery
+- AI generation contracts
+- plugin architecture
+- validation, repair, and emission
+- project lifecycle and CLI
+- browser runtime and runtime manifests
+- package-system boundaries
+- security hardening
+- local AI provider
 
-# Imagine...
+The release does **not** claim that every lexer token is a supported language construct, that every possible backend is implemented, or that AI-generated output is automatically correct. Unsupported and future capabilities remain outside the v1.0 language contract.
 
-Imagine if programming was about describing your intentions instead of manually building every file.
+## Install
 
-Today, even with AI, developers still need to:
+ITL requires Python 3.10 or newer.
 
-- Understand programming languages
-- Create folders
-- Organize project structure
-- Configure frameworks
-- Build APIs
-- Connect databases
-- Manage authentication
-- Write frontend components
-- Debug implementation details
+From a source checkout:
 
-AI makes coding faster.
+```bash
+python -m pip install .
+```
 
-ITL asks a different question.
+Verify:
 
-> **What if developers only described what they wanted, and the compiler handled the implementation?**
+```bash
+itl --help
+python -c "import itl; print(itl.__version__)"
+```
 
-Instead of writing implementation, developers write intent.
+## Quickstart
 
----
+Create a project:
 
-# Example
+```bash
+mkdir hello-itl
+itl init hello-itl
+```
 
-Instead of creating dozens of React components, pages, configuration files, and routes, a developer writes:
+Create `hello-itl/app.itl`:
 
 ```itl
-app $Portfolio {
-
+app $Hello {
     page $home {
-
-        theme $dark
-
         hero $main {
-
-            image $assets/mypic.png
-
-            headline $Hi, I'm Abdulmumin
-
-            subtitle $AI Engineer & Founder
-
-            action $View Projects
+            headline $Hello from ITL
+            subtitle $Programming by intention.
+            action $Explore
         }
-
-        section $about {}
-
-        section $projects {}
-
-        section $contact {}
-
-        section $footer {}
     }
-
     target $web
-
-    framework $react
 }
 ```
 
-The ITL compiler understands the application's intention and generates everything required to run it.
-
----
-
-# Why ITL?
-
-Programming has always evolved toward higher levels of abstraction.
-
-Machine Code
-
-↓
-
-Assembly
-
-↓
-
-C
-
-↓
-
-Java
-
-↓
-
-Python
-
-↓
-
-Modern Frameworks
-
-Each generation allows developers to focus less on implementation details.
-
-ITL explores the next abstraction:
-
-> **Developer Intent**
-
-Instead of describing implementation...
-
-```html
-<div class="hero">
-```
-
-or
-
-```jsx
-<Hero />
-```
-
-developers describe what the application should contain.
-
-```itl
-hero $main {
-
-    headline $Everything Fashion
-
-    subtitle $Buy from trusted tailors
-
-    action $Start Shopping
-}
-```
-
-The compiler decides how that should be implemented.
-
----
-
-# Vision
-
-The long-term vision of ITL is to become a language capable of describing applications through intent.
-
-Developers should focus on:
-
-- Business logic
-- User experience
-- Features
-- Product ideas
-
-instead of
-
-- Framework configuration
-- Boilerplate code
-- Project organization
-- Repetitive implementation
-
----
-
-# Philosophy
-
-ITL follows one simple philosophy:
-
-> **Developers describe WHAT they want.**
-
-> **The compiler determines HOW it is built.**
-
-Intent should be separated from implementation.
-
----
-
-# Design Principles
-
-- Intent-first
-- Human-readable
-- Framework-independent
-- AI-native
-- Compiler-driven
-- Extensible
-- Modular
-- Open Source
-- Local-first
-- Secure by default
-
----
-
-# Security
-
-Security is a core design principle of Intent Language (ITL), not an afterthought.
-
-The language is designed to encourage secure application development by separating **intent** from **sensitive implementation details**.
-
-## Secrets
-
-ITL source files should never contain secrets.
-
-Instead of embedding passwords, API keys, or tokens directly into `.itl` files, developers reference secrets that are resolved securely at runtime.
-
-Example:
-
-```itl
-database $main {
-
-    provider $postgres
-
-    password env $DATABASE_PASSWORD
-}
-```
-
-This allows the compiler to generate framework-specific implementations while keeping sensitive information outside the source code.
-
-## Public Source Files
-
-A `.itl` file should always be safe to:
-
-- Commit to Git
-- Share publicly
-- Open source
-- Review
-
-Sensitive values belong in secure secret stores such as:
-
-- Environment variables (`.env`)
-- Cloud Secret Managers
-- Vault providers
-- Operating system credential stores
-
-## Principle of Least Privilege
-
-Applications should explicitly declare the capabilities they require.
-
-Future versions of ITL may support capability declarations such as:
-
-```itl
-capabilities {
-
-    internet
-
-    storage
-
-    notifications
-
-    location
-}
-```
-
-This allows generated applications to request only the permissions they actually need.
-
-## Framework Independence
-
-Security should be expressed once in ITL and implemented appropriately by each backend.
-
-For example:
-
-- React → Environment Variables
-- Django → `os.environ`
-- Flutter → Platform Secure Storage
-- Future Browser Runtime → Secure Runtime APIs
-
-The application intent remains the same regardless of the deployment target.
-
-## Secure by Default
-
-ITL aims to generate applications that follow secure defaults whenever possible, including:
-
-- Separation of secrets from source code
-- Safe project structures
-- Minimal default permissions
-- Deterministic project generation
-- Validation during compilation
-
-As the language evolves, security features such as secret providers, capability-based permissions, package verification, and secure runtime execution will become first-class parts of the ecosystem.
-
-> **Intent should be public. Secrets should never be.**
-
-# Language Goals
-
-The language should:
-
-- Read like a specification
-- Be easy to understand
-- Require minimal syntax
-- Scale from simple websites to large applications
-- Support multiple runtimes
-- Support multiple frameworks
-- Eventually support local AI execution
-
----
-
-# Current Syntax
-
-```itl
-app $Portfolio {
-
-    page $home {
-
-        theme $dark
-
-        hero $main {
-
-            image $assets/mypic.png
-
-            headline $Hi, I'm Abdulmumin
-
-            subtitle $AI Engineer & Founder
-
-            action $View Projects
-        }
-
-        section $about {}
-
-        section $projects {}
-
-        section $contact {}
-
-        section $footer {}
-    }
-
-    target $web
-
-    framework $react
-}
-```
-
----
-
-# Compiler Pipeline
-
-The ITL compiler currently follows this architecture.
-
-```
-           Source (.itl)
-
-                 │
-
-                 ▼
-
-             Lexer
-
-                 │
-
-                 ▼
-
-             Parser
-
-                 │
-
-                 ▼
-
-      Abstract Syntax Tree
-
-                 │
-
-                 ▼
-
-      Semantic Analyzer
-
-                 │
-
-                 ▼
-
- Intermediate Representation
-
-                 │
-                 ▼
-
-             Backend
-
-                 │
-
-        ┌────────┼────────┐
-
-        ▼        ▼        ▼
-
-      React     Vue    Browser
-```
-
-Each backend receives the same Intermediate Representation (IR).
-
-This allows ITL to target multiple frameworks without changing the language itself.
-
----
-
-# Current Features
-
-- Lexer
-- Parser
-- AST
-- Semantic Analyzer
-- Intermediate Representation (IR)
-- Project Builder
-- Command Line Interface
-- React Backend (Work in Progress)
-
----
-
-# Command Line Interface
-
-Explain an application
+Validate and build:
 
 ```bash
-itl explain examples/app
+itl check hello-itl
+itl build hello-itl
 ```
 
-Build a project
+Generate the browser development build:
 
 ```bash
-itl build examples/app
+itl dev hello-itl
 ```
 
-Generate a React project
+Inspect a project:
 
 ```bash
-itl dev examples/app
+itl explain hello-itl
+itl graph hello-itl
+itl plan hello-itl
 ```
 
----
+See [`docs/quickstart.md`](docs/quickstart.md) for the complete walkthrough.
 
-# Testing
+## Language reference
 
-ITL's development test suite uses **Python's standard library only**. No pytest or other third-party test dependency is required.
+The normative source-language specification is [`spec/ITL-0.1.md`](spec/ITL-0.1.md). It is intentionally derived from the implemented lexer, parser, resolver, and semantic analyzer.
 
-Run the complete test suite from the repository root:
+The release-facing reference is [`docs/language-reference.md`](docs/language-reference.md).
 
-```bash
-python3 -m tests
-```
+Important: the lexer reserves more words than the parser currently accepts. Lexical recognition does not make a keyword a supported language feature.
 
-The test runner automatically discovers every `*_test.py` module in `tests/` and executes every zero-argument function whose name starts with `test_`.
+## Compiler architecture
 
-Individual tests can still be run as modules when debugging a specific area:
-
-```bash
-python3 -m tests.build_executor_test
-```
-
-The repository also runs the same test command automatically through GitHub Actions on pushes and pull requests.
-
----
-
-# Project Structure
-
-```
-intent/
-
-├── examples/
-
-├── itl/
-
-│   ├── analyzer/
-
-│   ├── backend/
-
-│   ├── explain/
-
-│   ├── ir/
-
-│   ├── parser/
-
-│   ├── runtime/
-
-│   ├── pipeline.py
-
-│   └── cli.py
-
-├── tests/
-│   ├── __main__.py
-│   └── *_test.py
-
-├── spec/
-
-├── README.md
-
-└── pyproject.toml
-```
-
----
-
-# How ITL Works
-
-A developer writes intent.
-
-```
-Developer
-
-↓
-
-ITL Source
-```
-
-The compiler validates the application.
-
-```
-Lexer
-
-↓
-
-Parser
-
-↓
-
+```text
+.itl source
+    |
+    v
+  Lexer
+    |
+    v
+  Parser
+    |
+    v
+   AST
+    |
+    v
+Import Resolution
+    |
+    v
 Semantic Analysis
+    |
+    v
+   GIR
+    |
+    +-------------------+
+    |                   |
+Dependency Graph    Build Planning
+    |                   |
+    +--------+----------+
+             |
+        Scheduler
+             |
+     Generation/Plugins
+             |
+       Validation
+             |
+          Repair
+             |
+           Emit
+             |
+      Runtime Artifacts
 ```
 
-The compiler transforms it into an Intermediate Representation.
+GIR is the boundary between source-language semantics and downstream build/runtime services. Incremental compilation uses fingerprints, change/diff analysis, dependency impact, planning, scheduling, and cache state.
 
+See [`docs/architecture.md`](docs/architecture.md).
+
+## CLI
+
+The supported executable is `itl`.
+
+| Command | Purpose |
+|---|---|
+| `itl init <project>` | Initialize an ITL project |
+| `itl check <project>` | Validate and compile the project |
+| `itl build <project>` | Build compiler/GIR output |
+| `itl dev <project>` | Generate development/browser output |
+| `itl explain <project>` | Explain compiled intent |
+| `itl graph <project>` | Inspect persisted dependency graph |
+| `itl plan <project>` | Inspect cache/build decision |
+| `itl clean <project>` | Remove development build output |
+
+## Browser runtime
+
+`itl dev` produces a browser development bundle containing:
+
+- `browser.js`
+- `runtime.json`
+- `index.html`
+
+The browser runtime consumes the generated runtime manifest; it does not parse `.itl` source. The runtime asset is included in the installed Python package.
+
+## AI and local AI
+
+AI is an optional implementation capability, not a requirement for the language. Generation is isolated behind provider contracts and validated before emission.
+
+The local provider supports OpenAI-compatible local HTTP endpoints. See [`docs/local-ai.md`](docs/local-ai.md).
+
+## Plugins
+
+Plugins extend generation and validation through the existing implementation-level plugin system. They do not introduce new `.itl` syntax.
+
+Trusted Python plugins are privileged code; v1.0 does not claim a security sandbox for them. See [`docs/plugins.md`](docs/plugins.md).
+
+## Security
+
+ITL v1.0 applies secure defaults around subprocess execution, package installation, plugins, local AI endpoints, secrets, cache persistence, and project paths. Privileged capabilities remain explicit trust boundaries.
+
+See the existing security and production-hardening documentation under `docs/`.
+
+## Testing
+
+The project uses Python's standard-library test runner. No pytest dependency is required.
+
+```bash
+python -m tests
+node tests/browser_runtime_test.js
 ```
-IR
+
+The CI workflow also installs the package, verifies the version, runs the installed CLI outside the checkout, performs a clean project build, and runs the complete test suite.
+
+See [`docs/test-matrix.md`](docs/test-matrix.md).
+
+## Project structure
+
+```text
+intent/
+├── itl/                 # compiler, language, build, runtime, CLI
+├── runtime/             # repository browser-runtime fixture
+├── examples/            # executable example projects
+├── spec/                # normative language specification
+├── docs/                # subsystem and release documentation
+├── tests/               # standard-library test suite
+├── benchmarks/          # diagnostic production benchmarks
+├── pyproject.toml       # v1.0 package metadata
+├── CHANGELOG.md
+└── LICENSE
 ```
 
-The selected backend generates the final application.
+## Versioning
 
-```
-React
+ITL uses semantic implementation releases beginning at `1.0.0`.
 
-Vue
+The implementation/distribution version and language-specification version are tracked separately. A compiler implementation patch must not silently change the accepted language. A language change requires updated implementation behavior, conformance tests, and a new versioned specification.
 
-Flutter
+## Release documentation
 
-Django
+- [`CHANGELOG.md`](CHANGELOG.md)
+- [`docs/release-1.0.0.md`](docs/release-1.0.0.md)
+- [`docs/release-checklist.md`](docs/release-checklist.md)
+- [`docs/migration-1.0.md`](docs/migration-1.0.md)
+- [`docs/quickstart.md`](docs/quickstart.md)
+- [`docs/language-reference.md`](docs/language-reference.md)
+- [`docs/architecture.md`](docs/architecture.md)
+- [`docs/plugins.md`](docs/plugins.md)
 
-Browser Runtime
-```
+## License
 
----
+Apache License 2.0. See [`LICENSE`](LICENSE).
 
-# Why Not Just Use AI?
+## Project status
 
-Modern AI coding assistants generate code from prompts.
-
-However, developers still need to:
-
-- Review generated code
-- Organize files
-- Manage architecture
-- Configure projects
-- Maintain implementation
-
-ITL approaches the problem differently.
-
-Instead of generating random source files from prompts, developers write a structured language that represents application intent.
-
-The compiler then produces deterministic output.
-
----
-
-# AI and ITL
-
-Artificial Intelligence is expected to play an important role in the ITL ecosystem.
-
-Rather than replacing developers, AI can become another backend that understands ITL programs and helps optimize, extend, or transform applications.
-
-The language itself remains deterministic.
-
-AI becomes an optional capability rather than a requirement.
-
----
-
-# Long-Term Goals
-
-- Language Specification
-- Stable Compiler
-- Browser Runtime
-- Plugin System
-- Local AI Runtime
-- Multiple Framework Backends
-- Package Manager
-- Playground
-- VS Code Extension
-- Documentation Website
-
----
-
-# Roadmap
-
-## v0.1
-
-- Lexer
-- Parser
-- AST
-- Semantic Analyzer
-- CLI
-
-## v0.2
-
-- Intermediate Representation
-- Project Builder
-- React Backend
-
-## v0.3
-
-- Imports
-- Multiple Pages
-- Components
-- Assets
-
-## v0.4
-
-- Plugins
-- Theme System
-- Layout Engine
-- Developer Tools
-
-## v0.5
-
-- Browser Runtime Prototype
-
-## v1.0
-
-- Stable Language
-- Official Specification
-- Multiple Backends
-- Package Registry
-- Public Playground
-
----
-
-# Open Source
-
-ITL is an open-source research project.
-
-The objective is to explore whether software can be developed by describing intent rather than manually implementing every detail.
-
-We welcome contributions from developers interested in:
-
-- Programming Languages
-- Compiler Design
-- Language Design
-- AI
-- Developer Tooling
-- Documentation
-- Runtime Systems
-
----
-
-# Status
-
-⚠️ **Experimental**
-
-ITL is currently under active development.
-
-The language syntax, compiler architecture, and runtime are expected to evolve as the project matures.
-
----
-
-# Contributing
-
-Contributions are welcome.
-
-Whether you're interested in building the compiler, improving the language specification, designing developer tools, or experimenting with new ideas, we'd love to collaborate.
-
-If you'd like to contribute:
-
-1. Fork the repository.
-2. Create a feature branch.
-3. Commit your changes.
-4. Open a Pull Request.
-
-Please keep discussions respectful, constructive, and focused on advancing the language.
-
----
-
-# License
-
-APACHE
-
----
-
-# Acknowledgements
-
-Intent Language is inspired by decades of research in:
-
-- Programming Language Design
-- Compiler Construction
-- Declarative Programming
-- Domain-Specific Languages
-- Human-Computer Interaction
-- Artificial Intelligence
-
-While influenced by these fields, ITL explores a distinct idea:
-
-> **Programming should be about expressing intent, not managing implementation.**
-
----
-
-# The Future
-
-ITL is an experiment.
-
-Perhaps it will evolve into a new programming paradigm.
-
-Perhaps it will influence future developer tools.
-
-Perhaps it will simply inspire new ideas.
-
-Regardless of the outcome, the goal is to ask an important question:
-
-> **What if programming languages were designed around human intention instead of implementation?**
-
-If that future is possible, we'd like to help build it.
-
----
-
-> **Programming by intention, not implementation.**
+ITL v1.0.0 is the first stable release. Future language changes should be proposed and versioned rather than introduced silently.
