@@ -1,0 +1,7 @@
+{
+  "schema_version": 1,
+  "name": "browser-runtime",
+  "version": "1",
+  "entrypoint": "app.itl",
+  "generator_version": null
+}
