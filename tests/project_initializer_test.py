@@ -1,6 +1,7 @@
 from pathlib import Path
 from tempfile import TemporaryDirectory
 
+from itl.compiler.compiler import Compiler
 from itl.project.initializer import ProjectInitializer
 from itl.project.models import ProjectState
 from itl.project.state import ProjectStateStore
@@ -31,7 +32,12 @@ def test_initialize_project():
 
         assert paths.state.is_file()
         assert (root / "app.itl").is_file()
-        assert "app $SMarket" in (root / "app.itl").read_text(encoding="utf-8")
+        source = (root / "app.itl").read_text(encoding="utf-8")
+        assert "app $SMarket" in source
+        assert "page $home {}" in source
+        assert "target $web" in source
+
+        Compiler(root).compile()
 
         loaded = ProjectStateStore(
             paths.state
