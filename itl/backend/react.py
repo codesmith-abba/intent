@@ -39,17 +39,22 @@ class ReactBackend(Backend):
         self.app_tsx(root, project)
 
         if policy.install_dependencies:
-            command = ["npm", "install"]
-            if not policy.allow_install_scripts:
-                command.append("--ignore-scripts")
-            subprocess.run(command, cwd=root, check=True)
+            self.install_dependencies(root, allow_install_scripts=policy.allow_install_scripts)
 
         if policy.start_dev_server:
+            if not (root / "node_modules").is_dir():
+                self.install_dependencies(root, allow_install_scripts=policy.allow_install_scripts)
             subprocess.Popen(
                 ["npm", "run", "dev"],
                 cwd=root,
                 start_new_session=True,
             )
+
+    def install_dependencies(self, root, *, allow_install_scripts: bool = False):
+        command = ["npm", "install"]
+        if not allow_install_scripts:
+            command.append("--ignore-scripts")
+        subprocess.run(command, cwd=root, check=True)
 
     def package_json(self, root):
         package = {
