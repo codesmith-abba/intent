@@ -2,12 +2,13 @@ from pathlib import Path
 from tempfile import TemporaryDirectory
 
 from itl.analyzer.analyzer import Analyzer
+
+from itl.analyzer.analyzer import Analyzer
+from itl.analyzer.errors import SemanticError
 from itl.parser.errors import ParseError
 from itl.parser.lexer import Lexer
 from itl.parser.parser import Parser
-from itl.parser.errors import SemanticError
 from itl.parser.source import SourceFile
-from itl.parser.errors import SyntaxError
 
 
 def parse(source: str, path: str = "conformance.itl"):
@@ -36,7 +37,7 @@ def test_v01_valid_application_syntax():
     )
     assert app.name == "Example"
     assert app.target == "web"
-    assert app.system.frontend.framework == "react"
+    assert app.system.frontend.framework.value == "react"
 
 
 def test_v01_multiline_intent_is_string_value():
@@ -126,7 +127,13 @@ def test_v01_unknown_block_member_is_parse_error():
 
 
 def test_v01_string_terminates_before_left_brace():
-    app = parse("app $Example { page $home $Intent text {} }")
+    app = parse(
+        """app $Example {
+    page $home {
+        intent $Intent text
+    }
+}"""
+    )
     assert app.pages[0].intent == "Intent text"
 
 
