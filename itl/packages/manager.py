@@ -16,8 +16,8 @@ from .errors import (
     PackageTrustError,
 )
 from .format import PackageReader, sha256_file
-from .models import InstalledPackage
-from .registry import LocalPackageRegistry, PackageResolver, Version
+from .models import InstalledPackage, PackageDependency
+from .registry import LocalPackageRegistry, PackageResolver, Version, satisfies
 
 
 class PackageManager:
@@ -67,7 +67,7 @@ class PackageManager:
                 path=str(destination),
                 trusted=False,
                 package_sha256=source_sha256,
-                dependencies=tuple(dep.name for dep in manifest.dependencies),
+                dependencies=manifest.dependencies,
             )
             self._set(record)
             return record
@@ -82,6 +82,13 @@ class PackageManager:
             candidate
             for candidate in self.registry.candidates(name)
             if Version.parse(candidate.manifest.version) > Version.parse(current.version)
+            and all(
+                satisfies(candidate.manifest.version, dependency.constraint)
+                for installed in self.installed()
+                for dependency in installed.dependencies
+                if dependency.name.casefold() == name.casefold()
+                and installed.name.casefold() != name.casefold()
+            )
         ]
         if not candidates:
             return current
@@ -101,11 +108,16 @@ class PackageManager:
             other.name
             for other in self.installed()
             if other.name.casefold() != record.name.casefold()
-            and record.name.casefold() in {dependency.casefold() for dependency in other.dependencies}
+            and any(dependency.name.casefold() == record.name.casefold() for dependency in other.dependencies)
+            and any(
+                dependency.name.casefold() == record.name.casefold()
+                and satisfies(record.version, dependency.constraint)
+                for dependency in other.dependencies
+            )
         ]
         if dependents:
             raise PackageInstalledError(
-                f"Cannot remove '{record.name}@{record.version}'; required by {', '.join(sorted(dependents))}."
+                f"Cannot remove '{record.name}@{record.version}'; required by {', '.join(sorted(set(dependents)))}."
             )
         _remove_tree(Path(record.path))
         records = [
@@ -167,7 +179,31 @@ class PackageManager:
 
     def installed(self) -> tuple[InstalledPackage, ...]:
         state = self._read_state()
-        records = [InstalledPackage(**item) for item in state]
+        records = []
+        for item in state:
+            dependencies = tuple(
+                PackageDependency(
+                    dependency["name"], dependency.get("constraint", "*"),
+                )
+                for dependency in item.get("dependencies", ())
+                if isinstance(dependency, dict)
+            )
+            # Older state entries stored dependency names only; preserve them as unconstrained dependencies.
+            dependencies += tuple(
+                PackageDependency(dependency)
+                for dependency in item.get("dependencies", ())
+                if isinstance(dependency, str)
+            )
+            records.append(
+                InstalledPackage(
+                    name=item["name"],
+                    version=item["version"],
+                    path=item["path"],
+                    trusted=item.get("trusted", False),
+                    package_sha256=item.get("package_sha256", ""),
+                    dependencies=dependencies,
+                )
+            )
         return tuple(sorted(records, key=lambda item: (item.name.casefold(), Version.parse(item.version))))
 
     def latest_installed(self, name: str) -> InstalledPackage:
@@ -236,7 +272,10 @@ class PackageManager:
                 "path": item.path,
                 "trusted": item.trusted,
                 "package_sha256": item.package_sha256,
-                "dependencies": list(item.dependencies),
+                "dependencies": [
+                    {"name": dependency.name, "constraint": dependency.constraint}
+                    for dependency in item.dependencies
+                ],
             }
             for item in sorted(records, key=lambda item: (item.name.casefold(), Version.parse(item.version)))
         ]
