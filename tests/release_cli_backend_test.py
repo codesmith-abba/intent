@@ -18,6 +18,16 @@ def test_project_commands_default_to_current_directory():
         assert args.project == "."
 
 
+def test_dev_starts_server_by_default():
+    args = CLI().parser().parse_args(["dev"])
+    assert args.run is True
+
+
+def test_dev_can_skip_server_start():
+    args = CLI().parser().parse_args(["dev", "--no-run"])
+    assert args.run is False
+
+
 def test_dev_defaults_to_current_directory():
     with tempfile.TemporaryDirectory() as directory:
         project = Path(directory) / "project"
@@ -25,7 +35,7 @@ def test_dev_defaults_to_current_directory():
         previous = Path.cwd()
         try:
             os.chdir(project)
-            assert CLI().run(["dev"]) == 0
+            assert CLI().run(["dev", "--no-run"]) == 0
             browser = project / ".project" / "build" / "browser"
             assert (browser / "browser.js").exists()
             assert (browser / "runtime.json").exists()
