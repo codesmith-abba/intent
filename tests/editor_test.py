@@ -38,7 +38,7 @@ def test_parse_diagnostic_comes_from_parser():
 
 def test_semantic_diagnostic_comes_from_analyzer():
     service = EditorService()
-    source = "app $Store { target $console }"
+    source = "app $Store {\n    target $console\n}"
     diagnostics = service.diagnostics("app.itl", source)
     assert len(diagnostics) == 1
     assert "Unknown target 'console'" in diagnostics[0].message
