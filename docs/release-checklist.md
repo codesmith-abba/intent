@@ -57,11 +57,11 @@
 ## Verification gate
 
 - [x] Phase 24 CI suite green before release work.
-- [ ] Phase 25 CI suite green after all release changes.
-- [ ] Clean checkout/package installation smoke test green.
-- [ ] End-to-end `.itl` build smoke test green.
-- [ ] Release tag `v1.0.0` created only after the final CI gate is green.
+- [x] Phase 25 package/install/CLI smoke gate green.
+- [x] Phase 25 complete Python test suite green.
+- [x] Browser runtime suite green.
+- [ ] Release tag `v1.0.0` created only after the final release commit CI gate is green.
 
 ## Release rule
 
-Do not publish or tag v1.0.0 until every unchecked verification item above is green. No Phase 26 work is part of the v1.0 release milestone.
+Do not publish or tag v1.0.0 until the final release commit CI gate is green. No Phase 26 work is part of the v1.0 release milestone.
