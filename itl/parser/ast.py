@@ -77,20 +77,20 @@ class System(IntentNode):
 @dataclass(slots=True)
 class App(ImportNode):
     name: str
-    pages: list[Page] = field(default_factory=list)
+    pages: list["Page"] = field(default_factory=list)
     system: System | None = None
     target: Literal["web", "mobile"] | str = "web"
-    models: Models | None = None
-    routes: Routes | None = None
-    permissions: Permissions | None = None
+    models: "Models" | None = None
+    routes: "Routes" | None = None
+    permissions: "Permissions" | None = None
 
 
 @dataclass(slots=True)
 class Page(ImportNode):
     name: str
     theme: Optional[str] = None
-    hero: Optional[Hero] = None
-    sections: list[Section] = field(default_factory=list)
+    hero: Optional["Hero"] = None
+    sections: list["Section"] = field(default_factory=list)
 
 
 @dataclass(slots=True)
@@ -105,7 +105,7 @@ class Hero(IntentNode):
 @dataclass(slots=True)
 class Section(ImportNode):
     name: str
-    sections: list[Section] = field(default_factory=list)
+    sections: list["Section"] = field(default_factory=list)
     image: Optional[str] = None
     headline: Optional[str] = None
     subtitle: Optional[str] = None
@@ -132,17 +132,16 @@ class Field(Node):
 class Relationship(Node):
     kind: str
     target: str
-    through: str | None = None
 
 
 @dataclass(slots=True)
 class Action(Node):
     kind: str
-    target: str | None = None
+    target: str
 
 
 @dataclass(slots=True)
-class Model(IntentNode):
+class Model(ImportNode):
     name: str
     fields: list[Field] = field(default_factory=list)
     relationships: list[Relationship] = field(default_factory=list)
@@ -150,37 +149,30 @@ class Model(IntentNode):
 
 
 @dataclass(slots=True)
-class Models(Node):
+class Models(IntentNode):
     models: list[Model] = field(default_factory=list)
 
 
 @dataclass(slots=True)
-class Route(Node):
+class Route(ImportNode):
     name: str
-    path: str
+    path: str | None = None
     page: str | None = None
     auth: str | None = None
-    actions: list[Action] = field(default_factory=list)
 
 
 @dataclass(slots=True)
-class Routes(Node):
+class Routes(IntentNode):
     routes: list[Route] = field(default_factory=list)
 
 
 @dataclass(slots=True)
-class PermissionAction(Node):
-    kind: str
-    target: str
-
-
-@dataclass(slots=True)
-class PermissionRole(Node):
+class PermissionRole(ImportNode):
     name: str
     inherits: list[str] = field(default_factory=list)
-    actions: list[PermissionAction] = field(default_factory=list)
+    actions: list[Action] = field(default_factory=list)
 
 
 @dataclass(slots=True)
-class Permissions(Node):
+class Permissions(IntentNode):
     roles: list[PermissionRole] = field(default_factory=list)
