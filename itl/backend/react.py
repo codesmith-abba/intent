@@ -3,6 +3,7 @@ import subprocess
 from dataclasses import dataclass
 
 from .base import Backend
+from itl.gir.models import GIRHero, GIRSection
 
 
 @dataclass(frozen=True, slots=True)
@@ -108,31 +109,40 @@ export default function App() {{
 export default function {page.name.title()}Page() {{
     return (
         <main>
-            {self.render_hero(page)}
-            {self.render_sections(page)}
+            {self.render_components(page.components)}
         </main>
     );
 }}
 """
         (pages_dir / f"{page.name}.tsx").write_text(code, encoding="utf-8")
 
-    def render_hero(self, page):
-        if page.hero is None:
-            return ""
-        hero = page.hero
+    def render_components(self, components):
+        return "".join(self.render_component(component) for component in components)
+
+    def render_component(self, component):
+        if isinstance(component, GIRHero):
+            return self.render_hero(component)
+        if isinstance(component, GIRSection):
+            return self.render_section(component)
+        return ""
+
+    def render_hero(self, hero):
         return f"""
 <section>
-    <h1>{hero.headline}</h1>
-    <p>{hero.subtitle}</p>
-    <button>{hero.action}</button>
+    <h1>{hero.headline or ""}</h1>
+    <p>{hero.subtitle or ""}</p>
+    <button>{hero.action or ""}</button>
 </section>
 """
 
-    def render_sections(self, page):
-        return "".join(
-            f"<section><h2>{section.name.title()}</h2></section>"
-            for section in page.sections
-        )
+    def render_section(self, section):
+        children = self.render_components(section.children)
+        return f"""
+<section>
+    <h2>{section.name.title()}</h2>
+    {children}
+</section>
+"""
 
     def vite_config(self, root):
         (root / "vite.config.ts").write_text(
