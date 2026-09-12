@@ -4,12 +4,13 @@ This directory contains the **normative language specification** for Intent Lang
 
 ## Current specification
 
+- [ITL Language Specification v0.2](ITL-0.2.md)
 - [ITL Language Specification v0.1](ITL-0.1.md)
 - [ITL v0.1 Specification Errata](ITL-0.1-ERRATA.md)
 
-The specification is versioned independently from compiler implementation details. A specification version describes language behavior that is implemented and testable at the time it is published; it does not promise that every compiler or runtime implementation detail is stable.
+ITL v0.2 adds implemented application-language semantics for models, fields, constraints, relationships, actions, routes, and permissions while preserving the existing v0.1 page/component language.
 
-The errata file is normative for v0.1 and overrides conflicting wording discovered during conformance testing.
+The specification is versioned independently from compiler implementation details. A specification version describes language behavior that is implemented and testable at the time it is published; it does not promise that every compiler or runtime implementation detail is stable.
 
 ## Separation of concerns
 

@@ -1,65 +1,61 @@
 from itl.compiler.errors import ITLTypeError
-from itl.parser.ast import App, Page, Section
+from itl.parser.ast import (
+    App, Page, Section, Models, Routes, Permissions,
+)
 
 
 class ImportResolver:
-
     def __init__(self, loader):
-
         self.loader = loader
-
         self.loaded: set[str] = set()
 
-        self.MERGE_HANDLERS = {
-            (App, Page): lambda app, page: app.pages.append(page),
-            (Page, Section): lambda page, section: page.sections.append(section),
-        }
-
     def resolve(self, app: App) -> App:
-
         self.resolve_node(app)
-
         return app
 
     def resolve_node(self, node):
-
         if not node.imports:
             return
-
         for import_name in node.imports:
-
-            self.resolve_import(
-                node,
-                import_name,
-            )
+            if import_name == "all" and isinstance(node, App):
+                for name in self.loader.list_modules():
+                    self.resolve_import(node, name)
+                continue
+            self.resolve_import(node, import_name)
 
     def resolve_import(self, parent, name: str):
-
         if name in self.loaded:
             return
-
         self.loaded.add(name)
-
         module = self.loader.load_module(name)
-
         self.merge(parent, module)
-
-        # Resolve nested imports recursively
         self.resolve_node(module)
 
     def merge(self, parent, node):
+        if isinstance(parent, App):
+            if isinstance(node, Page):
+                parent.pages.append(node)
+            elif isinstance(node, Models):
+                if parent.models is not None:
+                    parent.models.models.extend(node.models)
+                else:
+                    parent.models = node
+            elif isinstance(node, Routes):
+                if parent.routes is not None:
+                    parent.routes.routes.extend(node.routes)
+                else:
+                    parent.routes = node
+            elif isinstance(node, Permissions):
+                if parent.permissions is not None:
+                    parent.permissions.roles.extend(node.roles)
+                else:
+                    parent.permissions = node
+            else:
+                raise ITLTypeError(f"Cannot merge {type(node).__name__} into App.")
+            return
 
-        handler = self.MERGE_HANDLERS.get(
-            (type(parent), type(node))
-        )
+        if isinstance(parent, Page) and isinstance(node, Section):
+            parent.sections.append(node)
+            return
 
-        if handler is None:
-
-            raise ITLTypeError(
-                f"Cannot merge "
-                f"{type(node).__name__} "
-                f"into "
-                f"{type(parent).__name__}."
-            )
-
-        handler(parent, node)
+        raise ITLTypeError(f"Cannot merge {type(node).__name__} into {type(parent).__name__}.")
