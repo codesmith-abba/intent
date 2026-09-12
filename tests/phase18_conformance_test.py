@@ -79,10 +79,6 @@ def test_v01_empty_blocks_are_valid():
 
 
 def test_v01_import_forms_parse():
-    # Import declarations are parser-supported on App and Page. Section AST
-    # nodes carry import state for resolver behavior, but SECTION_MEMBERS does
-    # not currently dispatch the import keyword, so section-level source
-    # imports are not part of the v0.1 source grammar.
     app = parse(
         """app $Example {
     import $home
@@ -107,8 +103,6 @@ def test_v01_invalid_bare_name_is_lexical_error():
 
 
 def test_v01_invalid_target_is_semantic_error():
-    # A single-line literal ends at a newline or '{'. Keep the closing brace
-    # on the next line so `$console` does not consume it as literal text.
     app = parse(
         """app $Example {
     target $console
@@ -124,7 +118,6 @@ def test_v01_invalid_target_is_semantic_error():
 
 
 def test_v01_hero_requires_headline():
-    # As above, terminate the subtitle literal before the closing brace.
     app = parse(
         """app $Example {
     page $home {
@@ -164,7 +157,13 @@ def test_v01_unknown_block_member_is_parse_error():
 
 
 def test_v01_string_terminates_before_left_brace():
-    app = parse("app $Example { page $home intent $Intent text {} }")
+    app = parse(
+        """app $Example {
+    page $home
+        $Intent text {}
+}
+"""
+    )
     assert app.pages[0].intent == "Intent text"
 
 
