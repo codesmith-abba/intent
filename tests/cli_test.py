@@ -13,6 +13,7 @@ VALID_APP = """app $CLIApp {
             framework $react
         }
     }
+    page $home {}
     target $web
 }
 """
@@ -55,6 +56,20 @@ class CLITest(unittest.TestCase):
             result = self.run_cli("check", str(Path(directory) / "missing"))
             self.assertEqual(result.returncode, 1)
             self.assertIn("Unable to find an ITL project", result.stderr)
+
+    def test_init_project_is_immediately_buildable(self):
+        with tempfile.TemporaryDirectory() as directory:
+            project = Path(directory) / "new-project"
+            initialized = self.run_cli("init", str(project))
+            self.assertEqual(initialized.returncode, 0, initialized.stderr)
+
+            checked = self.run_cli("check", str(project))
+            self.assertEqual(checked.returncode, 0, checked.stderr)
+
+            built = self.run_cli("build", str(project))
+            self.assertEqual(built.returncode, 0, built.stderr)
+            self.assertTrue((project / ".project" / "app.json").exists())
+            self.assertTrue((project / ".project" / "runtime.json").exists())
 
     def test_build_and_incremental_cache_information(self):
         with tempfile.TemporaryDirectory() as directory:
