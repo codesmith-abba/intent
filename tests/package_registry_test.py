@@ -181,7 +181,7 @@ def test_upgrade_and_dependency_safe_removal():
             root,
             "consumer",
             "1.0.0",
-            dependencies=(PackageDependency("engine", "=1.0.0"),),
+            dependencies=(PackageDependency("engine", ">=1.0,<2.0"),),
         )
         registry = LocalPackageRegistry(root)
         manager = PackageManager(registry, root / "cache")
