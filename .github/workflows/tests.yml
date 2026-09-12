@@ -34,7 +34,12 @@ jobs:
           cd "$tmpdir"
           itl --help
           itl init sample
-          printf 'app $Sample { page $home {} target $web }\n' > sample/app.itl
+          cat > sample/app.itl <<'EOF'
+          app $Sample {
+              page $home {}
+              target $web
+          }
+          EOF
           itl check sample
           itl build sample
           test -f sample/.project/app.json
