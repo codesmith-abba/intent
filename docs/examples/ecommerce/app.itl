@@ -16,7 +16,7 @@ app $SMarket {
         scalable, and optimized for mobile-first experiences.
     )
 
-    import $home
+    import $all
 
     system {
 
