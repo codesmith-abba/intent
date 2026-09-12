@@ -1,10 +1,12 @@
 from __future__ import annotations
 
+import os
 import tempfile
 from pathlib import Path
 
 from itl.backend.react import ReactBackend
 from itl.cli import CLI
+from itl.cli_service import ProjectService
 from itl.gir.models import GIRHero, GIRPage, GIRSection
 
 
@@ -14,6 +16,22 @@ def test_project_commands_default_to_current_directory():
     for command_name in ("check", "build", "dev", "explain", "clean", "graph", "plan"):
         args = parser.parse_args([command_name])
         assert args.project == "."
+
+
+def test_dev_defaults_to_current_directory():
+    with tempfile.TemporaryDirectory() as directory:
+        project = Path(directory) / "project"
+        ProjectService().init(project)
+        previous = Path.cwd()
+        try:
+            os.chdir(project)
+            assert CLI().run(["dev"]) == 0
+            browser = project / ".project" / "build" / "browser"
+            assert (browser / "browser.js").exists()
+            assert (browser / "runtime.json").exists()
+            assert (browser / "index.html").exists()
+        finally:
+            os.chdir(previous)
 
 
 def test_react_backend_renders_gir_components():
