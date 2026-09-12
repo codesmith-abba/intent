@@ -175,19 +175,15 @@ plugin = Demo()
 def test_upgrade_and_dependency_safe_removal():
     with tempfile.TemporaryDirectory() as temp:
         root = Path(temp)
-        _build_package(root, "engine", "1.0.0")
-        _build_package(root, "engine", "1.1.0")
-        _build_package(
-            root,
-            "consumer",
-            "1.0.0",
-            dependencies=(PackageDependency("engine", ">=1.0,<2.0"),),
-        )
+        engine_v1 = _build_package(root, "engine", "1.0.0")
         registry = LocalPackageRegistry(root)
         manager = PackageManager(registry, root / "cache")
-        manager.install(root / "engine-1.0.0.itlpkg")
+        manager.install(engine_v1)
+
+        _build_package(root, "consumer", "1.0.0", dependencies=(PackageDependency("engine", ">=1.0,<2.0"),))
         manager.install(root / "consumer-1.0.0.itlpkg")
 
+        _build_package(root, "engine", "1.1.0")
         upgraded = manager.upgrade("engine")
         assert upgraded.version == "1.1.0"
         try:
