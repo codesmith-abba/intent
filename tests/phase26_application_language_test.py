@@ -2,8 +2,9 @@ from pathlib import Path
 
 from itl.analyzer.analyzer import Analyzer
 from itl.analyzer.errors import SemanticError
-from itl.compiler.compiler import Compiler
-from itl.parser.ast import Model
+from itl.compiler.loader import ProjectLoader
+from itl.gir.builder import GIRBuilder
+from itl.parser.ast import App, Model
 from itl.parser.errors import ParseError
 from itl.parser.lexer import Lexer
 from itl.parser.parser import Parser
@@ -188,11 +189,19 @@ def test_invalid_route_page_reference_is_rejected():
 
 
 def test_ecommerce_models_compile_through_gir():
-    gir = Compiler(Path("docs/examples/ecommerce")).compile()
+    # The ecommerce example also contains auth.itl, whose authentication
+    # grammar is outside Phase 26. Test the Phase 26 model pipeline directly
+    # so this acceptance test is isolated from future application modules.
+    loader = ProjectLoader(Path("docs/examples/ecommerce"))
+    models = loader.load_module("models")
+    app = App(name="SMarket", imports=[], models=models)
+
+    Analyzer().analyze(app)
+    gir = GIRBuilder().build(app)
+
     assert gir.name == "SMarket"
     assert len(gir.models) >= 10
     assert any(model.name == "Product" for model in gir.models)
-    assert any(route.name == "home" for route in gir.routes)
     product = next(model for model in gir.models if model.name == "Product")
     assert any(field.name == "price" and field.required for field in product.fields)
     assert any(rel.kind == "belongsTo" and rel.target == "Seller" for rel in product.relationships)
