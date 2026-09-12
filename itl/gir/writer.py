@@ -1,4 +1,6 @@
 import json
+import os
+import tempfile
 from dataclasses import asdict
 from pathlib import Path
 
@@ -19,8 +21,7 @@ class IRWriter:
         (root / "cache").mkdir(exist_ok=True)
         (root / "logs").mkdir(exist_ok=True)
 
-        with open(root / "app.json", "w", encoding="utf-8") as f:
-            json.dump(asdict(project), f, indent=4)
+        self._write_json(root / "app.json", asdict(project))
 
         framework = None
         if project.system is not None:
@@ -31,9 +32,7 @@ class IRWriter:
             "framework": framework,
             "target": project.target,
         }
-
-        with open(root / "metadata.json", "w", encoding="utf-8") as f:
-            json.dump(metadata, f, indent=4)
+        self._write_json(root / "metadata.json", metadata)
 
         graph = {
             "pages": [
@@ -41,8 +40,28 @@ class IRWriter:
                 for page in project.pages
             ]
         }
-
-        with open(root / "graph.json", "w", encoding="utf-8") as f:
-            json.dump(graph, f, indent=4)
+        self._write_json(root / "graph.json", graph)
 
         BrowserManifestBuilder().write([project], root / "runtime.json")
+
+    @staticmethod
+    def _write_json(path: Path, value: object) -> None:
+        """Persist one generated artifact atomically and durably."""
+        path.parent.mkdir(parents=True, exist_ok=True)
+        payload = json.dumps(value, indent=4, ensure_ascii=False) + "\n"
+        with tempfile.NamedTemporaryFile(
+            "w",
+            encoding="utf-8",
+            dir=path.parent,
+            prefix=f".{path.name}.",
+            delete=False,
+        ) as temporary:
+            temporary.write(payload)
+            temporary.flush()
+            os.fsync(temporary.fileno())
+            temporary_path = Path(temporary.name)
+        try:
+            os.replace(temporary_path, path)
+        except Exception:
+            temporary_path.unlink(missing_ok=True)
+            raise
