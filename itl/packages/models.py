@@ -128,4 +128,4 @@ class InstalledPackage:
     path: str
     trusted: bool = False
     package_sha256: str = ""
-    dependencies: tuple[str, ...] = field(default_factory=tuple)
+    dependencies: tuple[PackageDependency, ...] = field(default_factory=tuple)
