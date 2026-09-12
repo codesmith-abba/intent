@@ -1,0 +1,66 @@
+from __future__ import annotations
+
+import tempfile
+from pathlib import Path
+
+from itl.backend.react import ReactBackend
+from itl.cli import CLI
+from itl.gir.models import GIRHero, GIRPage, GIRSection
+
+
+def test_project_commands_default_to_current_directory():
+    parser = CLI().parser()
+
+    for command_name in ("check", "build", "dev", "explain", "clean", "graph", "plan"):
+        args = parser.parse_args([command_name])
+        assert args.project == "."
+
+
+def test_react_backend_renders_gir_components():
+    with tempfile.TemporaryDirectory() as directory:
+        output = Path(directory)
+        page = GIRPage(
+            name="home",
+            intent=None,
+            components=[
+                GIRHero(
+                    name="main",
+                    intent=None,
+                    headline="Welcome",
+                    subtitle="Build with intention",
+                    action="Learn more",
+                ),
+                GIRSection(
+                    name="featured",
+                    intent=None,
+                    children=[GIRSection(name="nested", intent=None)],
+                ),
+            ],
+        )
+
+        class Project:
+            pages = [page]
+
+        ReactBackend().generate(Project(), output)
+        generated = (output / "react" / "src" / "pages" / "home.tsx").read_text(encoding="utf-8")
+
+        assert "Welcome" in generated
+        assert "Build with intention" in generated
+        assert "Learn more" in generated
+        assert "Featured" in generated
+        assert "Nested" in generated
+
+
+def test_react_backend_renders_empty_page_without_legacy_attributes():
+    with tempfile.TemporaryDirectory() as directory:
+        output = Path(directory)
+        page = GIRPage(name="home", intent=None)
+
+        class Project:
+            pages = [page]
+
+        ReactBackend().generate(Project(), output)
+        generated = (output / "react" / "src" / "pages" / "home.tsx").read_text(encoding="utf-8")
+
+        assert "<main>" in generated
+        assert "{self.render_hero" not in generated
