@@ -3,7 +3,7 @@ from pathlib import Path
 
 from itl.compiler.loader import ProjectLoader
 from itl.generation.local import LocalProviderConfig
-from itl.security import SecurityError, ensure_within, redact_secret
+from itl.security import SecurityError, contains_secret_like_value, ensure_within, redact_secret
 
 
 def test_ensure_within_rejects_path_traversal():
@@ -44,5 +44,7 @@ def test_local_provider_allows_explicit_remote_opt_in():
     assert config.endpoint.startswith("https://")
 
 
-def test_secret_redaction():
-    assert redact_secret("api_key=super-secret token=abc") == "api_key=<redacted> token=<redacted>"
+def test_secret_detection_and_redaction():
+    value = "api_key=super-secret token=abc"
+    assert contains_secret_like_value(value)
+    assert redact_secret(value) == "api_key=<redacted> token=<redacted>"
