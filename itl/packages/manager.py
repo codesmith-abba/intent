@@ -3,21 +3,21 @@ from __future__ import annotations
 import importlib
 import json
 import os
+import re
 import shutil
 import sys
 import tempfile
 from pathlib import Path
 
 from itl.plugins.registry import PluginRegistry
+from itl.security import SecurityError, ensure_within
 
-from .errors import (
-    PackageInstalledError,
-    PackageNotFoundError,
-    PackageTrustError,
-)
+from .errors import PackageInstalledError, PackageNotFoundError, PackageTrustError
 from .format import PackageReader, sha256_file
 from .models import InstalledPackage, PackageDependency
 from .registry import LocalPackageRegistry, PackageResolver, Version, satisfies
+
+_PACKAGE_NAME = re.compile(r"^[A-Za-z0-9._-]+$")
 
 
 class PackageManager:
@@ -25,29 +25,32 @@ class PackageManager:
 
     def __init__(self, registry: LocalPackageRegistry, cache_root: str | Path, compiler_version: str = "1.0"):
         self.registry = registry
-        self.cache_root = Path(cache_root)
+        self.cache_root = Path(cache_root).resolve()
         self.compiler_version = compiler_version
         self.reader = PackageReader()
         self.state_path = self.cache_root / "state.json"
         self.cache_root.mkdir(parents=True, exist_ok=True)
 
     def install(self, package_path: str | Path) -> InstalledPackage:
-        path = Path(package_path)
+        path = Path(package_path).resolve()
         manifest = self.reader.verify(path)
+        self._validate_identifier(manifest.name, "package name")
+        self._validate_identifier(manifest.version, "package version")
         plan = PackageResolver(self.registry, self.compiler_version).resolve(manifest.name, manifest.version)
         source_sha256 = self.reader.archive_sha256(path)
         for dependency in plan:
             if dependency.manifest.name.casefold() != manifest.name.casefold():
                 self.install(dependency.source)
 
-        destination = self.cache_root / manifest.name / manifest.version
+        try:
+            destination = ensure_within(self.cache_root, self.cache_root / manifest.name / manifest.version)
+        except SecurityError as error:
+            raise PackageInstalledError(str(error)) from error
         if destination.exists():
             existing = self._get(manifest.name, manifest.version)
             if existing is not None and existing.package_sha256 == source_sha256 and self.verify(manifest.name, manifest.version):
                 return existing
-            raise PackageInstalledError(
-                f"Package '{manifest.name}@{manifest.version}' is already installed with different contents."
-            )
+            raise PackageInstalledError(f"Package '{manifest.name}@{manifest.version}' is already installed with different contents.")
 
         destination.mkdir(parents=True, exist_ok=False)
         try:
@@ -71,8 +74,7 @@ class PackageManager:
     def upgrade(self, name: str) -> InstalledPackage:
         current = self.latest_installed(name)
         candidates = [
-            candidate
-            for candidate in self.registry.candidates(name)
+            candidate for candidate in self.registry.candidates(name)
             if Version.parse(candidate.manifest.version) > Version.parse(current.version)
             and all(
                 satisfies(candidate.manifest.version, dependency.constraint)
@@ -96,9 +98,9 @@ class PackageManager:
 
     def remove(self, name: str, version: str | None = None) -> None:
         record = self._select_installed(name, version)
+        self._safe_record_path(record)
         dependents = [
-            other.name
-            for other in self.installed()
+            other.name for other in self.installed()
             if other.name.casefold() != record.name.casefold()
             and any(dependency.name.casefold() == record.name.casefold() for dependency in other.dependencies)
             and any(
@@ -108,57 +110,49 @@ class PackageManager:
             )
         ]
         if dependents:
-            raise PackageInstalledError(
-                f"Cannot remove '{record.name}@{record.version}'; required by {', '.join(sorted(set(dependents)))}."
-            )
+            raise PackageInstalledError(f"Cannot remove '{record.name}@{record.version}'; required by {', '.join(sorted(set(dependents)))}.")
         _remove_tree(Path(record.path))
-        records = [
-            item
-            for item in self.installed()
-            if not (item.name.casefold() == record.name.casefold() and item.version == record.version)
-        ]
+        records = [item for item in self.installed() if not (item.name.casefold() == record.name.casefold() and item.version == record.version)]
         self._write_state(records)
 
     def verify(self, name: str, version: str | None = None) -> bool:
         record = self._select_installed(name, version)
         try:
-            package_path = Path(record.path) / "package.itlpkg"
-            if not package_path.is_file():
-                return False
-            if sha256_file(package_path) != record.package_sha256:
+            root = self._safe_record_path(record)
+            package_path = root / "package.itlpkg"
+            if not package_path.is_file() or sha256_file(package_path) != record.package_sha256:
                 return False
             manifest = self.reader.verify(package_path)
-            installed_manifest = json.loads((Path(record.path) / "manifest.json").read_text(encoding="utf-8"))
+            installed_manifest = json.loads((root / "manifest.json").read_text(encoding="utf-8"))
             if manifest.to_mapping() != installed_manifest:
                 return False
             for relative, digest in manifest.files:
-                file_path = Path(record.path) / relative
+                file_path = ensure_within(root, root / relative)
                 if not file_path.is_file() or sha256_file(file_path) != digest:
                     return False
             return True
-        except Exception:
+        except (Exception, SecurityError):
             return False
 
     def load_plugin(self, name: str, version: str | None = None, plugin_registry: PluginRegistry | None = None) -> object:
-        """Load and register plugin code only after explicit trust and verification."""
+        """Load plugin code only after explicit trust and integrity verification."""
         record = self._select_installed(name, version)
         if not record.trusted:
-            raise PackageTrustError(
-                f"Package '{record.name}@{record.version}' is not trusted; trust it before loading code."
-            )
+            raise PackageTrustError(f"Package '{record.name}@{record.version}' is not trusted; trust it before loading code.")
         self._assert_integrity(record)
-        manifest = self.reader.verify(Path(record.path) / "package.itlpkg")
+        root = self._safe_record_path(record)
+        manifest = self.reader.verify(root / "package.itlpkg")
         if manifest.package_type != "plugin" or not manifest.entry_module:
             raise PackageNotFoundError(f"Installed package '{record.name}' has no plugin entry point.")
 
-        sys.path.insert(0, record.path)
+        sys.path.insert(0, str(root))
         try:
             module = importlib.import_module(manifest.entry_module)
             plugin = getattr(module, manifest.entry_attribute)
             if callable(plugin) and not hasattr(plugin, "metadata"):
                 plugin = plugin()
         finally:
-            sys.path.remove(record.path)
+            sys.path.remove(str(root))
 
         target_registry = plugin_registry or PluginRegistry(compiler_version=self.compiler_version)
         target_registry.register(plugin)
@@ -170,24 +164,18 @@ class PackageManager:
         for item in state:
             dependencies = tuple(
                 PackageDependency(dependency["name"], dependency.get("constraint", "*"))
-                for dependency in item.get("dependencies", ())
-                if isinstance(dependency, dict)
+                for dependency in item.get("dependencies", ()) if isinstance(dependency, dict)
+            ) + tuple(
+                PackageDependency(dependency) for dependency in item.get("dependencies", ()) if isinstance(dependency, str)
             )
-            dependencies += tuple(
-                PackageDependency(dependency)
-                for dependency in item.get("dependencies", ())
-                if isinstance(dependency, str)
+            record = InstalledPackage(
+                name=item["name"], version=item["version"], path=item["path"],
+                trusted=item.get("trusted", False), package_sha256=item.get("package_sha256", ""), dependencies=dependencies,
             )
-            records.append(
-                InstalledPackage(
-                    name=item["name"],
-                    version=item["version"],
-                    path=item["path"],
-                    trusted=item.get("trusted", False),
-                    package_sha256=item.get("package_sha256", ""),
-                    dependencies=dependencies,
-                )
-            )
+            self._validate_identifier(record.name, "package name")
+            self._validate_identifier(record.version, "package version")
+            self._safe_record_path(record)
+            records.append(record)
         return tuple(sorted(records, key=lambda item: (item.name.casefold(), Version.parse(item.version))))
 
     def latest_installed(self, name: str) -> InstalledPackage:
@@ -209,14 +197,7 @@ class PackageManager:
             raise PackageTrustError(f"Integrity verification failed for '{record.name}@{record.version}'.")
 
     def _replace(self, record: InstalledPackage, trusted: bool) -> InstalledPackage:
-        updated = InstalledPackage(
-            name=record.name,
-            version=record.version,
-            path=record.path,
-            trusted=trusted,
-            package_sha256=record.package_sha256,
-            dependencies=record.dependencies,
-        )
+        updated = InstalledPackage(name=record.name, version=record.version, path=record.path, trusted=trusted, package_sha256=record.package_sha256, dependencies=record.dependencies)
         self._set(updated)
         return updated
 
@@ -227,11 +208,7 @@ class PackageManager:
         return None
 
     def _set(self, record: InstalledPackage) -> None:
-        records = [
-            item
-            for item in self.installed()
-            if not (item.name.casefold() == record.name.casefold() and item.version == record.version)
-        ]
+        records = [item for item in self.installed() if not (item.name.casefold() == record.name.casefold() and item.version == record.version)]
         records.append(record)
         self._write_state(records)
 
@@ -248,17 +225,7 @@ class PackageManager:
 
     def _write_state(self, records: list[InstalledPackage]) -> None:
         data = [
-            {
-                "name": item.name,
-                "version": item.version,
-                "path": item.path,
-                "trusted": item.trusted,
-                "package_sha256": item.package_sha256,
-                "dependencies": [
-                    {"name": dependency.name, "constraint": dependency.constraint}
-                    for dependency in item.dependencies
-                ],
-            }
+            {"name": item.name, "version": item.version, "path": str(self._safe_record_path(item)), "trusted": item.trusted, "package_sha256": item.package_sha256, "dependencies": [{"name": dependency.name, "constraint": dependency.constraint} for dependency in item.dependencies]}
             for item in sorted(records, key=lambda item: (item.name.casefold(), Version.parse(item.version)))
         ]
         self.cache_root.mkdir(parents=True, exist_ok=True)
@@ -267,6 +234,17 @@ class PackageManager:
             temp.write("\n")
             temp_path = Path(temp.name)
         os.replace(temp_path, self.state_path)
+
+    @staticmethod
+    def _validate_identifier(value: str, label: str) -> None:
+        if not _PACKAGE_NAME.fullmatch(value):
+            raise PackageInstalledError(f"Invalid {label}: {value!r}.")
+
+    def _safe_record_path(self, record: InstalledPackage) -> Path:
+        try:
+            return ensure_within(self.cache_root, Path(record.path))
+        except SecurityError as error:
+            raise PackageInstalledError(f"Package state path escapes cache root: {record.path!r}.") from error
 
 
 def _remove_tree(path: Path) -> None:
