@@ -22,6 +22,23 @@ jobs:
         with:
           node-version: "20"
 
+      - name: Install ITL package
+        run: python -m pip install .
+
+      - name: Verify installed package metadata
+        run: python -c "import itl; assert itl.__version__ == '1.0.0'; print(itl.__version__)"
+
+      - name: Verify installed CLI outside checkout
+        run: |
+          tmpdir="$(mktemp -d)"
+          cd "$tmpdir"
+          itl --help
+          itl init sample
+          printf 'app $Sample { page $home {} target $web }\n' > sample/app.itl
+          itl check sample
+          itl build sample
+          test -f sample/.project/app.json
+
       - name: Run ITL test suite
         run: python -m tests
 
