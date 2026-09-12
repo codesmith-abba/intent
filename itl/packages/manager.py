@@ -23,12 +23,7 @@ from .registry import LocalPackageRegistry, PackageResolver, Version, satisfies
 class PackageManager:
     """Installs package files without executing code until explicitly trusted."""
 
-    def __init__(
-        self,
-        registry: LocalPackageRegistry,
-        cache_root: str | Path,
-        compiler_version: str = "1.0",
-    ):
+    def __init__(self, registry: LocalPackageRegistry, cache_root: str | Path, compiler_version: str = "1.0"):
         self.registry = registry
         self.cache_root = Path(cache_root)
         self.compiler_version = compiler_version
@@ -39,10 +34,7 @@ class PackageManager:
     def install(self, package_path: str | Path) -> InstalledPackage:
         path = Path(package_path)
         manifest = self.reader.verify(path)
-        plan = PackageResolver(self.registry, self.compiler_version).resolve(
-            manifest.name,
-            f"={manifest.version}",
-        )
+        plan = PackageResolver(self.registry, self.compiler_version).resolve(manifest.name, manifest.version)
         source_sha256 = self.reader.archive_sha256(path)
         for dependency in plan:
             if dependency.manifest.name.casefold() != manifest.name.casefold():
@@ -147,12 +139,7 @@ class PackageManager:
         except Exception:
             return False
 
-    def load_plugin(
-        self,
-        name: str,
-        version: str | None = None,
-        plugin_registry: PluginRegistry | None = None,
-    ) -> object:
+    def load_plugin(self, name: str, version: str | None = None, plugin_registry: PluginRegistry | None = None) -> object:
         """Load and register plugin code only after explicit trust and verification."""
         record = self._select_installed(name, version)
         if not record.trusted:
@@ -182,13 +169,10 @@ class PackageManager:
         records = []
         for item in state:
             dependencies = tuple(
-                PackageDependency(
-                    dependency["name"], dependency.get("constraint", "*"),
-                )
+                PackageDependency(dependency["name"], dependency.get("constraint", "*"))
                 for dependency in item.get("dependencies", ())
                 if isinstance(dependency, dict)
             )
-            # Older state entries stored dependency names only; preserve them as unconstrained dependencies.
             dependencies += tuple(
                 PackageDependency(dependency)
                 for dependency in item.get("dependencies", ())
@@ -222,9 +206,7 @@ class PackageManager:
 
     def _assert_integrity(self, record: InstalledPackage) -> None:
         if not self.verify(record.name, record.version):
-            raise PackageTrustError(
-                f"Integrity verification failed for '{record.name}@{record.version}'."
-            )
+            raise PackageTrustError(f"Integrity verification failed for '{record.name}@{record.version}'.")
 
     def _replace(self, record: InstalledPackage, trusted: bool) -> InstalledPackage:
         updated = InstalledPackage(
