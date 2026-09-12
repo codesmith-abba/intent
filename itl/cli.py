@@ -34,10 +34,12 @@ class CLI:
         project_command("explain", "Explain an ITL project")
         build = project_command("build", "Build an ITL project")
         build.add_argument("--dry-run", action="store_true", help="Report build actions without writing output")
-        dev = project_command("dev", "Generate a development build")
+        dev = project_command("dev", "Build and start the development server")
         dev.add_argument("--install", action="store_true", help="Install generated npm dependencies")
         dev.add_argument("--allow-install-scripts", action="store_true", help="Allow npm lifecycle scripts during installation")
-        dev.add_argument("--run", action="store_true", help="Start the generated development server")
+        dev.add_argument("--run", dest="run", action="store_true", help="Start the generated development server (default)")
+        dev.add_argument("--no-run", dest="run", action="store_false", help="Generate the development build without starting the server")
+        dev.set_defaults(run=True)
         project_command("check", "Validate an ITL project")
         project_command("clean", "Remove generated development output")
         project_command("graph", "Show the persisted project graph")
@@ -79,6 +81,8 @@ class CLI:
                 )
                 print(f"✓ Development build completed: {project}")
                 print(f"  output: {project / '.project' / 'build'}")
+                if args.run:
+                    print("  server: http://localhost:5173")
                 return EXIT_OK
             if args.command == "clean":
                 path = self.service.clean(args.project)
