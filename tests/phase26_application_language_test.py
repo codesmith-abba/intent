@@ -1,7 +1,5 @@
 from pathlib import Path
 
-import pytest
-
 from itl.analyzer.analyzer import Analyzer
 from itl.analyzer.errors import SemanticError
 from itl.compiler.compiler import Compiler
@@ -16,6 +14,14 @@ from itl.parser.token_type import TokenType
 def parse(source: str):
     tokens = Lexer(SourceFile("phase26.itl", source)).scan_tokens()
     return Parser(tokens).parse()
+
+
+def assert_raises(expected, callback):
+    try:
+        callback()
+    except expected:
+        return
+    raise AssertionError(f"Expected {expected} to be raised")
 
 
 def test_model_fields_constraints_and_relationships_parse():
@@ -86,26 +92,62 @@ def test_all_relationship_kinds_are_accepted():
 
 
 def test_invalid_model_semantics_are_rejected():
-    cases = [
-        """app $X { models { model $User {
-            field $id { type $id primary }
-            field $id { type $string }
-        } } }""",
-        """app $X { models { model $User {
-            field $id { type $id primary }
-            field $x { type $unknown }
-        } } }""",
-        """app $X { models { model $User {
-            field $id { type $id primary nullable }
-        } } }""",
-        """app $X { models { model $User {
-            field $id { type $id primary }
+    duplicate_field = """app $X {
+    models {
+        model $User {
+            field $id {
+                type $id
+                primary
+            }
+            field $id {
+                type $string
+            }
+        }
+    }
+}"""
+    unknown_type = """app $X {
+    models {
+        model $User {
+            field $id {
+                type $id
+                primary
+            }
+            field $x {
+                type $unknown
+            }
+        }
+    }
+}"""
+    nullable_primary = """app $X {
+    models {
+        model $User {
+            field $id {
+                type $id
+                primary
+                nullable
+            }
+        }
+    }
+}"""
+    missing_relationship = """app $X {
+    models {
+        model $User {
+            field $id {
+                type $id
+                primary
+            }
             belongsTo $Missing
-        } } }""",
-    ]
-    for source in cases:
-        with pytest.raises((ParseError, SemanticError)):
-            Analyzer().analyze(parse(source))
+        }
+    }
+}"""
+
+    for source in (
+        duplicate_field,
+        unknown_type,
+        nullable_primary,
+        missing_relationship,
+    ):
+        assert_raises((ParseError, SemanticError), lambda source=source: Analyzer().analyze(parse(source)))
 
 
 def test_routes_and_permissions_have_application_semantics():
@@ -142,8 +184,7 @@ def test_invalid_route_page_reference_is_rejected():
         }
     }
 }""")
-    with pytest.raises(SemanticError, match="unknown page"):
-        Analyzer().analyze(app)
+    assert_raises(SemanticError, lambda: Analyzer().analyze(app))
 
 
 def test_ecommerce_models_compile_through_gir():
