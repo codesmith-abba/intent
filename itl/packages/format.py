@@ -95,6 +95,11 @@ class PackageReader:
         destination_path = Path(destination)
         destination_path.mkdir(parents=True, exist_ok=True)
         with ZipFile(Path(package_path), "r") as archive:
+            # Keep the verified manifest alongside the extracted payload so
+            # installed-state verification can compare it with the archive.
+            manifest_path = destination_path / MANIFEST_NAME
+            with manifest_path.open("wb") as output:
+                output.write(archive.read(MANIFEST_NAME))
             for info in archive.infolist():
                 name = _safe_member(info.filename)
                 if name == MANIFEST_NAME:
@@ -107,7 +112,7 @@ class PackageReader:
 
 
 class PackageBuilder:
-    """Builds deterministic package files from already trusted source files."""
+    """Builds package files from already trusted source files."""
 
     def build(
         self,
