@@ -1,7 +1,6 @@
 import json
 import subprocess
 from dataclasses import dataclass
-from pathlib import Path
 
 from .base import Backend
 
@@ -10,7 +9,7 @@ from .base import Backend
 class ReactExecutionPolicy:
     """Controls external package/process execution during React generation."""
 
-    install_dependencies: bool = True
+    install_dependencies: bool = False
     allow_install_scripts: bool = False
     start_dev_server: bool = False
 
@@ -24,7 +23,6 @@ class ReactBackend(Backend):
     def generate(self, project, output, policy: ReactExecutionPolicy | None = None):
         policy = policy or ReactExecutionPolicy()
         root = output / self.name
-
         root.mkdir(parents=True, exist_ok=True)
         (root / "src").mkdir(exist_ok=True)
         self.package_json(root)
@@ -37,7 +35,6 @@ class ReactBackend(Backend):
         pages_dir.mkdir(parents=True, exist_ok=True)
         for page in project.pages:
             self.page(page, pages_dir)
-
         self.app_tsx(root, project)
 
         if policy.install_dependencies:
