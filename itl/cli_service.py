@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import json
 import shutil
+from importlib.resources import as_file, files
 from pathlib import Path
 
 from itl.backend.react import ReactBackend, ReactExecutionPolicy
@@ -104,7 +105,9 @@ class ProjectService:
             IRWriter(project / ".project").write(compiled)
             browser_root = build_root / "browser"
             browser_root.mkdir(parents=True, exist_ok=True)
-            shutil.copy2(Path(__file__).resolve().parents[1] / "runtime" / "browser.js", browser_root / "browser.js")
+            browser_asset = files("itl.runtime").joinpath("browser.js")
+            with as_file(browser_asset) as browser_path:
+                shutil.copy2(browser_path, browser_root / "browser.js")
             shutil.copy2(project / ".project" / "runtime.json", browser_root / "runtime.json")
             (browser_root / "index.html").write_text(
                 "<!doctype html>\n<html lang=\"en\"><head><meta charset=\"utf-8\">"
