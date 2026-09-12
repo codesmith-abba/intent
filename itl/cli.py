@@ -23,7 +23,12 @@ class CLI:
 
         def project_command(name: str, help_text: str):
             command = subparsers.add_parser(name, help=help_text)
-            command.add_argument("project", help="Project directory or a path inside it")
+            command.add_argument(
+                "project",
+                nargs="?",
+                default=".",
+                help="Project directory or a path inside it (default: current directory)",
+            )
             return command
 
         project_command("explain", "Explain an ITL project")
