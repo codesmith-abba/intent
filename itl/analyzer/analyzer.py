@@ -2,7 +2,7 @@ from .errors import SemanticError
 from .constants import VALID_FRONTEND_FRAMEWORKS, VALID_BACKEND_FRAMEWORKS, VALID_THEMES, VALID_TARGETS
 from .scope import Scope
 from .symbols import Symbol
-from itl.parser.ast import App, System, Frontend, Backend, Database, Cache, Storage, Page, Hero, Section, Models, Model, Field, Routes, Route, Permissions
+from itl.parser.ast import App, System, Frontend, Backend, Database, Cache, Storage, Page, Hero, Section, Models, Model, Field, Routes, Permissions
 
 VALID_FIELD_TYPES = {"id", "string", "text", "email", "phone", "password", "image", "boolean", "datetime", "date", "time", "slug", "decimal", "integer", "number", "float", "json", "uuid"}
 VALID_RELATIONSHIPS = {"belongsTo", "hasOne", "hasMany", "belongsToMany", "hasManyThrough"}
@@ -28,13 +28,12 @@ class Analyzer:
         self.visit(app.system)
         self.visit(app.models)
         self.visit_routes(app.routes, {page.name for page in app.pages})
-        self.visit(app.permissions)
+        self.visit_permissions(app.permissions)
         for page in app.pages: self.scope.define(Symbol(page.name, page))
         for page in app.pages: self.visit(page)
 
     def visit_system(self, system: System):
         self.visit(system.frontend); self.visit(system.backend); self.visit(system.database); self.visit(system.cache); self.visit(system.storage)
-
     def visit_frontend(self, frontend: Frontend):
         if frontend.framework and frontend.framework.value not in VALID_FRONTEND_FRAMEWORKS: raise SemanticError(f"Unknown frontend framework '{frontend.framework.value}'.")
     def visit_backend(self, backend: Backend):
@@ -83,7 +82,7 @@ class Analyzer:
             if not route.page: raise SemanticError(f"Route '{route.name}' must define a page.")
             if page_names is not None and route.page not in page_names: raise SemanticError(f"Route '{route.name}' references unknown page '{route.page}'.")
 
-    def visit_permissions(self, permissions: Permissions):
+    def visit_permissions(self, permissions: Permissions | None):
         if permissions is None: return
         seen = set()
         for role in permissions.roles:
