@@ -25,7 +25,9 @@ dependencies = []
 itl = "itl.cli:main"
 
 [tool.setuptools.packages.find]
+where = ["."]
 include = ["itl*"]
+namespaces = false
 
 [tool.setuptools.package-data]
 itl = ["runtime/*.js"]
