@@ -22,7 +22,7 @@ from itl.plugins.models import PluginMetadata
 from itl.plugins.registry import PluginRegistry
 
 
-def _plugin_manifest(name: str, version: str, dependencies=()):
+def _plugin_manifest(name: str, version: str, dependencies=(), min_compiler_version="1.0"):
     return PackageManifest(
         name=name,
         version=version,
@@ -31,6 +31,7 @@ def _plugin_manifest(name: str, version: str, dependencies=()):
             version=version,
             targets=("web",),
             frameworks=("react",),
+            min_compiler_version=min_compiler_version,
             capabilities=("generation",),
         ),
         dependencies=tuple(dependencies),
@@ -38,7 +39,7 @@ def _plugin_manifest(name: str, version: str, dependencies=()):
     )
 
 
-def _build_package(root: Path, name: str, version: str, dependencies=(), source=None):
+def _build_package(root: Path, name: str, version: str, dependencies=(), source=None, min_compiler_version="1.0"):
     source_dir = root / f"source-{name}-{version}"
     source_dir.mkdir()
     module_name = f"{name.replace('-', '_')}_plugin.py"
@@ -60,7 +61,7 @@ class DemoPlugin:
 plugin = DemoPlugin()
 """.replace("VERSION", version)
     (source_dir / module_name).write_text(module_source)
-    manifest = _plugin_manifest(name, version, dependencies)
+    manifest = _plugin_manifest(name, version, dependencies, min_compiler_version)
     output = root / f"{name}-{version}.itlpkg"
     PackageBuilder().build(source_dir, manifest, output)
     return output
@@ -79,12 +80,7 @@ def test_local_registry_resolves_highest_compatible_dependency_graph():
         root = Path(temp)
         _build_package(root, "engine", "1.0.0")
         _build_package(root, "engine", "1.1.0")
-        _build_package(
-            root,
-            "app-plugin",
-            "1.0.0",
-            dependencies=(PackageDependency("engine", ">=1.0,<2.0"),),
-        )
+        _build_package(root, "app-plugin", "1.0.0", dependencies=(PackageDependency("engine", ">=1.0,<2.0"),))
 
         registry = LocalPackageRegistry(root)
         resolved = registry.resolve("app-plugin")
@@ -105,7 +101,7 @@ class Demo:
         pass
 plugin = Demo()
 """
-        _build_package(root, "future", "1.0.0", source=source)
+        _build_package(root, "future", "1.0.0", source=source, min_compiler_version="2.0")
         registry = LocalPackageRegistry(root)
 
         try:
