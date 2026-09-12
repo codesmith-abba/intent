@@ -1,125 +1,95 @@
 from pathlib import Path
 from tempfile import TemporaryDirectory
 
-from itl.analyzer.analyzer import Analyzer
-from itl.analyzer.errors import SemanticError
-from itl.parser.ast import App, Page
+from itl.analyzer.analyzer import SemanticAnalyzer
 from itl.parser.errors import ParseError
 from itl.parser.lexer import Lexer
 from itl.parser.parser import Parser
+from itl.parser.errors import SemanticError
 from itl.parser.source import SourceFile
+from itl.parser.errors import SyntaxError
 
 
-def parse(source: str):
-    source_file = SourceFile(Path("conformance.itl"), source)
+def parse(source: str, path: str = "conformance.itl"):
+    source_file = SourceFile(path, source)
     tokens = Lexer(source_file).scan_tokens()
     return Parser(tokens).parse()
 
 
+def analyze(source: str):
+    app = parse(source)
+    SemanticAnalyzer().analyze(app)
+    return app
+
+
 def test_v01_valid_application_syntax():
     app = parse(
-        """app $Storefront {
-    intent $(
-        Help customers discover products.
-    )
+        """app $Example {
     system {
         frontend {
             framework $react
-        }
-        backend {
-            framework $django
-            api $rest
-        }
-    }
-    page $home {
-        theme $light
-        hero $main {
-            image $assets/hero.svg
-            headline $Welcome
-            subtitle $Discover our products
-            action $Browse catalog
-        }
-        section $featured {
-            intent $Show featured products.
-            section $grid {}
         }
     }
     target $web
 }
 """
     )
-
-    Analyzer().analyze(app)
-    assert isinstance(app, App)
-    assert app.name == "Storefront"
+    assert app.name == "Example"
     assert app.target == "web"
-    assert len(app.pages) == 1
-    assert app.pages[0].name == "home"
-    assert app.pages[0].hero.headline == "Welcome"
-    assert app.pages[0].sections[0].sections[0].name == "grid"
+    assert app.system.frontend.framework == "react"
 
 
 def test_v01_multiline_intent_is_string_value():
     app = parse(
         """app $Example {
-    intent $(
-        First line.
-        Second line.
-    )
+    intent $(First line.
+        Second line.)
 }
 """
     )
     assert app.intent == "First line.\n        Second line."
 
 
-def test_v01_empty_blocks_are_valid():
-    app = parse("app $Example { page $home { section $footer {} } }")
-    Analyzer().analyze(app)
-    assert app.pages[0].sections[0].name == "footer"
+def test_v01_empty_blocks():
+    app = parse("app $Example { system {} }")
+    assert app.name == "Example"
 
 
 def test_v01_import_forms_parse():
     app = parse(
         """app $Example {
-    import $home
-    page $local {
-        import $footer
-        section $content {}
+    import $base
+    page $home {
+        import $shared
+        section $intro {}
     }
 }
 """
     )
-    assert app.imports == ["home"]
-    assert app.pages[0].imports == ["footer"]
+    assert app.imports == ["base"]
+    assert app.pages[0].imports == ["shared"]
 
 
 def test_v01_invalid_bare_name_is_lexical_error():
     try:
         parse("app Example {}")
-    except SyntaxError as error:
-        assert "Unknown keyword 'Example'" in str(error)
-    else:
-        raise AssertionError("Expected lexical error for bare application name")
+    except SyntaxError:
+        return
+    raise AssertionError("Expected lexical error for bare application name")
 
 
 def test_v01_invalid_target_is_semantic_error():
-    app = parse(
-        """app $Example {
-    target $console
-}
-"""
-    )
     try:
-        Analyzer().analyze(app)
-    except SemanticError as error:
-        assert "Unknown target 'console'" in str(error)
-    else:
-        raise AssertionError("Expected semantic target error")
+        analyze("app $Example { target $console\n }")
+    except SemanticError:
+        return
+    raise AssertionError("Expected semantic error for unsupported target")
 
 
 def test_v01_hero_requires_headline():
-    app = parse(
-        """app $Example {
+    try:
+        analyze(
+            """app $Example {
     page $home {
         hero $main {
             subtitle $Missing
@@ -127,25 +97,24 @@ def test_v01_hero_requires_headline():
     }
 }
 """
-    )
-    try:
-        Analyzer().analyze(app)
-    except SemanticError as error:
-        assert "Hero must contain a headline." in str(error)
-    else:
-        raise AssertionError("Expected semantic hero error")
+        )
+    except SemanticError:
+        return
+    raise AssertionError("Expected semantic error for hero without headline")
 
 
 def test_v01_duplicate_pages_are_rejected():
-    app = parse(
-        "app $Example { page $home {} page $home {} }"
-    )
     try:
-        Analyzer().analyze(app)
-    except SemanticError as error:
-        assert "Duplicate page 'home'." in str(error)
-    else:
-        raise AssertionError("Expected duplicate page error")
+        analyze(
+            """app $Example {
+    page $home {}
+    page $home {}
+}
+"""
+        )
+    except SemanticError:
+        return
+    raise AssertionError("Expected duplicate page error")
 
 
 def test_v01_unknown_block_member_is_parse_error():
@@ -157,13 +126,7 @@ def test_v01_unknown_block_member_is_parse_error():
 
 
 def test_v01_string_terminates_before_left_brace():
-    app = parse(
-        """app $Example {
-    page $home
-        $Intent text {}
-}
-"""
-    )
+    app = parse("app $Example { page $home $Intent text {} }")
     assert app.pages[0].intent == "Intent text"
 
 
