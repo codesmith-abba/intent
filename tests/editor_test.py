@@ -62,7 +62,8 @@ def test_document_symbols_and_definition():
     symbols = service.document_symbols("app.itl", VALID)
     assert symbols[0].name == "Store"
     assert symbols[0].children[0].name == "home"
-    assert symbols[0].children[0].children[0].name == "products"
+    assert symbols[0].children[0].children[0].name == "welcome"
+    assert symbols[0].children[0].children[1].name == "products"
 
     definition = service.definition("app.itl", VALID, Position(9, 15))
     assert definition is not None

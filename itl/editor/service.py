@@ -5,7 +5,7 @@ from typing import Iterable
 
 from itl.analyzer.analyzer import Analyzer
 from itl.analyzer.errors import SemanticError
-from itl.parser.ast import App, Page, Section
+from itl.parser.ast import App, Hero, Page, Section
 from itl.parser.errors import ParseError
 from itl.parser.lexer import KEYWORDS, Lexer
 from itl.parser.parser import Parser
@@ -162,11 +162,28 @@ class EditorService:
                 return Range(Position(0, 0), Position(0, 0))
             cursor = index + len(needle)
             return self._range_for_offset(text, index + 1, len(name))
+        
+        def hero_symbol(hero: Hero) -> DocumentSymbol:
+            hero_range = find_name(hero.name)
+            return DocumentSymbol(
+                hero.name,
+                "hero",
+                hero_range,
+                hero_range,
+            )
 
         def page_symbol(page: Page) -> DocumentSymbol:
             page_range = find_name(page.name)
-            children = tuple(section_symbol(s) for s in page.sections)
-            return DocumentSymbol(page.name, "page", page_range, page_range, children)
+            children = tuple(
+                [hero_symbol(page.hero)] if page.hero else []
+            ) + tuple(section_symbol(s) for s in page.sections)
+            return DocumentSymbol(
+                page.name,
+                "page",
+                page_range,
+                page_range,
+                children,
+            )
 
         def section_symbol(section: Section) -> DocumentSymbol:
             section_range = find_name(section.name)
