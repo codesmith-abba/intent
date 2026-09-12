@@ -19,7 +19,7 @@ def test_scheduler_handles_large_dependency_graph_deterministically():
     schedule = BuildScheduler().schedule(BuildPlan(items=items))
 
     assert len(schedule.batches) == count
-    assert schedule.sources == [item.source for item in items]
+    assert list(schedule.sources) == [item.source for item in items]
 
 
 def test_cache_recovers_from_corrupt_state():
