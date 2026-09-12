@@ -1,7 +1,7 @@
 from pathlib import Path
 from tempfile import TemporaryDirectory
 
-from itl.analyzer.analyzer import SemanticAnalyzer
+from itl.analyzer.analyzer import Analyzer
 from itl.parser.errors import ParseError
 from itl.parser.lexer import Lexer
 from itl.parser.parser import Parser
@@ -18,7 +18,7 @@ def parse(source: str, path: str = "conformance.itl"):
 
 def analyze(source: str):
     app = parse(source)
-    SemanticAnalyzer().analyze(app)
+    Analyzer().analyze(app)
     return app
 
 
