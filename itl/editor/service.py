@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-from dataclasses import is_dataclass, fields
 from pathlib import Path
 from typing import Iterable
 
@@ -11,7 +10,6 @@ from itl.parser.errors import ParseError
 from itl.parser.lexer import KEYWORDS, Lexer
 from itl.parser.parser import Parser
 from itl.parser.source import SourceFile
-from itl.parser.token_type import TokenType
 
 from .models import (
     AnalysisResult,
@@ -48,12 +46,7 @@ KEYWORD_HELP = {
 
 
 class EditorService:
-    """Compiler-backed language tooling for ITL documents.
-
-    This service deliberately delegates lexical, parsing, and semantic work to
-    the existing compiler components. It only adapts their results to editor
-    concepts such as diagnostics, symbols, completion, hover, and locations.
-    """
+    """Compiler-backed language tooling for ITL documents."""
 
     def analyze(self, uri: str, text: str) -> AnalysisResult:
         source = SourceFile(Path(uri), text)
@@ -68,7 +61,7 @@ class EditorService:
         except SemanticError as exc:
             return AnalysisResult(diagnostics=[self._diagnostic(text, str(exc))])
 
-        symbols = self._symbols(app, text, uri)
+        symbols = self._symbols(app, text)
         return AnalysisResult(ast=app, symbols=symbols)
 
     def diagnostics(self, uri: str, text: str) -> list[Diagnostic]:
@@ -87,7 +80,6 @@ class EditorService:
         word = self._word_at(text, position)
         if not word:
             return None
-
         if word in KEYWORD_HELP:
             return Hover(KEYWORD_HELP[word])
 
@@ -101,7 +93,6 @@ class EditorService:
         word = self._word_at(text, position)
         if not word:
             return None
-
         result = self.analyze(uri, text)
         for symbol in self._flatten_symbols(result.symbols):
             if symbol.name == word:
@@ -112,13 +103,7 @@ class EditorService:
         return self.analyze(uri, text).symbols
 
     def format(self, uri: str, text: str) -> list[TextEdit]:
-        """Return only conservative whitespace edits.
-
-        Formatting is intentionally limited to trailing whitespace and a
-        missing final newline. Structural indentation is left untouched so
-        multiline literals and the current literal grammar cannot be changed
-        accidentally.
-        """
+        """Return only conservative whitespace edits."""
         if self.diagnostics(uri, text):
             return []
 
@@ -164,7 +149,7 @@ class EditorService:
             range=Range(Position(line, 0), Position(line, len(lines[line]))),
         )
 
-    def _symbols(self, app: App, text: str, uri: str) -> list[DocumentSymbol]:
+    def _symbols(self, app: App, text: str) -> list[DocumentSymbol]:
         cursor = 0
 
         def find_name(name: str) -> Range:
@@ -181,17 +166,17 @@ class EditorService:
         def page_symbol(page: Page) -> DocumentSymbol:
             page_range = find_name(page.name)
             children = tuple(section_symbol(s) for s in page.sections)
-            return DocumentSymbol("page:" + page.name, "page", page_range, page_range, children)
+            return DocumentSymbol(page.name, "page", page_range, page_range, children)
 
         def section_symbol(section: Section) -> DocumentSymbol:
             section_range = find_name(section.name)
             children = tuple(section_symbol(s) for s in section.sections)
-            return DocumentSymbol("section:" + section.name, "section", section_range, section_range, children)
+            return DocumentSymbol(section.name, "section", section_range, section_range, children)
 
         app_range = find_name(app.name)
         return [
             DocumentSymbol(
-                "app:" + app.name,
+                app.name,
                 "application",
                 app_range,
                 app_range,
