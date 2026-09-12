@@ -12,6 +12,7 @@ DEFAULT_APP_TEMPLATE = """app $__PROJECT_NAME__ {
         }
     }
 
+    page $home {}
     target $web
 }
 """
