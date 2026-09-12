@@ -32,7 +32,8 @@ class CachePersistence:
                 )
             return entries
         except (OSError, json.JSONDecodeError, KeyError, TypeError, ValueError) as error:
-            raise ValueError(f"Invalid cache state: {self.cache_file}") from error
+            self._quarantine_corrupt_state()
+            return {}
 
     def save(self, entries: dict[str, CacheEntry]):
         self.cache_dir.mkdir(parents=True, exist_ok=True)
@@ -50,9 +51,25 @@ class CachePersistence:
         ) as temp:
             json.dump(data, temp, indent=2)
             temp.write("\n")
+            temp.flush()
+            os.fsync(temp.fileno())
             temp_path = Path(temp.name)
         try:
             os.replace(temp_path, self.cache_file)
         finally:
             if temp_path.exists():
                 temp_path.unlink()
+
+    def _quarantine_corrupt_state(self) -> None:
+        """Move unreadable state aside so the next build can recover cleanly."""
+        if not self.cache_file.exists():
+            return
+        backup = self.cache_file.with_suffix(".corrupt")
+        try:
+            if backup.exists():
+                backup.unlink()
+            os.replace(self.cache_file, backup)
+        except OSError:
+            # A cache is disposable state; inability to quarantine must not
+            # prevent a clean rebuild from proceeding.
+            pass
