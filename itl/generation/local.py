@@ -1,15 +1,13 @@
-"""Local OpenAI-compatible AI generation provider.
-
-The provider intentionally depends only on Python's standard library so local
-AI generation can run offline without adding a model SDK to the compiler.
-"""
+"""Local OpenAI-compatible AI generation provider."""
 
 from __future__ import annotations
 
+import ipaddress
 import json
 from collections.abc import Iterator
 from dataclasses import dataclass
 from urllib.error import HTTPError, URLError
+from urllib.parse import urlparse
 from urllib.request import Request, urlopen
 
 from itl.generation.models import GenerationRequest
@@ -38,18 +36,32 @@ class LocalProviderConfig:
     api_key: str | None = None
     temperature: float | None = None
     max_tokens: int | None = None
+    allow_remote_endpoint: bool = False
 
     def __post_init__(self) -> None:
         if self.timeout <= 0:
             raise ValueError("timeout must be greater than zero")
-        if not self.endpoint.startswith(("http://", "https://")):
-            raise ValueError("endpoint must be an HTTP(S) URL")
+        parsed = urlparse(self.endpoint)
+        if parsed.scheme not in {"http", "https"} or not parsed.hostname:
+            raise ValueError("endpoint must be an HTTP(S) URL with a hostname")
+        if not self.allow_remote_endpoint:
+            hostname = parsed.hostname.casefold()
+            try:
+                address = ipaddress.ip_address(hostname)
+                local = address.is_loopback
+            except ValueError:
+                local = hostname == "localhost"
+            if not local:
+                raise ValueError(
+                    "remote AI endpoints are disabled by default; "
+                    "set allow_remote_endpoint=True explicitly to opt in"
+                )
         if not self.model.strip():
             raise ValueError("model must not be empty")
 
 
 class LocalAIProvider:
-    """GenerationProvider implementation for local OpenAI-compatible servers."""
+    """GenerationProvider implementation for OpenAI-compatible local servers."""
 
     name = "local"
 
@@ -76,36 +88,26 @@ class LocalAIProvider:
 
     def _request(self, prompt: str, *, stream: bool = False) -> Request:
         body = json.dumps(self._payload(prompt, stream=stream)).encode("utf-8")
-        return Request(
-            self.config.endpoint,
-            data=body,
-            headers=self._headers(),
-            method="POST",
-        )
+        return Request(self.config.endpoint, data=body, headers=self._headers(), method="POST")
 
     @staticmethod
     def _extract_output(data: dict[str, object]) -> str:
         choices = data.get("choices")
         if not isinstance(choices, list) or not choices:
             raise LocalProviderError("Local endpoint response contains no choices")
-
         choice = choices[0]
         if not isinstance(choice, dict):
             raise LocalProviderError("Local endpoint returned an invalid choice")
-
         message = choice.get("message")
         if isinstance(message, dict) and isinstance(message.get("content"), str):
             return message["content"]
-
         text = choice.get("text")
         if isinstance(text, str):
             return text
-
         raise LocalProviderError("Local endpoint response contains no text output")
 
     def generate(self, request: GenerationRequest, prompt: str) -> ProviderResponse:
-        """Generate one complete response through the configured local endpoint."""
-        del request  # The stable provider boundary supplies prompt + metadata.
+        del request
         try:
             with urlopen(self._request(prompt), timeout=self.config.timeout) as response:
                 data = json.loads(response.read().decode("utf-8"))
@@ -113,17 +115,13 @@ class LocalAIProvider:
             raise LocalProviderTimeout("Local AI request timed out") from error
         except HTTPError as error:
             detail = error.read().decode("utf-8", errors="replace")
-            raise LocalProviderHTTPError(
-                f"Local AI endpoint returned HTTP {error.code}: {detail[:500]}"
-            ) from error
+            raise LocalProviderHTTPError(f"Local AI endpoint returned HTTP {error.code}: {detail[:500]}") from error
         except URLError as error:
             raise LocalProviderError(f"Unable to reach local AI endpoint: {error.reason}") from error
         except json.JSONDecodeError as error:
             raise LocalProviderError("Local AI endpoint returned invalid JSON") from error
-
         if not isinstance(data, dict):
             raise LocalProviderError("Local AI endpoint returned an invalid response")
-
         return ProviderResponse(
             output=self._extract_output(data),
             provider=self.name,
@@ -132,7 +130,6 @@ class LocalAIProvider:
         )
 
     def generate_stream(self, request: GenerationRequest, prompt: str) -> Iterator[str]:
-        """Yield text deltas from an OpenAI-compatible SSE streaming endpoint."""
         del request
         try:
             response = urlopen(self._request(prompt, stream=True), timeout=self.config.timeout)
@@ -140,12 +137,9 @@ class LocalAIProvider:
             raise LocalProviderTimeout("Local AI streaming request timed out") from error
         except HTTPError as error:
             detail = error.read().decode("utf-8", errors="replace")
-            raise LocalProviderHTTPError(
-                f"Local AI endpoint returned HTTP {error.code}: {detail[:500]}"
-            ) from error
+            raise LocalProviderHTTPError(f"Local AI endpoint returned HTTP {error.code}: {detail[:500]}") from error
         except URLError as error:
             raise LocalProviderError(f"Unable to reach local AI endpoint: {error.reason}") from error
-
         try:
             for raw_line in response:
                 line = raw_line.decode("utf-8").strip()
