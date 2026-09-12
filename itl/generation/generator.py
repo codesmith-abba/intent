@@ -2,14 +2,10 @@ from collections.abc import Mapping
 
 from itl.build.models import BuildItem
 from itl.cache.cache import Cache
-from itl.generation.models import (
-    GenerationContext,
-    GenerationRequest,
-    GenerationResult,
-    GenerationStatus,
-)
+from itl.generation.models import GenerationContext, GenerationRequest, GenerationResult, GenerationStatus
 from itl.generation.prompt import GenerationPromptBuilder
 from itl.generation.provider import GenerationProvider
+from itl.security import contains_secret_like_value, redact_secret
 
 
 class GenerationFailure(RuntimeError):
@@ -17,7 +13,7 @@ class GenerationFailure(RuntimeError):
 
     def __init__(self, result: GenerationResult):
         self.result = result
-        super().__init__(result.error or "Generation failed.")
+        super().__init__(redact_secret(result.error or "Generation failed."))
 
 
 class AIGenerator:
@@ -46,15 +42,10 @@ class AIGenerator:
                     error=f"No generation context exists for '{item.source}'.",
                 )
             ) from error
-
-        return GenerationRequest(
-            context=context,
-            requested_unit=item.source,
-        )
+        return GenerationRequest(context=context, requested_unit=item.source)
 
     def generate(self, item: BuildItem) -> GenerationResult:
         request = self.request_for(item)
-
         if self.cache is not None:
             entry = self.cache.get(item.source)
             if entry is not None and entry.output is not None:
@@ -69,14 +60,13 @@ class AIGenerator:
                 )
 
         prompt = self.prompt_builder.build(request)
-
         try:
             response = self.provider.generate(request, prompt)
         except Exception as error:
             return GenerationResult(
                 unit_id=item.source,
                 status=GenerationStatus.FAILED,
-                error=str(error),
+                error=redact_secret(str(error)),
             )
 
         result = GenerationResult(
@@ -88,25 +78,17 @@ class AIGenerator:
             metadata=dict(response.metadata),
         )
 
-        if self.cache is not None and result.output is not None:
+        # Do not persist output that resembles credential-bearing key/value data.
+        # The generated result is still returned to the caller for explicit handling.
+        if self.cache is not None and result.output is not None and not contains_secret_like_value(result.output):
             metadata = dict(result.metadata)
-            metadata.update(
-                {
-                    "provider": result.provider,
-                    "model": result.model,
-                }
-            )
-            self.cache.put(
-                item.source,
-                output=result.output,
-                metadata=metadata,
-            )
+            metadata.update({"provider": result.provider, "model": result.model})
+            self.cache.put(item.source, output=result.output, metadata=metadata)
             self.cache.save()
 
         return result
 
     def build(self, item: BuildItem) -> str:
-        """BuildExecutor-compatible callable for one scheduled unit."""
         result = self.generate(item)
         if result.status == GenerationStatus.FAILED:
             raise GenerationFailure(result)
