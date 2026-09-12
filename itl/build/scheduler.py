@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+import heapq
 
 from itl.build.models import BuildPlan
 
@@ -26,7 +27,7 @@ class BuildSchedule:
 
 
 class BuildScheduler:
-    """Determine dependency-safe, future-parallel build batches."""
+    """Determine dependency-safe, deterministic build batches."""
 
     def schedule(
         self,
@@ -40,26 +41,47 @@ class BuildScheduler:
             for index, item in enumerate(plan.items)
         }
         remaining = set(items) - completed
+
+        dependents: dict[str, set[str]] = {source: set() for source in items}
+        indegree: dict[str, int] = {source: 0 for source in remaining}
+        for source in remaining:
+            for dependency in items[source].dependencies:
+                if dependency in remaining:
+                    indegree[source] += 1
+                    dependents.setdefault(dependency, set()).add(source)
+
+        ready = [
+            source
+            for source in remaining
+            if indegree[source] == 0
+        ]
+        ready_heap = [(plan_order[source], source) for source in ready]
+        heapq.heapify(ready_heap)
         batches: list[BuildBatch] = []
+        scheduled = 0
 
-        while remaining:
-            ready = sorted(
-                (
-                    source
-                    for source in remaining
-                    if all(
-                        dependency not in remaining
-                        for dependency in items[source].dependencies
-                    )
-                ),
-                key=plan_order.__getitem__,
-            )
+        while ready_heap:
+            batch_sources: list[str] = []
+            current = []
+            while ready_heap:
+                _, source = heapq.heappop(ready_heap)
+                current.append(source)
 
-            if not ready:
-                raise ValueError("Build plan contains a dependency cycle.")
+            current.sort(key=plan_order.__getitem__)
+            batch_sources.extend(current)
+            batches.append(BuildBatch(tuple(batch_sources)))
+            scheduled += len(batch_sources)
 
-            batches.append(BuildBatch(tuple(ready)))
-            completed.update(ready)
-            remaining.difference_update(ready)
+            next_ready: list[str] = []
+            for source in batch_sources:
+                for dependent in dependents.get(source, ()):
+                    indegree[dependent] -= 1
+                    if indegree[dependent] == 0:
+                        next_ready.append(dependent)
+            for source in next_ready:
+                heapq.heappush(ready_heap, (plan_order[source], source))
+
+        if scheduled != len(remaining):
+            raise ValueError("Build plan contains a dependency cycle.")
 
         return BuildSchedule(tuple(batches))
