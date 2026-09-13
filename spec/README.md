@@ -4,11 +4,12 @@ This directory contains the **normative language specification** for Intent Lang
 
 ## Current specification
 
+- [ITL Language Specification v0.3](ITL-0.3.md)
 - [ITL Language Specification v0.2](ITL-0.2.md)
 - [ITL Language Specification v0.1](ITL-0.1.md)
 - [ITL v0.1 Specification Errata](ITL-0.1-ERRATA.md)
 
-ITL v0.2 adds implemented application-language semantics for models, fields, constraints, relationships, actions, routes, and permissions while preserving the existing v0.1 page/component language.
+ITL v0.3 adds implemented authentication and authorization semantics, including authentication configuration, sessions, password recovery, verification, MFA, roles, inheritance, named permissions, and action/resource authorization while preserving the existing application-language semantics.
 
 The specification is versioned independently from compiler implementation details. A specification version describes language behavior that is implemented and testable at the time it is published; it does not promise that every compiler or runtime implementation detail is stable.
 
