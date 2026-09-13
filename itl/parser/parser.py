@@ -23,7 +23,6 @@ class Parser:
         self.STORAGE_MEMBERS = {TokenType.PROVIDER: lambda n: setattr(n, "provider", self.provider())}
         self.SYSTEM_MEMBERS = {TokenType.FRONTEND: lambda n: setattr(n, "frontend", self.frontend()), TokenType.BACKEND: lambda n: setattr(n, "backend", self.backend()), TokenType.DATABASE: lambda n: setattr(n, "database", self.database()), TokenType.CACHE: lambda n: setattr(n, "cache", self.cache()), TokenType.STORAGE: lambda n: setattr(n, "storage", self.storage())}
         self.MODULE_DECLARATIONS = {TokenType.PAGE: self.page, TokenType.SECTION: self.section, TokenType.MODELS: self.models, TokenType.ROUTES: self.routes, TokenType.PERMISSIONS: self.permissions, TokenType.AUTH: self.auth}
-
     def parse(self):
         app = self.app(); self.consume(TokenType.EOF, "Unexpected declaration after application block."); return app
     def parse_module(self):
@@ -77,13 +76,12 @@ class Parser:
         name = self.consume(TokenType.STRING, "Expected route name.").lexeme; node = Route(intent=None, name=name, imports=[])
         handlers = {TokenType.PATH: lambda n: setattr(n, "path", self.literal_value("Expected route path.")), TokenType.PAGE: lambda n: setattr(n, "page", self.literal_value("Expected route page.")), TokenType.AUTH: lambda n: setattr(n, "auth", self.literal_value("Expected route auth role.")), TokenType.INTENT: lambda n: setattr(n, "intent", self.intent()), TokenType.IMPORT: lambda n: self.parse_import(n)}
         return self.parse_block(node, handlers, "Expected '{' after route name.")
-
     def permissions(self):
         node = Permissions(intent=self.optional_intent(), roles=[], permissions=[])
         handlers = {TokenType.ROLE: lambda n: n.roles.append(self.permission_role()), TokenType.PERMISSION: lambda n: n.permissions.append(self.permission())}
         return self.parse_block(node, handlers, "Expected '{' after permissions.")
     def permission(self):
-        name = self.consume(TokenType.STRING, "Expected permission name.").lexeme; node = Permission(intent=None, name=name)
+        name = self.consume(TokenType.STRING, "Expected permission name.").lexeme; node = Permission(intent=None, name=name, imports=[])
         handlers = {TokenType.RESOURCE: lambda n: setattr(n, "resource", self.literal_value("Expected permission resource.")), TokenType.ACTION: lambda n: setattr(n, "action", self.literal_value("Expected permission action.")), TokenType.INTENT: lambda n: setattr(n, "intent", self.intent())}
         return self.parse_block(node, handlers, "Expected '{' after permission name.")
     def permission_role(self):
@@ -91,8 +89,7 @@ class Parser:
         handlers = {TokenType.INHERITS: lambda n: n.inherits.append(self.literal_value("Expected inherited role.")), TokenType.ALLOW: self.parse_allow_for_role, TokenType.INTENT: lambda n: setattr(n, "intent", self.intent())}
         return self.parse_block(node, handlers, "Expected '{' after role name.")
     def parse_allow_for_role(self, role):
-        if self.check(TokenType.STRING):
-            role.permissions.append(self.advance().lexeme); return
+        if self.check(TokenType.STRING): role.permissions.append(self.advance().lexeme); return
         self.allow_actions(role)
     def allow_actions(self, role):
         self.consume(TokenType.LEFT_BRACE, "Expected '{' after allow.")
@@ -104,17 +101,14 @@ class Parser:
         self.consume(TokenType.RIGHT_BRACE, "Expected '}' after allow block.")
     def action_node(self, token_type):
         target = self.consume(TokenType.STRING, "Expected action target.").lexeme; kind = {TokenType.VIEW:"view",TokenType.GET:"get",TokenType.CREATE:"create",TokenType.UPDATE:"update",TokenType.DELETE:"delete",TokenType.MANAGE:"manage"}[token_type]; return Action(kind, target)
-
     def auth(self):
         node = Auth(intent=self.optional_intent())
         handlers = {
+            TokenType.INTENT: lambda n: setattr(n, "intent", self.intent()),
             TokenType.PROVIDER: lambda n: n.providers.append(AuthProvider(self.literal_value("Expected authentication provider."))),
-            TokenType.REGISTRATION: lambda n: setattr(n, "registration", self.registration()),
-            TokenType.LOGIN: lambda n: setattr(n, "login", self.login()),
-            TokenType.LOGOUT: lambda n: setattr(n, "logout", self.logout()),
-            TokenType.PASSWORD_RECOVERY: lambda n: setattr(n, "password_recovery", self.password_recovery()),
-            TokenType.VERIFICATION: lambda n: setattr(n, "verification", self.verification()),
-            TokenType.SESSION: lambda n: setattr(n, "session", self.session()),
+            TokenType.REGISTRATION: lambda n: setattr(n, "registration", self.registration()), TokenType.LOGIN: lambda n: setattr(n, "login", self.login()),
+            TokenType.LOGOUT: lambda n: setattr(n, "logout", self.logout()), TokenType.PASSWORD_RECOVERY: lambda n: setattr(n, "password_recovery", self.password_recovery()),
+            TokenType.VERIFICATION: lambda n: setattr(n, "verification", self.verification()), TokenType.SESSION: lambda n: setattr(n, "session", self.session()),
             TokenType.MFA: lambda n: setattr(n, "mfa", self.mfa()),
         }
         return self.parse_block(node, handlers, "Expected '{' after auth.")
