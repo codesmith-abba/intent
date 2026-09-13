@@ -3,7 +3,6 @@ from pathlib import Path
 from itl.analyzer.analyzer import Analyzer
 from itl.analyzer.errors import SemanticError
 from itl.compiler.compiler import Compiler
-from itl.compiler.loader import ProjectLoader
 from itl.gir.builder import GIRBuilder
 from itl.parser.ast import App, Auth, Models, Model, Field, Permissions, Permission, PermissionRole
 from itl.parser.lexer import Lexer
@@ -52,16 +51,11 @@ def test_ecommerce_auth_and_permissions_compile_through_gir():
 
 
 def test_custom_roles_are_not_hard_coded():
-    permissions = Permissions(
-        intent=None,
-        roles=[
-            PermissionRole(intent=None, name="owner", imports=[], actions=[]),
-            PermissionRole(intent=None, name="auditor", imports=[], inherits=["owner"], actions=[]),
-        ],
-        permissions=[],
-    )
-    app = App(intent=None, name="Custom", imports=[], permissions=permissions)
-    Analyzer().analyze(app)
+    permissions = Permissions(intent=None, roles=[
+        PermissionRole(intent=None, name="owner", imports=[], actions=[]),
+        PermissionRole(intent=None, name="auditor", imports=[], inherits=["owner"], actions=[]),
+    ], permissions=[])
+    Analyzer().analyze(App(intent=None, name="Custom", imports=[], permissions=permissions))
 
 
 def test_duplicate_roles_are_rejected():
@@ -86,8 +80,10 @@ def test_resource_and_action_permissions_are_validated():
     valid = Permissions(intent=None, roles=[], permissions=[Permission(intent=None, name="readUser", resource="User", action="view")])
     app = App(intent=None, name="A", imports=[], models=Models(intent=None, models=[base_model()]), permissions=valid)
     Analyzer().analyze(app)
-    assert_raises(SemanticError, lambda: Analyzer().analyze(App(intent=None, name="A", imports=[], models=Models(intent=None, models=[base_model()]), permissions=Permissions(intent=None, roles=[], permissions=[Permission(intent=None, name="x", resource="Missing", action="view")])))
-    assert_raises(SemanticError, lambda: Analyzer().analyze(App(intent=None, name="A", imports=[], models=Models(intent=None, models=[base_model()]), permissions=Permissions(intent=None, roles=[], permissions=[Permission(intent=None, name="x", resource="User", action="execute")])))
+    unknown = Permissions(intent=None, roles=[], permissions=[Permission(intent=None, name="x", resource="Missing", action="view")])
+    assert_raises(SemanticError, lambda: Analyzer().analyze(App(intent=None, name="A", imports=[], models=Models(intent=None, models=[base_model()]), permissions=unknown)))
+    invalid = Permissions(intent=None, roles=[], permissions=[Permission(intent=None, name="x", resource="User", action="execute")])
+    assert_raises(SemanticError, lambda: Analyzer().analyze(App(intent=None, name="A", imports=[], models=Models(intent=None, models=[base_model()]), permissions=invalid)))
 
 
 def test_role_permission_reference_must_exist():
@@ -98,15 +94,29 @@ def test_role_permission_reference_must_exist():
 def test_auth_provider_references_and_configuration_are_validated():
     auth = parse_module('''auth {
         provider $email
-        registration { enabled true verification $email }
-        login { allow $email rememberMe true }
-        session { timeout 30d multipleDevices true }
-        mfa { enabled true method $totp }
+        registration {
+            enabled true
+            verification $email
+        }
+        login {
+            allow $email
+            rememberMe true
+        }
+        session {
+            timeout 30d
+            multipleDevices true
+        }
+        mfa {
+            enabled true
+            method $totp
+        }
     }''')
     Analyzer().analyze(App(intent=None, name="A", imports=[], auth=auth))
     bad = parse_module('''auth {
         provider $email
-        login { allow $phone }
+        login {
+            allow $phone
+        }
     }''')
     assert_raises(SemanticError, lambda: Analyzer().analyze(App(intent=None, name="A", imports=[], auth=bad)))
 
@@ -114,13 +124,34 @@ def test_auth_provider_references_and_configuration_are_validated():
 def test_auth_gir_preserves_all_configuration():
     auth = parse_module('''auth {
         provider $email
-        registration { enabled true verification $email }
-        login { allow $email rememberMe true }
-        logout { enabled true }
-        passwordRecovery { enabled true method $email reset true }
-        verification { enabled true method $email }
-        session { timeout 7d multipleDevices true }
-        mfa { enabled true method $totp }
+        registration {
+            enabled true
+            verification $email
+        }
+        login {
+            allow $email
+            rememberMe true
+        }
+        logout {
+            enabled true
+        }
+        passwordRecovery {
+            enabled true
+            method $email
+            reset true
+        }
+        verification {
+            enabled true
+            method $email
+        }
+        session {
+            timeout 7d
+            multipleDevices true
+        }
+        mfa {
+            enabled true
+            method $totp
+        }
     }''')
     gir = GIRBuilder().build(App(intent=None, name="A", imports=[], auth=auth))
     assert gir.auth.providers[0].value == "email"
