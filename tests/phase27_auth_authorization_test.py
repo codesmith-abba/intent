@@ -77,13 +77,23 @@ def test_unknown_and_circular_role_inheritance_are_rejected():
 
 
 def test_resource_and_action_permissions_are_validated():
-    valid = Permissions(intent=None, roles=[], permissions=[Permission(intent=None, name="readUser", resource="User", action="view")])
+    valid = Permissions(intent=None, roles=[], permissions=[Permission(intent=None, name="readUser", imports=[], resource="User", action="view")])
     app = App(intent=None, name="A", imports=[], models=Models(intent=None, models=[base_model()]), permissions=valid)
     Analyzer().analyze(app)
-    unknown = Permissions(intent=None, roles=[], permissions=[Permission(intent=None, name="x", resource="Missing", action="view")])
+    unknown = Permissions(intent=None, roles=[], permissions=[Permission(intent=None, name="x", imports=[], resource="Missing", action="view")])
     assert_raises(SemanticError, lambda: Analyzer().analyze(App(intent=None, name="A", imports=[], models=Models(intent=None, models=[base_model()]), permissions=unknown)))
-    invalid = Permissions(intent=None, roles=[], permissions=[Permission(intent=None, name="x", resource="User", action="execute")])
+    invalid = Permissions(intent=None, roles=[], permissions=[Permission(intent=None, name="x", imports=[], resource="User", action="execute")])
     assert_raises(SemanticError, lambda: Analyzer().analyze(App(intent=None, name="A", imports=[], models=Models(intent=None, models=[base_model()]), permissions=invalid)))
+
+
+def test_duplicate_permissions_and_conflicting_references_are_rejected():
+    duplicate = Permissions(intent=None, roles=[], permissions=[
+        Permission(intent=None, name="readUser", imports=[], resource="User", action="view"),
+        Permission(intent=None, name="readUser", imports=[], resource="User", action="get"),
+    ])
+    assert_raises(SemanticError, lambda: Analyzer().analyze(App(intent=None, name="A", imports=[], models=Models(intent=None, models=[base_model()]), permissions=duplicate)))
+    conflicting = Permissions(intent=None, roles=[PermissionRole(intent=None, name="owner", imports=[], permissions=["readUser", "readUser"], actions=[])], permissions=[Permission(intent=None, name="readUser", imports=[], resource="User", action="view")])
+    assert_raises(SemanticError, lambda: Analyzer().analyze(App(intent=None, name="A", imports=[], models=Models(intent=None, models=[base_model()]), permissions=conflicting)))
 
 
 def test_role_permission_reference_must_exist():
@@ -112,13 +122,20 @@ def test_auth_provider_references_and_configuration_are_validated():
         }
     }''')
     Analyzer().analyze(App(intent=None, name="A", imports=[], auth=auth))
-    bad = parse_module('''auth {
+    bad_provider = parse_module('''auth {
         provider $email
         login {
             allow $phone
         }
     }''')
-    assert_raises(SemanticError, lambda: Analyzer().analyze(App(intent=None, name="A", imports=[], auth=bad)))
+    assert_raises(SemanticError, lambda: Analyzer().analyze(App(intent=None, name="A", imports=[], auth=bad_provider)))
+    bad_timeout = parse_module('''auth {
+        provider $email
+        session {
+            timeout 0d
+        }
+    }''')
+    assert_raises(SemanticError, lambda: Analyzer().analyze(App(intent=None, name="A", imports=[], auth=bad_timeout)))
 
 
 def test_auth_gir_preserves_all_configuration():
