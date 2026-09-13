@@ -26,7 +26,7 @@ class TokenType(Enum):
     MODELS = auto()
     ROUTES = auto()
     PERMISSIONS = auto()
-    # AUTH = auto()
+    AUTH = auto()
 
     # ==================================================
     # UI
@@ -53,11 +53,30 @@ class TokenType(Enum):
     # Authentication & Authorization
     # ==================================================
 
-    AUTH = auto()
-
     ROLE = auto()
     ALLOW = auto()
     INHERITS = auto()
+    PERMISSION = auto()
+    RESOURCE = auto()
+
+    # ==================================================
+    # Authentication configuration
+    # ==================================================
+
+    PROVIDER = auto()
+    REGISTRATION = auto()
+    LOGIN = auto()
+    LOGOUT = auto()
+    SESSION = auto()
+    PASSWORD_RECOVERY = auto()
+    RESET = auto()
+    VERIFICATION = auto()
+    MFA = auto()
+    REMEMBER_ME = auto()
+    MULTIPLE_DEVICES = auto()
+    ENABLED = auto()
+    METHOD = auto()
+    TIMEOUT = auto()
 
     # ==================================================
     # Permissions / Operations
@@ -121,7 +140,6 @@ class TokenType(Enum):
     SYSTEM = auto()
     ENGINE = auto()
     API = auto()
-    PROVIDER = auto()
     STORAGE = auto()
     CACHE = auto()
 
