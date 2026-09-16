@@ -78,7 +78,7 @@ class Parser:
         return self.parse_block(node, handlers, "Expected '{' after route name.")
     def permissions(self):
         node = Permissions(intent=self.optional_intent(), roles=[], permissions=[])
-        handlers = {TokenType.ROLE: lambda n: n.roles.append(self.permission_role()), TokenType.PERMISSION: lambda n: n.permissions.append(self.permission())}
+        handlers = {TokenType.ROLE: lambda n: n.roles.append(self.permission_role()), TokenType.PERMISSION: lambda n: n.permissions.append(self.permission()), TokenType.INTENT: lambda n: setattr(n, "intent", self.intent())}
         return self.parse_block(node, handlers, "Expected '{' after permissions.")
     def permission(self):
         name = self.consume(TokenType.STRING, "Expected permission name.").lexeme; node = Permission(intent=None, name=name, imports=[])
