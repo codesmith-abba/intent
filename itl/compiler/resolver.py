@@ -8,8 +8,9 @@ class ImportResolver:
     def resolve(self, app: App) -> App:
         self.resolve_node(app); return app
     def resolve_node(self, node):
-        if not node.imports: return
-        for import_name in node.imports:
+        imports = getattr(node, "imports", None)
+        if not imports: return
+        for import_name in imports:
             if import_name == "all" and isinstance(node, App):
                 for name in self.loader.list_modules(): self.resolve_import(node, name)
                 continue
